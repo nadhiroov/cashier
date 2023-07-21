@@ -24,6 +24,11 @@
                                 <?php endforeach; ?>
                             </div>
                         <?php endif; ?>
+                        <?php if (session()->getFlashdata('msg')) : ?>
+                            <div class="alert alert-danger">
+                                <p><?= session()->getFlashdata('msg') ?></p>
+                            </div>
+                        <?php endif; ?>
                         <form action="<?= base_url('login/process'); ?>" method="post" class="needs-validation" novalidate>
                             <?= csrf_field() ?>
                             <div class="mb-3">

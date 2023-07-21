@@ -3,9 +3,18 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\M_user;
 
 class Auth extends BaseController
 {
+    protected $model;
+
+    public function __construct()
+    {
+        $this->model = new M_user();
+        $this->model = new M_user();
+        helper(['form', 'url']);
+    }
     public function index()
     {
         //
@@ -18,36 +27,94 @@ class Auth extends BaseController
 
     public function process()
     {
-        // Load the form helper to handle validation
-        helper('form');
-
         $username = $this->request->getPost('username');
         $password = $this->request->getPost('password');
 
         // Set validation rules
         $rules = [
-            'username' => 'required',
-            'password' => 'required'
-        ];
-
-        // Set custom error messages
-        $errors = [
-            'username' => [
-                'required' => 'The username field is required.'
-            ],
-            'password' => [
-                'required' => 'The password field is required.'
-            ]
+            'username' => 'required|alpha_dash|min_length[5]',
+            'password' => 'required|min_length[5]'
         ];
 
         // Validate the input data
-        if (!$this->validate($rules, $errors)) {
+        if (!$this->validate($rules)) {
             // If validation fails, store the errors in the session and redirect back to the login page
             return redirect()->to('login')->withInput()->with('errors', $this->validator->getErrors());
         } else {
-            // Add your login logic here (e.g., checking credentials, validating user, etc.)
-            // For demonstration purposes, we'll just redirect back to the login page.
-            return redirect()->to('login');
+            $data = $this->model
+            ->groupStart()
+            ->where('username', $username)
+            ->orWhere('email', $username)
+            ->groupEnd()
+            ->where('deleted_at', null)
+            ->first();
+            if ($data) {
+                $verify = password_verify($password, $data['password']);
+                if ($verify) {
+                    $sess_data = [
+                        'id'        => $data['id'],
+                        'email'     => $data['email'],
+                        'username'  => $data['username'],
+                        'fullname'  => $data['fullname'],
+                        // 'image'     => $data['img'],
+                        // 'is_admin'  => $data['is_admin'],
+                        // 'theme'     => $data['theme'],
+                        'logged_in' => true
+                    ];
+                    // $this->session->set($sess_data);
+                    return redirect()->to('/dashboard');
+                } else {
+                    $this->session->setFlashdata('msg', 'wrong password');
+                    return redirect()->to('login')->withInput();
+                }
+            }
+            $this->session->setFlashdata('msg', 'username not found');
+            return redirect()->to('login')->withInput();
         }
     }
+    function testInsert()
+    {
+        $data = [
+            'username'  => 'test123',
+            'password'  => password_hash('admin', PASSWORD_BCRYPT),
+            'fullname'  => 'Test rahat',
+            'email'     => 'test@gmail.com'
+        ];
+        
+        if (!$this->model->validate($data)) {
+            $return = [
+                'status' => 'error',
+                'title'  => 'Error',
+                'message'=> $this->model->validation->getErrors()
+            ];
+            echo json_encode($return);
+            return false;
+        }
+        try {
+            $this->model->save($data);
+            $return = [
+                'status'    => 'success',
+                'title'     => 'Success',
+                'message'   => 'Data berhasil disimpan'
+            ];
+        } catch (\Exception $th) {
+            $return = [
+                'status'    => 'error',
+                'title'     => 'Error',
+                'message'   => $th->getMessage()
+            ];
+        }
+        echo json_encode($return);
+    }
+
+    function testDelete($id) {
+        $this->model->delete($id);
+    }
+
+    function showAllUser()
+    {
+        $data = $this->model->withDeleted()->findAll();
+        dd($data);
+    }
+
 }

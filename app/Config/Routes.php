@@ -33,6 +33,10 @@ $routes->get('/', 'Home::index');
 
 $routes->get('login', 'Auth::login');
 $routes->post('login/process', 'Auth::process');
+
+$routes->get('insertUser', 'Auth::testInsert');
+$routes->get('showAllUser', 'Auth::showAllUser');
+$routes->get('deleteUser/(:num)', 'Auth::testDelete/$1');
 /*
  * --------------------------------------------------------------------
  * Additional Routing
