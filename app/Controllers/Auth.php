@@ -56,12 +56,12 @@ class Auth extends BaseController
                         'email'     => $data['email'],
                         'username'  => $data['username'],
                         'fullname'  => $data['fullname'],
-                        // 'image'     => $data['img'],
-                        // 'is_admin'  => $data['is_admin'],
-                        // 'theme'     => $data['theme'],
+                        'image'     => $data['img'],
+                        'is_admin'  => $data['is_admin'],
+                        'theme'     => $data['theme'],
                         'logged_in' => true
                     ];
-                    // $this->session->set($sess_data);
+                    $this->session->set($sess_data);
                     return redirect()->to('/dashboard');
                 } else {
                     $this->session->setFlashdata('msg', 'wrong password');

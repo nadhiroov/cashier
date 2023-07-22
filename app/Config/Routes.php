@@ -33,6 +33,14 @@ $routes->get('/', 'Home::index');
 
 $routes->get('login', 'Auth::login');
 $routes->post('login/process', 'Auth::process');
+$routes->get('dashboard', 'Home::dashboard');
+
+/* 
+ * Category 
+*/
+$routes->get('category', 'Category::index');
+$routes->get('categoryData', 'Category::getData');
+$routes->post('categorySave', 'Category::process');
 
 $routes->get('insertUser', 'Auth::testInsert');
 $routes->get('showAllUser', 'Auth::showAllUser');
