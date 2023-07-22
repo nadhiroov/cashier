@@ -29,7 +29,7 @@
                                 <p><?= session()->getFlashdata('msg') ?></p>
                             </div>
                         <?php endif; ?>
-                        <form action="<?= base_url('login/process'); ?>" method="post" class="needs-validation" novalidate>
+                        <form action="<?= base_url('loggingin'); ?>" method="post" class="needs-validation" novalidate>
                             <?= csrf_field() ?>
                             <div class="mb-3">
                                 <label for="validationCustom03" class="form-label">Username</label>

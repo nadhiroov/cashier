@@ -22,7 +22,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right">
-                        <div class="card-title">All Categories</div>
+                        <div class="card-title">All Brands</div>
                         <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addnew">
                             <i class="fa fa-plus"></i>
                             Add new
@@ -35,6 +35,7 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
+                                    <th>Brands</th>
                                     <th>Category</th>
                                     <th class="col-xs-1">Action</th>
                                 </tr>
@@ -59,12 +60,22 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form class="formEdit" action="<?= base_url() ?>/categorySave" method="POST">
+            <form class="formEdit" action="<?= base_url() ?>/brandSave" method="POST">
                 <div class="modal-body">
                     <div class="form-group form-inline">
                         <label for="inlineinput" class="col-md-3 col-form-label">Category</label>
                         <div class="col-md-9 p-0">
-                            <input type="text" class="form-control input-full" placeholder="Enter Input" name="form[category]">
+                            <select class="form-control month" name="form[category_id]" data-width="100%">
+                                <?php foreach ($category as $row) : ?>
+                                    <option value="<?= $row['id']?>"><?= $row['category']?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group form-inline">
+                        <label for="inlineinput" class="col-md-3 col-form-label">Brand</label>
+                        <div class="col-md-9 p-0">
+                            <input type="text" class="form-control input-full" placeholder="Enter brand" name="form[brand]">
                         </div>
                     </div>
                 </div>
@@ -108,7 +119,7 @@
 <script>
     $(document).ready(function() {
         $('#datatable').DataTable({
-            ajax: '<?= base_url('categoryData') ?>',
+            ajax: '<?= base_url('brandData') ?>',
             method: 'POST',
             pageLength: 10,
             serverSide: true,
@@ -118,7 +129,7 @@
                 "targets": 0
             }, {
                 "width": "20%",
-                "targets": 2
+                "targets": 3
             }, {
                 "targets": 2,
                 "orderable": false
@@ -130,13 +141,16 @@
                     }
                 },
                 {
+                    data: 'brand'
+                },
+                {
                     data: 'category'
                 },
                 {
                     data: 'id',
                     render: function(data, type, row) {
-                        return `<a href="categoryDetail/${data}" class="btn btn-sm btn-round btn-primary"><i class="fas fa-external-link-alt"></i></a> <a href="#edit" data-toggle="modal" data-id="${data}" class="btn btn-sm btn-round btn-warning"><i class="fas fa-edit"></i></a>
-                        <a data-id="${data}" onclick="confirmDelete(this)" target="<?= base_url() ?>/categoryDelete" class="btn btn-delete btn-sm btn-round btn-danger"><i class="far fa-trash-alt"></i></a>`;
+                        return `<a href="brandDetail/${data}" class="btn btn-sm btn-round btn-primary"><i class="fas fa-external-link-alt"></i></a> <a href="#edit" data-toggle="modal" data-id="${data}" class="btn btn-sm btn-round btn-warning"><i class="fas fa-edit"></i></a>
+                        <a data-id="${data}" onclick="confirmDelete(this)" target="<?= base_url() ?>/brandDelete" class="btn btn-delete btn-sm btn-round btn-danger"><i class="far fa-trash-alt"></i></a>`;
                     }
                 }
             ]

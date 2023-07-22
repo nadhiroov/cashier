@@ -15,8 +15,9 @@ function notif(status = "", title = "", message = "") {
   content.title = title;
   if (status == "success") {
     content.icon = "fas fa-check";
-  } else {
-    content.icon = "far fa-window-close";
+  } else if (status == "error") {
+    status = "danger"
+    content.icon = "fas fa-times";
   }
 
   $.notify(content, {

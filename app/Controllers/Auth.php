@@ -38,7 +38,6 @@ class Auth extends BaseController
 
         // Validate the input data
         if (!$this->validate($rules)) {
-            // If validation fails, store the errors in the session and redirect back to the login page
             return redirect()->to('login')->withInput()->with('errors', $this->validator->getErrors());
         } else {
             $data = $this->model
@@ -105,6 +104,12 @@ class Auth extends BaseController
             ];
         }
         echo json_encode($return);
+    }
+
+    public function logout()
+    {
+        $this->session->destroy();
+        return redirect()->to('/login');
     }
 
     function testDelete($id) {

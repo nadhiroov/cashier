@@ -6,7 +6,6 @@ use CodeIgniter\Model;
 
 class M_category extends Model
 {
-    protected $DBGroup          = 'default';
     protected $table            = 'category';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
@@ -21,4 +20,16 @@ class M_category extends Model
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
     protected $deletedField  = 'deleted_at';
+
+    // Validation
+    protected $validationRules      = [
+        'category'     => 'required|alpha_numeric|is_unique[category.category]'
+    ];
+    protected $validationMessages   = [
+        'category' => [
+            'is_unique' => 'This category already exist',
+        ],
+    ];
+    protected $skipValidation       = false;
+    protected $cleanValidationRules = true;
 }

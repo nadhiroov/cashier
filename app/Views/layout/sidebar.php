@@ -3,7 +3,7 @@
         <div class="sidebar-content">
             <div class="user">
                 <div class="avatar-sm float-left mr-2">
-                    <img src="<?= base_url() ?>/uploads/profile/<?= session()->get('image') ?>" alt="profile" class="avatar-img rounded-circle">
+                    <img src="<?= base_url() ?>assets/img/<?= session()->get('image') ?>" alt="profile" class="avatar-img rounded-circle">
                 </div>
                 <div class="info">
                     <a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
@@ -31,22 +31,27 @@
                     <h4 class="text-section">Feature</h4>
                 </li>
 
-                <li class="nav-item <?= @$menu_warehouse; ?>">
+                <li class="nav-item <?= $menu_warehouse ?? ''; ?>">
                     <a data-toggle="collapse" href="#warehouse">
                         <i class="fas fa-warehouse"></i>
                         <p>Warehouse</p>
                         <span class="caret"></span>
                     </a>
-                    <div class="collapse <?= @$menu_warehouse != null ? 'show' : '' ?>" id="warehouse">
+                    <div class="collapse <?= $menu_warehouse != null ? 'show' : ''?>" id="warehouse">
                         <ul class="nav nav-collapse">
-                            <li class="<?= @$submenu_produksi; ?>">
-                                <a href="<?= base_url() ?>/category">
-                                    <span class="sub-item">All Category</span>
+                            <li class="<?= $submenu_category ?? ''; ?>">
+                                <a href="<?= base_url() ?>category">
+                                    <span class="sub-item">Categories</span>
                                 </a>
                             </li>
-                            <li class="<?= @$submenu_bbl; ?>">
+                            <li class="<?= $submenu_brand ?? ''; ?>">
+                                <a href="<?= base_url() ?>brand">
+                                    <span class="sub-item">Brands</span>
+                                </a>
+                            </li>
+                            <li class="<?= $submenu_product ?? ''; ?>">
                                 <a href="<?= base_url() ?>/bbl">
-                                    <span class="sub-item">All Products</span>
+                                    <span class="sub-item">Products</span>
                                 </a>
                             </li>
                             <li>

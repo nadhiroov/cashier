@@ -29,10 +29,11 @@ $routes->set404Override();
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
-$routes->get('/', 'Home::index');
+$routes->get('/', 'Auth::login');
 
 $routes->get('login', 'Auth::login');
-$routes->post('login/process', 'Auth::process');
+$routes->post('loggingin', 'Auth::process');
+$routes->get('logout', 'Auth::logout');
 $routes->get('dashboard', 'Home::dashboard');
 
 /* 
@@ -41,6 +42,17 @@ $routes->get('dashboard', 'Home::dashboard');
 $routes->get('category', 'Category::index');
 $routes->get('categoryData', 'Category::getData');
 $routes->post('categorySave', 'Category::process');
+$routes->post('categoryEdit', 'Category::edit');
+$routes->post('categoryDelete', 'Category::delete');
+$routes->get('categoryDetail/(:num)', 'Category::detail/$1');
+
+/* 
+* Brands
+*/
+$routes->get('brand', 'Brand::index');
+$routes->get('brandData', 'Brand::getData');
+$routes->post('brandSave', 'Brand::process');
+
 
 $routes->get('insertUser', 'Auth::testInsert');
 $routes->get('showAllUser', 'Auth::showAllUser');

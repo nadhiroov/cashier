@@ -11,19 +11,34 @@ class Category extends BaseController
     public function __construct()
     {
         $this->model = new M_category();
-        // $this->view->setData(['menu_warehouse' => 'active']);
-        // view()->setData(['menu_warehouse' => 'active']);
-        $this->data['menu'] = 'category';
+        $this->view = \Config\Services::renderer();
+        $this->view->setData(['menu_warehouse' => 'active', 'submenu_category' => 'active']);
+        $this->data['menu'] = 'Category';
     }
+
     public function index()
     {
         return view('category/index', $this->data);
     }
 
+    public function detail($id)
+    {
+        $this->data['submenu'] = 'Detail';
+        $this->data['content'] = $this->model->find($id);
+        return view('category/detail', $this->data);
+    }
+
+    function edit() 
+    {
+        $id = $this->request->getPost('id');
+        $data = $this->model->find($id);
+        return view('category/edit', ['content' => $data]);
+    }
+
     function getData()
     {
         $dtTable = $this->request->getVar();
-        $data = $this->model->limit($dtTable['length'], $dtTable['start']);
+        $data = $this->model->limit($dtTable['length'], $dtTable['start'])->orderBy('category', 'asc');
         if (!empty($dtTable['search']['value'])) {
             $data = $this->model->like('produk', $dtTable['search']['value']);
         }
@@ -44,6 +59,15 @@ class Category extends BaseController
     function process()
     {
         $form = $this->request->getPost('form');
+        if (!$this->model->validate($form)) {
+            $return = [
+                'status' => 'error',
+                'title'  => 'Error',
+                'message' => $this->model->validation->getError()
+            ];
+            echo json_encode($return);
+            return false;
+        }
         try {
             $this->model->save($form);
             $return = [
@@ -52,6 +76,26 @@ class Category extends BaseController
                 'message'   => 'Data berhasil disimpan'
             ];
         } catch (\Throwable $th) {
+            $return = [
+                'status'    => 'error',
+                'title'     => 'Error',
+                'message'   => $th->getMessage()
+            ];
+        }
+        echo json_encode($return);
+    }
+
+    public function delete()
+    {
+        $id = $this->request->getPost('id');
+        try {
+            $this->model->delete($id);
+            $return = [
+                'status'    => 'success',
+                'title'     => 'Success',
+                'message'   => 'Data deleted!'
+            ];
+        } catch (\Exception $th) {
             $return = [
                 'status'    => 'error',
                 'title'     => 'Error',
