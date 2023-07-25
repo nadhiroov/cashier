@@ -37,7 +37,7 @@
                         <p>Warehouse</p>
                         <span class="caret"></span>
                     </a>
-                    <div class="collapse <?= $menu_warehouse != null ? 'show' : ''?>" id="warehouse">
+                    <div class="collapse <?= isset($menu_warehouse) ? 'show' : '' ?>" id="warehouse">
                         <ul class="nav nav-collapse">
                             <li class="<?= $submenu_category ?? ''; ?>">
                                 <a href="<?= base_url() ?>category">
@@ -50,7 +50,7 @@
                                 </a>
                             </li>
                             <li class="<?= $submenu_product ?? ''; ?>">
-                                <a href="<?= base_url() ?>/bbl">
+                                <a href="<?= base_url() ?>product">
                                     <span class="sub-item">Products</span>
                                 </a>
                             </li>

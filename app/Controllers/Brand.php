@@ -25,12 +25,21 @@ class Brand extends BaseController
         return view('brand/index', $this->data);
     }
 
-    function getData() {
+    function edit($id) {
+        $data = $this->model->find($id);
+        $category = $this->category->findAll();
+        return view('brand/edit', ['content' => $data, 'category' => $category]);
+    }
+
+    function getData($id = null) {
         $dtTable = $this->request->getVar();
         $data = $this->model->select('brand.id, brand.brand, category')->join('category B', 'B.id = brand.category_id', 'left')
         ->limit($dtTable['length'], $dtTable['start'])->where('brand.deleted_at', null);
+        if ($id != null) {
+            $data = $data->where('B.id', $id);
+        }
         if (!empty($dtTable['search']['value'])) {
-            $data = $this->model->like('produk', $dtTable['search']['value']);
+            $data = $this->model->like('brand', $dtTable['search']['value']);
         }
         if (!empty($dtTable['order'][0]['column'])) {
             $data = $this->model->orderBy($dtTable['columns'][$dtTable['order'][0]['column']]['data'], $dtTable['order'][0]['dir']);
@@ -57,6 +66,25 @@ class Brand extends BaseController
                 'message'   => 'Data berhasil disimpan'
             ];
         } catch (\Throwable $th) {
+            $return = [
+                'status'    => 'error',
+                'title'     => 'Error',
+                'message'   => $th->getMessage()
+            ];
+        }
+        echo json_encode($return);
+    }
+
+    public function delete($id = null)
+    {
+        try {
+            $this->model->delete($id);
+            $return = [
+                'status'    => 'success',
+                'title'     => 'Success',
+                'message'   => 'Data deleted!'
+            ];
+        } catch (\Exception $th) {
             $return = [
                 'status'    => 'error',
                 'title'     => 'Error',

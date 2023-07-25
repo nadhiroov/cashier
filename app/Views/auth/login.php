@@ -33,11 +33,11 @@
                             <?= csrf_field() ?>
                             <div class="mb-3">
                                 <label for="validationCustom03" class="form-label">Username</label>
-                                <input type="text" id="validationCustom03" name="username" class="form-control" value="<?= old('username'); ?>">
+                                <input type="text" id="validationCustom03" name="username" placeholder="input username" class="form-control" value="<?= old('username'); ?>">
                             </div>
                             <div class="mb-3">
                                 <label for="validationCustom05" class="form-label">Password</label>
-                                <input type="password" id="validationCustom05" name="password" class="form-control">
+                                <input type="password" id="validationCustom05" name="password" class="form-control" placeholder="input password">
                             </div>
                             <div class="mb-3">
                                 <button type="submit" class="btn btn-primary">Login</button>

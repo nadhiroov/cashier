@@ -3,14 +3,17 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\M_brand;
 use App\Models\M_category;
 
 class Category extends BaseController
 {
     protected $model;
+    protected $brand;
     public function __construct()
     {
         $this->model = new M_category();
+        $this->brand = new M_brand();
         $this->view = \Config\Services::renderer();
         $this->view->setData(['menu_warehouse' => 'active', 'submenu_category' => 'active']);
         $this->data['menu'] = 'Category';
@@ -35,12 +38,20 @@ class Category extends BaseController
         return view('category/edit', ['content' => $data]);
     }
 
+    function editBrand($id)
+    {
+        $this->data['content'] = $this->brand->find($id);
+        $this->data['category'] = $this->model->findAll();
+        $this->data['fromCategory'] = true;
+        return view('brand/edit', $this->data);
+    }
+
     function getData()
     {
         $dtTable = $this->request->getVar();
         $data = $this->model->limit($dtTable['length'], $dtTable['start'])->orderBy('category', 'asc');
         if (!empty($dtTable['search']['value'])) {
-            $data = $this->model->like('produk', $dtTable['search']['value']);
+            $data = $this->model->like('category', $dtTable['search']['value']);
         }
         if (!empty($dtTable['order'][0]['column'])) {
             $data = $this->model->orderBy($dtTable['columns'][$dtTable['order'][0]['column']]['data'], $dtTable['order'][0]['dir']);
@@ -85,9 +96,8 @@ class Category extends BaseController
         echo json_encode($return);
     }
 
-    public function delete()
+    public function delete($id = null)
     {
-        $id = $this->request->getPost('id');
         try {
             $this->model->delete($id);
             $return = [

@@ -1,4 +1,9 @@
 <?= $this->extend('layout/template'); ?>
+<?= $this->section('css'); ?>
+<link href="<?= base_url() ?>/assets/css/select2.min.css" rel="stylesheet" />
+<?= $this->endSection(); ?>
+
+
 <?= $this->section('content'); ?>
 <div class="page-inner">
     <div class="page-header">
@@ -65,9 +70,10 @@
                     <div class="form-group form-inline">
                         <label for="inlineinput" class="col-md-3 col-form-label">Category</label>
                         <div class="col-md-9 p-0">
-                            <select class="form-control month" name="form[category_id]" data-width="100%">
+                            <select class="form-control category" name="form[category_id]" data-width="100%">
+                                <option></option>
                                 <?php foreach ($category as $row) : ?>
-                                    <option value="<?= $row['id']?>"><?= $row['category']?></option>
+                                    <option value="<?= $row['id'] ?>"><?= $row['category'] ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -98,7 +104,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form class="formEdit" action="<?= base_url() ?>/categorySave" method="POST">
+            <form class="formEdit" action="<?= base_url() ?>/brandSave" method="POST">
                 <div class="modal-body edited-body"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -116,6 +122,7 @@
 <script src="<?= base_url() ?>/assets/js/plugin/datatables/datatables.min.js"></script>
 <script src="<?= base_url() ?>/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
 <script src="<?= base_url() ?>/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+<script src="<?= base_url() ?>/assets/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
         $('#datatable').DataTable({
@@ -150,11 +157,15 @@
                     data: 'id',
                     render: function(data, type, row) {
                         return `<a href="brandDetail/${data}" class="btn btn-sm btn-round btn-primary"><i class="fas fa-external-link-alt"></i></a> <a href="#edit" data-toggle="modal" data-id="${data}" class="btn btn-sm btn-round btn-warning"><i class="fas fa-edit"></i></a>
-                        <a data-id="${data}" onclick="confirmDelete(this)" target="<?= base_url() ?>/brandDelete" class="btn btn-delete btn-sm btn-round btn-danger"><i class="far fa-trash-alt"></i></a>`;
+                        <a data-id="${data}" onclick="confirmDelete(this)" target="<?= base_url() ?>/brandDelete/${data}" class="btn btn-delete btn-sm btn-round btn-danger"><i class="far fa-trash-alt"></i></a>`;
                     }
                 }
             ]
         });
+    });
+
+    $('.category').select2({
+        placeholder: "Please select a category"
     });
 
     $('.formAdd, .formEdit').submit(function(e) {
@@ -165,13 +176,14 @@
     $('#edit').on('show.bs.modal', function(e) {
         var rowid = $(e.relatedTarget).data('id');
         if (typeof rowid != 'undefined') {
-            //menggunakan fungsi ajax untuk pengambilan data
             $.ajax({
-                type: 'post',
-                url: '<?= base_url() ?>/categoryEdit',
-                data: 'id=' + rowid,
+                type: 'get',
+                url: `<?= base_url() ?>/brandEdit/${rowid}`,
                 success: function(data) {
                     $('.edited-body').html(data);
+                    $('.category').select2({
+                        placeholder: "Please select a category"
+                    });
                 }
             });
         }

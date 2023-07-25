@@ -82,7 +82,6 @@ function detailRecord(selection) {
 
 function confirmDelete(selection, func = "") {
   var action = $(selection).attr("target");
-  var id = $(selection).attr("data-id");
   swal({
     title: "Anda yakin?",
     text: "Anda tidak dapat mengembalikan data yang sudah dihapus!",
@@ -102,10 +101,7 @@ function confirmDelete(selection, func = "") {
     if (willDelete) {
       $.ajax({
         url: action,
-        type: "POST",
-        data: {
-          id: id,
-        },
+        type: "DELETE",
         dataType: "json",
         success: function (data) {
           notif(data.status, data.title, data.message);

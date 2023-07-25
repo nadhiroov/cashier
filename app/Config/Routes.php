@@ -37,21 +37,33 @@ $routes->get('logout', 'Auth::logout');
 $routes->get('dashboard', 'Home::dashboard');
 
 /* 
- * Category 
+ * Categories
 */
 $routes->get('category', 'Category::index');
 $routes->get('categoryData', 'Category::getData');
 $routes->post('categorySave', 'Category::process');
 $routes->post('categoryEdit', 'Category::edit');
-$routes->post('categoryDelete', 'Category::delete');
+$routes->get('categoryEditBrand/(:num)', 'Category::editBrand/$1');
+$routes->delete('categoryDelete/(:num)', 'Category::delete/$1');
 $routes->get('categoryDetail/(:num)', 'Category::detail/$1');
+// $routes->get('categoryDetails/(:num)', 'Category::detailData/$1');
 
 /* 
 * Brands
 */
 $routes->get('brand', 'Brand::index');
 $routes->get('brandData', 'Brand::getData');
+$routes->get('brandData/(:num)', 'Brand::getData/$1');
 $routes->post('brandSave', 'Brand::process');
+$routes->get('brandEdit/(:num)', 'Brand::edit/$1');
+$routes->delete('brandDelete/(:num)', 'Brand::delete/$1');
+
+
+/* 
+* Products
+*/
+$routes->get('product', 'Products::index');
+$routes->get('productData', 'Products::getData');
 
 
 $routes->get('insertUser', 'Auth::testInsert');

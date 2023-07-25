@@ -14,7 +14,7 @@
                 <i class="flaticon-right-arrow"></i>
             </li>
             <li class="nav-item">
-                <a href="<?= base_url() ?>/tkl"><?= $menu; ?></a>
+                <a href="<?= base_url() ?>/category"><?= $menu; ?></a>
             </li>
             <li class="separator">
                 <i class="flaticon-right-arrow"></i>
@@ -85,13 +85,28 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addnewLabel">Add new in this category</h5>
+                <h5 class="modal-title" id="addnewLabel">Add new Categories</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form class="formEdit" action="<?= base_url() ?>/saveTkl" method="POST">
-                <div class="modal-body data-add">
+            <form class="formEdit" action="<?= base_url() ?>/brandSave" method="POST">
+                <div class="modal-body">
+                    <div class="form-group form-inline">
+                        <label for="inlineinput" class="col-md-3 col-form-label">Category</label>
+                        <div class="col-md-9 p-0">
+                            <select class="form-control category" disabled data-width="100%">
+                                <option value="<?= $content['id'] ?>"><?= $content['category'] ?></option>
+                            </select>
+                        </div>
+                        <input type="hidden" name="form[category_id]" value="<?= $content['id']; ?>">
+                    </div>
+                    <div class="form-group form-inline">
+                        <label for="inlineinput" class="col-md-3 col-form-label">Brand</label>
+                        <div class="col-md-9 p-0">
+                            <input type="text" class="form-control input-full" placeholder="Enter brand" name="form[brand]">
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -112,7 +127,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form class="formEdit" action="<?= base_url() ?>/saveTkl" method="POST">
+            <form class="formEdit" action="<?= base_url() ?>/brandSave" method="POST">
                 <div class="modal-body hasil-data">
                 </div>
                 <div class="modal-footer">
@@ -126,142 +141,42 @@
 <?= $this->endSection(); ?>
 
 <?= $this->section('js'); ?>
-<script src="<?= base_url() ?>/public/assets/js/plugin/datatables/datatables.min.js"></script>
-<script src="<?= base_url() ?>/public/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
-<script src="<?= base_url() ?>/public/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
-<script src="<?= base_url() ?>/public/assets/js/plugin/chart.js/chart.min.js"></script>
+<script src="<?= base_url() ?>/assets/js/plugin/datatables/datatables.min.js"></script>
+<script src="<?= base_url() ?>/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+<script src="<?= base_url() ?>/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
 <script>
     $(document).ready(function() {
         $('#datatable').DataTable({
-            ajax: '<?= base_url() ?>/categoryDetail/<?= $content['id'] ?>',
+            ajax: '<?= base_url('brandData/') . $content['id'] ?>',
             method: 'POST',
             pageLength: 10,
             serverSide: true,
             processing: true,
-            columnDefs: [{
-                "targets": 7,
-                "width": "15%"
+            "columnDefs": [{
+                "width": "10%",
+                "targets": 0
             }, {
-                "targets": 7,
-                "orderable": false
+                "targets": 2,
+                "orderable": false,
+                "width": "15%"
             }],
             columns: [{
-                    data: 'department',
+                    data: 'id',
+                    render: function(data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
                 },
                 {
-                    data: 'bulan',
-                },
-                {
-                    data: 'total_produksi',
-                },
-                {
-                    data: 'sur',
-                },
-                {
-                    data: 'jam',
-                },
-                {
-                    data: 'tarif',
-                },
-                {
-                    data: 'biaya',
+                    data: 'brand'
                 },
                 {
                     data: 'id',
                     render: function(data, type, row) {
-                        return /* html */ `<a href="#edit" data-toggle="modal" data-id="${data}" class="btn btn-sm btn-round btn-warning"><i class="fas fa-edit"></i></a>
-                        <a data-id="${data}" onclick="confirmDelete(this)" target="<?= base_url() ?>/deleteTkl" class="btn btn-delete btn-sm btn-round btn-danger"><i class="far fa-trash-alt"></i></a>`;
+                        return `<a href="#edit" data-toggle="modal" data-id="${data}" class="btn btn-sm btn-round btn-warning"><i class="fas fa-edit"></i></a>
+                        <a data-id="${data}" onclick="confirmDelete(this)" target="<?= base_url() ?>/brandDelete" class="btn btn-delete btn-sm btn-round btn-danger"><i class="far fa-trash-alt"></i></a>`;
                     }
                 }
             ]
-        });
-
-        $.ajax({
-            url: '<?= base_url() ?>/tklGraph',
-            data: {
-                'id': '<?= $content['id']; ?>'
-            },
-            method: "POST",
-            dataType: "json",
-            success: function(data) {
-                let lineChart = document.getElementById('lineChart').getContext('2d')
-                let myLineChart = new Chart(lineChart, {
-                    type: 'line',
-                    data: {
-                        labels: data.bulan,
-                        datasets: [{
-                            label: "Total biaya TKL",
-                            borderColor: "#1d7af3",
-                            pointBorderColor: "#FFF",
-                            pointBackgroundColor: "#1d7af3",
-                            pointBorderWidth: 2,
-                            pointHoverRadius: 4,
-                            pointHoverBorderWidth: 1,
-                            pointRadius: 4,
-                            backgroundColor: 'transparent',
-                            fill: true,
-                            borderWidth: 2,
-                            data: data.total
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                padding: 10,
-                                fontColor: '#1d7af3',
-                            }
-                        },
-                        tooltips: {
-                            bodySpacing: 4,
-                            mode: "nearest",
-                            intersect: 0,
-                            position: "nearest",
-                            xPadding: 10,
-                            yPadding: 10,
-                            caretPadding: 10
-                        },
-                        layout: {
-                            padding: {
-                                left: 15,
-                                right: 15,
-                                top: 15,
-                                bottom: 15
-                            }
-                        }
-                    }
-                });
-
-                barChart = document.getElementById('barChart').getContext('2d')
-                var myBarChart = new Chart(barChart, {
-                    type: 'bar',
-                    data: {
-                        labels: data.bulan,
-                        datasets: [{
-                            label: "Total biaya TKL",
-                            backgroundColor: 'rgb(23, 125, 255)',
-                            borderColor: 'rgb(23, 125, 255)',
-                            data: data.total,
-                        }],
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: true
-                                }
-                            }]
-                        },
-                    }
-                });
-            },
-            error: function(err) {
-                notif(err.status, err.title, err.message);
-            },
         });
     });
 
@@ -271,25 +186,12 @@
         saveData(this);
     });
 
-    $('#addnew').on('show.bs.modal', function(e) {
-        $.ajax({
-            type: 'post',
-            url: '<?= base_url() ?>/addTkl',
-            data: 'id=' + <?= $content['id'] ?>,
-            success: function(data) {
-                $('.data-add').html(data);
-            }
-        });
-    });
-
     $('#edit').on('show.bs.modal', function(e) {
         var rowid = $(e.relatedTarget).data('id');
         if (typeof rowid != 'undefined') {
-            //menggunakan fungsi ajax untuk pengambilan data
             $.ajax({
-                type: 'post',
-                url: '<?= base_url() ?>/editTkl',
-                data: 'id=' + rowid,
+                type: 'get',
+                url: `<?= base_url() ?>/categoryEditBrand/${rowid}`,
                 success: function(data) {
                     $('.hasil-data').html(data);
                 }
