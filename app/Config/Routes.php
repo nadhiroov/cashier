@@ -67,6 +67,9 @@ $routes->get('productData', 'Products::getData');
 $routes->post('productSave', 'Products::process');
 $routes->get('productAdd', 'Products::add');
 $routes->get('productEdit/(:num)', 'Products::edit/$1');
+$routes->get('productChangePrice/(:num)', 'Products::editPrice/$1');
+$routes->delete('productDelete/(:num)', 'Products::delete/$1');
+$routes->get('productDetail/(:num)', 'Products::detail/$1');
 
 $routes->get('insertUser', 'Auth::testInsert');
 $routes->get('showAllUser', 'Auth::showAllUser');

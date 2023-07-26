@@ -22,7 +22,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right">
-                        <div class="card-title">All Categories</div>
+                        <div class="card-title">All <?= esc($menu); ?></div>
                         <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addnew">
                             <i class="fa fa-plus"></i>
                             Add new
@@ -77,13 +77,34 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addnewLabel">Add new Categories</h5>
+                <h5 class="modal-title" id="addnewLabel">Edit product</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form class="formEdit" action="<?= base_url() ?>/categorySave" method="POST">
+            <form class="formEdit" action="<?= base_url() ?>/productSave" method="POST">
                 <div class="modal-body edited-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal change price -->
+<div class="modal fade" id="changePrice" tabindex="-1" role="dialog" aria-labelledby="addnewLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addnewLabel">Change price</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="formChangePrice" action="<?= base_url() ?>/productChangePrice" method="POST">
+                <div class="modal-body price-body"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-success">Save changes</button>
@@ -109,7 +130,7 @@
             serverSide: true,
             processing: true,
             "columnDefs": [{
-                "width": "20%",
+                "width": "22%",
                 "targets": 4
             }, {
                 "targets": 4,
@@ -130,15 +151,17 @@
                 {
                     data: 'id',
                     render: function(data, type, row) {
-                        return `<a href="categoryDetail/${data}" class="btn btn-sm btn-round btn-primary"><i class="fas fa-external-link-alt"></i></a> <a href="#edit" data-toggle="modal" data-id="${data}" class="btn btn-sm btn-round btn-warning"><i class="fas fa-edit"></i></a>
-                        <a data-id="${data}" onclick="confirmDelete(this)" target="<?= base_url() ?>/categoryDelete" class="btn btn-delete btn-sm btn-round btn-danger"><i class="far fa-trash-alt"></i></a>`;
+                        return `<a href="#changePrice" data-toggle="modal" data-id="${data}" class="btn btn-sm btn-round btn-success"><i class="fas fa-chart-line"></i></a> 
+                        <a href="productDetail/${data}" class="btn btn-sm btn-round btn-primary"><i class="fas fa-external-link-alt"></i></a> 
+                        <a href="#edit" data-toggle="modal" data-id="${data}" class="btn btn-sm btn-round btn-warning"><i class="fas fa-edit"></i></a>
+                        <a onclick="confirmDelete(this)" target="<?= base_url() ?>/productDelete/${data}" class="btn btn-delete btn-sm btn-round btn-danger"><i class="far fa-trash-alt"></i></a>`;
                     }
                 }
             ]
         });
     });
 
-    $('.formAdd, .formEdit').submit(function(e) {
+    $('.formAdd, .formEdit, .formChangePrice').submit(function(e) {
         e.preventDefault();
         saveData(this);
     });
@@ -154,14 +177,28 @@
     });
 
     $('#edit').on('show.bs.modal', function(e) {
-        var rowid = $(e.relatedTarget).data('id');
+        let rowid = $(e.relatedTarget).data('id');
+        console.log(rowid)
         if (typeof rowid != 'undefined') {
             $.ajax({
-                type: 'post',
-                url: '<?= base_url() ?>/categoryEdit',
-                data: 'id=' + rowid,
+                type: 'get',
+                url: `<?= base_url() ?>/productEdit/${rowid}`,
                 success: function(data) {
                     $('.edited-body').html(data);
+                }
+            });
+        }
+    });
+
+    $('#changePrice').on('show.bs.modal', function(e) {
+        let rowid = $(e.relatedTarget).data('id');
+        console.log(rowid)
+        if (typeof rowid != 'undefined') {
+            $.ajax({
+                type: 'get',
+                url: `<?= base_url() ?>/productChangePrice/${rowid}`,
+                success: function(data) {
+                    $('.price-body').html(data);
                 }
             });
         }

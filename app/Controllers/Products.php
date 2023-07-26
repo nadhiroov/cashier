@@ -30,12 +30,39 @@ class Products extends BaseController
         return view('product/add', ['brand' => $data]);
     }
 
+    function edit($id)
+    {
+        $data = $this->model->find($id);
+        $brand = $this->brand->findAll();
+        return view('product/edit', ['content' => $data, 'brand' => $brand]);
+    }
+
+    function editPrice($id)
+    {
+        $data = $this->model->find($id);
+        if ($data['price_history'] == null) {
+            $price = $data['price'];
+        }else{
+
+        }
+        return view('product/edit', ['content' => $data]);
+    }
+
+    function detail($id) {
+        $this->data['content'] = $this-> model->select('product.*, category, brand')->join('brand B', 'B.id = product.brand_id')->join('category C', 'C.id = B.category_id')->find($id);
+        $this->data['submenu'] = 'Detail';
+        return view('product/detail', $this->data);
+
+    }
+
     function getData()
     {
         $dtTable = $this->request->getVar();
-        $data = $this->model->select()->join('brand B', 'B.id = product.brand_id')->join('category C', 'C.id = B.category_id')->limit($dtTable['length'], $dtTable['start'])->orderBy('name', 'asc');
+        $data = $this->model->select('product.*, category, brand')->join('brand B', 'B.id = product.brand_id')->join('category C', 'C.id = B.category_id')->limit($dtTable['length'], $dtTable['start'])->orderBy('name', 'asc');
         if (!empty($dtTable['search']['value'])) {
-            $data = $this->model->like('product.name, product.stock, product.price', $dtTable['search']['value']);
+            $data = $this->model->like('product.name', $dtTable['search']['value']);
+            $data = $this->model->orLike('product.stock', $dtTable['search']['value']);
+            $data = $this->model->orLike('product.price', $dtTable['search']['value']);
         }
         if (!empty($dtTable['order'][0]['column'])) {
             $data = $this->model->orderBy($dtTable['columns'][$dtTable['order'][0]['column']]['data'], $dtTable['order'][0]['dir']);
@@ -60,6 +87,25 @@ class Products extends BaseController
                 'status'    => 'success',
                 'title'     => 'Success',
                 'message'   => 'Data saved successfully'
+            ];
+        } catch (\Exception $th) {
+            $return = [
+                'status'    => 'error',
+                'title'     => 'Error',
+                'message'   => $th->getMessage()
+            ];
+        }
+        echo json_encode($return);
+    }
+
+    public function delete($id = null)
+    {
+        try {
+            $this->model->delete($id);
+            $return = [
+                'status'    => 'success',
+                'title'     => 'Success',
+                'message'   => 'Data deleted!'
             ];
         } catch (\Exception $th) {
             $return = [

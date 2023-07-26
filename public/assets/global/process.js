@@ -83,17 +83,17 @@ function detailRecord(selection) {
 function confirmDelete(selection, func = "") {
   var action = $(selection).attr("target");
   swal({
-    title: "Anda yakin?",
-    text: "Anda tidak dapat mengembalikan data yang sudah dihapus!",
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
     type: "warning",
     buttons: {
       cancel: {
         visible: true,
-        text: "Batal!",
+        text: "Cancel",
         className: "btn btn-danger",
       },
       confirm: {
-        text: "Ya, hapus!",
+        text: "Yes, delete it!",
         className: "btn btn-success",
       },
     },
