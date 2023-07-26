@@ -64,7 +64,9 @@ $routes->delete('brandDelete/(:num)', 'Brand::delete/$1');
 */
 $routes->get('product', 'Products::index');
 $routes->get('productData', 'Products::getData');
-
+$routes->post('productSave', 'Products::process');
+$routes->get('productAdd', 'Products::add');
+$routes->get('productEdit/(:num)', 'Products::edit/$1');
 
 $routes->get('insertUser', 'Auth::testInsert');
 $routes->get('showAllUser', 'Auth::showAllUser');

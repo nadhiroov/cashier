@@ -18,6 +18,7 @@ class Products extends Migration
             ],
             'brand_id' => [
                 'type'          => 'INT',
+                'unsigned'      => true,
                 'constraint'    => 11,
                 'null'          => false
             ],
@@ -29,6 +30,7 @@ class Products extends Migration
             'name' => [
                 'type'          => 'VARCHAR',
                 'constraint'    => 150,
+                'null'          => false
             ],
             'stock' => [
                 'type'          => 'INT',
@@ -37,7 +39,7 @@ class Products extends Migration
                 'default'       => null
             ],
             'price' => [
-                'type'          => 'int',
+                'type'          => 'INT',
                 'constraint'    => 11,
                 'unsigned'      => true,
                 'null'          => false

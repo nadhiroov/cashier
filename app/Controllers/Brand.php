@@ -34,7 +34,7 @@ class Brand extends BaseController
     function getData($id = null) {
         $dtTable = $this->request->getVar();
         $data = $this->model->select('brand.id, brand.brand, category')->join('category B', 'B.id = brand.category_id', 'left')
-        ->limit($dtTable['length'], $dtTable['start'])->where('brand.deleted_at', null);
+        ->limit($dtTable['length'], $dtTable['start'])->where('brand.deleted_at', null)->orderBy('brand', 'asc');
         if ($id != null) {
             $data = $data->where('B.id', $id);
         }
@@ -63,7 +63,7 @@ class Brand extends BaseController
             $return = [
                 'status'    => 'success',
                 'title'     => 'Success',
-                'message'   => 'Data berhasil disimpan'
+                'message'   => 'Data saved successfully'
             ];
         } catch (\Throwable $th) {
             $return = [

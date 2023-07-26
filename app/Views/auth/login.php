@@ -33,7 +33,7 @@
                             <?= csrf_field() ?>
                             <div class="mb-3">
                                 <label for="validationCustom03" class="form-label">Username</label>
-                                <input type="text" id="validationCustom03" name="username" placeholder="input username" class="form-control" value="<?= old('username'); ?>">
+                                <input type="text" id="validationCustom03" autofocus name="username" placeholder="input username" class="form-control" value="<?= old('username'); ?>">
                             </div>
                             <div class="mb-3">
                                 <label for="validationCustom05" class="form-label">Password</label>

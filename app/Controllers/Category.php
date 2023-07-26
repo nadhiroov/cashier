@@ -84,7 +84,7 @@ class Category extends BaseController
             $return = [
                 'status'    => 'success',
                 'title'     => 'Success',
-                'message'   => 'Data berhasil disimpan'
+                'message'   => 'Data saved successfully'
             ];
         } catch (\Throwable $th) {
             $return = [
