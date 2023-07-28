@@ -34,10 +34,11 @@
                         <table id="datatable" class="display table table-striped table-hover">
                             <thead>
                                 <tr>
+                                    <th>Number</th>
                                     <th>Name</th>
-                                    <th>Category</th>
-                                    <th>Stock</th>
-                                    <th>Price</th>
+                                    <th>Phone</th>
+                                    <th>Point</th>
+                                    <th>Address</th>
                                     <th class="col-xs-1">Action</th>
                                 </tr>
                             </thead>
@@ -56,13 +57,32 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addnewLabel">Add new product</h5>
+                <h5 class="modal-title" id="addnewLabel">Add new member</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form class="formEdit" action="<?= base_url() ?>/productSave" method="POST">
-                <div class="modal-body add-body"></div>
+            <form class="formEdit" action="<?= base_url() ?>/memberSave" method="POST">
+                <div class="modal-body">
+                    <div class="form-group form-inline">
+                        <label for="inlineinput" class="col-md-3 col-form-label">Name</label>
+                        <div class="col-md-9 p-0">
+                            <input type="text" class="form-control input-full" placeholder="Enter Input" name="form[name]">
+                        </div>
+                    </div>
+                    <div class="form-group form-inline">
+                        <label for="inlineinput" class="col-md-3 col-form-label">Phone</label>
+                        <div class="col-md-9 p-0">
+                            <input type="text" class="form-control input-full" placeholder="Enter Input" name="form[phone]">
+                        </div>
+                    </div>
+                    <div class="form-group form-inline">
+                        <label for="inlineinput" class="col-md-3 col-form-label">Address</label>
+                        <div class="col-md-9 p-0">
+                            <textarea class="form-control" id="comment" rows="3" cols="40" name="form[address]"></textarea>
+                        </div>
+                    </div>
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-success">Save changes</button>
@@ -77,12 +97,12 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addnewLabel">Edit product</h5>
+                <h5 class="modal-title" id="addnewLabel">Edit member</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form class="formEdit" action="<?= base_url() ?>/productSave" method="POST">
+            <form class="formEdit" action="<?= base_url() ?>/memberSave" method="POST">
                 <div class="modal-body edited-body"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -93,28 +113,6 @@
     </div>
 </div>
 
-<!-- Modal change price -->
-<div class="modal fade" id="changePrice" tabindex="-1" role="dialog" aria-labelledby="addnewLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addnewLabel">Change price</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form class="formChangePrice" action="<?= base_url() ?>/productChangePrice" method="POST">
-                <div class="modal-body price-body"></div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-success">Save changes</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-
 <?= $this->endSection(); ?>
 
 <?= $this->section('js'); ?>
@@ -124,35 +122,52 @@
 <script>
     $(document).ready(function() {
         $('#datatable').DataTable({
-            ajax: '<?= base_url('productData') ?>',
+            ajax: '<?= base_url('memberData') ?>',
             method: 'POST',
             pageLength: 10,
             serverSide: true,
             processing: true,
             "columnDefs": [{
-                "width": "190px",
-                "targets": 4
+                "width": "7%",
+                "targets": 0
             }, {
-                "targets": 4,
+                "width": "160px",
+                "targets": 5
+            }, {
+                "targets": 0,
+                "orderable": false
+            }, {
+                "targets": 5,
                 "orderable": false
             }],
             columns: [{
+                    data: 'id',
+                    render: function(data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                }, {
                     data: 'name'
                 },
                 {
-                    data: 'category'
+                    data: 'phone'
                 },
                 {
-                    data: 'stock'
+                    data: 'point'
                 },
                 {
-                    data: 'price'
+                    data: 'address',
+                    render: function(data, type, row) {
+                        if (data.length > 50) {
+                            return data.substring(0, 50) + '...';
+                        } else {
+                            return data;
+                        }
+                    }
                 },
                 {
                     data: 'id',
                     render: function(data, type, row) {
-                        return `<a href="#changePrice" data-toggle="modal" data-id="${data}" class="btn btn-sm btn-round btn-success"><i class="fas fa-chart-line"></i></a> 
-                        <a href="productDetail/${data}" class="btn btn-sm btn-round btn-primary"><i class="fas fa-external-link-alt"></i></a> 
+                        return `<a href="memberDetail/${data}" class="btn btn-sm btn-round btn-primary"><i class="fas fa-external-link-alt"></i></a> 
                         <a href="#edit" data-toggle="modal" data-id="${data}" class="btn btn-sm btn-round btn-warning"><i class="fas fa-edit"></i></a>
                         <a onclick="confirmDelete(this)" target="<?= base_url() ?>/productDelete/${data}" class="btn btn-delete btn-sm btn-round btn-danger"><i class="far fa-trash-alt"></i></a>`;
                     }
@@ -166,39 +181,15 @@
         saveData(this);
     });
 
-    $('#addnew').on('show.bs.modal', function(e) {
-        $.ajax({
-            type: 'get',
-            url: '<?= base_url() ?>/productAdd',
-            success: function(data) {
-                $('.add-body').html(data);
-            }
-        });
-    });
-
     $('#edit').on('show.bs.modal', function(e) {
         let rowid = $(e.relatedTarget).data('id');
         console.log(rowid)
         if (typeof rowid != 'undefined') {
             $.ajax({
                 type: 'get',
-                url: `<?= base_url() ?>/productEdit/${rowid}`,
+                url: `<?= base_url() ?>/memberEdit/${rowid}`,
                 success: function(data) {
                     $('.edited-body').html(data);
-                }
-            });
-        }
-    });
-
-    $('#changePrice').on('show.bs.modal', function(e) {
-        let rowid = $(e.relatedTarget).data('id');
-        console.log(rowid)
-        if (typeof rowid != 'undefined') {
-            $.ajax({
-                type: 'get',
-                url: `<?= base_url() ?>/productChangePrice/${rowid}`,
-                success: function(data) {
-                    $('.price-body').html(data);
                 }
             });
         }

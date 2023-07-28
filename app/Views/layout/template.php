@@ -3,7 +3,7 @@
 
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Cashier App</title>
+    <title><?= $menu ?? 'Cashier App'; ?></title>
     <meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
     <link rel="icon" href="<?= base_url() ?>assets/img/icon.ico" type="image/x-icon" />
 
@@ -32,7 +32,7 @@
 </head>
 
 <body data-background-color="<?= session()->get('theme'); ?>">
-    <div class="wrapper">
+    <div class="wrapper <?= isset($submenu_transaction) ? 'overlay-sidebar' : ''; ?>">
         <div class="main-header">
             <!-- Logo Header -->
             <div class="logo-header" data-background-color="<?= session()->get('theme') == 'light' ? 'blue' : 'dark2' ?>">
@@ -47,7 +47,7 @@
                 </button>
                 <button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>
                 <div class="nav-toggle">
-                    <button class="btn btn-toggle toggle-sidebar">
+                    <button class="btn btn-toggle <?= isset($submenu_transaction) ? 'sidenav-overlay-toggler' : 'toggle-sidebar'; ?>">
                         <i class="icon-menu"></i>
                     </button>
                 </div>

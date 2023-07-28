@@ -71,6 +71,22 @@ $routes->get('productChangePrice/(:num)', 'Products::editPrice/$1');
 $routes->delete('productDelete/(:num)', 'Products::delete/$1');
 $routes->get('productDetail/(:num)', 'Products::detail/$1');
 
+/* 
+* Transaction
+*/
+$routes->get('transaction', 'Transaction::index');
+
+
+/* 
+* Member
+*/
+$routes->get('member', 'Member::index');
+$routes->get('memberData', 'Member::getData');
+$routes->get('memberEdit/(:num)', 'Member::edit/$1');
+$routes->get('memberDetail/(:num)', 'Member::detail/$1');
+$routes->post('memberSave', 'Member::process');
+
+
 $routes->get('insertUser', 'Auth::testInsert');
 $routes->get('showAllUser', 'Auth::showAllUser');
 $routes->get('deleteUser/(:num)', 'Auth::testDelete/$1');

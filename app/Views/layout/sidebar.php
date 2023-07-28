@@ -21,7 +21,7 @@
             </div>
             <ul class="nav nav-primary">
                 <li class="nav-item <?= @$menu_dashboard; ?>">
-                    <a href="<?= base_url() ?>/dashboard">
+                    <a href="<?= base_url() ?>dashboard">
                         <i class="fas fa-home"></i>
                         <p>Dashboard</p>
                     </a>
@@ -57,6 +57,64 @@
                             <li>
                         </ul>
                     </div>
+                </li>
+
+                <li class="nav-item <?= $menu_selling ?? ''; ?>">
+                    <a data-toggle="collapse" href="#selling">
+                        <i class="fas fa-dollar-sign"></i>
+                        <p>Selling</p>
+                        <span class="caret"></span>
+                    </a>
+                    <div class="collapse <?= isset($menu_selling) ? 'show' : '' ?>" id="selling">
+                        <ul class="nav nav-collapse">
+                            <li class="<?= $submenu_transaction ?? ''; ?>">
+                                <a href="<?= base_url() ?>transaction">
+                                    <span class="sub-item">Transaction</span>
+                                </a>
+                            </li>
+                            <li class="<?= $submenu_save ?? ''; ?>">
+                                <a href="<?= base_url() ?>brand">
+                                    <span class="sub-item">Saved transaction</span>
+                                </a>
+                            </li>
+                            <li class="<?= $submenu_history ?? ''; ?>">
+                                <a href="<?= base_url() ?>brand">
+                                    <span class="sub-item">History</span>
+                                </a>
+                            </li>
+                            <li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="nav-item <?= $menu_member ?? ''; ?>">
+                    <a data-toggle="collapse" href="#member">
+                        <i class="fas fa-users"></i>
+                        <p>Member</p>
+                        <span class="caret"></span>
+                    </a>
+                    <div class="collapse <?= isset($menu_member) ? 'show' : '' ?>" id="member">
+                        <ul class="nav nav-collapse">
+                            <li class="<?= $submenu_members ?? ''; ?>">
+                                <a href="<?= base_url() ?>member">
+                                    <span class="sub-item">Members</span>
+                                </a>
+                            </li>
+                            <li class="<?= $submenu_point ?? ''; ?>">
+                                <a href="<?= base_url() ?>point">
+                                    <span class="sub-item">Point</span>
+                                </a>
+                            </li>
+                            <li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="nav-item <?= @$menu_report; ?>">
+                    <a href="<?= base_url() ?>/report">
+                        <i class="fas fa-percentage"></i>
+                        <p>Discount</p>
+                    </a>
                 </li>
 
                 <li class="nav-item <?= @$menu_report; ?>">
