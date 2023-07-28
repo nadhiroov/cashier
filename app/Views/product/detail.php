@@ -53,11 +53,11 @@
                             </tr>
                             <tr>
                                 <td>Date created</td>
-                                <td><?= date('D, M Y H:i', strtotime($content['created_at'])); ?></td>
+                                <td><?= date('d, M Y H:i', strtotime($content['created_at'])); ?></td>
                             </tr>
                             <tr>
                                 <td>Last updated</td>
-                                <td><?= date('D, M Y H:i', strtotime($content['updated_at'])); ?></td>
+                                <td><?= date('d, M Y H:i', strtotime($content['updated_at'])); ?></td>
                             </tr>
                         </tbody>
                     </table>

@@ -135,10 +135,10 @@
                         </a>
                     </li>
                 <?php endif; ?>
-                <li class="nav-item <?= @$menu_tampilan; ?>">
-                    <a href="<?= base_url() ?>/tampilan">
-                        <i class="fas fa-tv"></i>
-                        <p>Pengaturan</p>
+                <li class="nav-item <?= $menu_setting ?? ''; ?>">
+                    <a href="<?= base_url() ?>setting">
+                        <i class="fas fa-cogs"></i>
+                        <p>Setting</p>
                     </a>
                 </li>
             </ul>

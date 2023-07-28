@@ -86,6 +86,13 @@ $routes->get('memberEdit/(:num)', 'Member::edit/$1');
 $routes->get('memberDetail/(:num)', 'Member::detail/$1');
 $routes->post('memberSave', 'Member::process');
 
+/* 
+* Setting
+*/
+$routes->get('setting', 'Setting::index');
+$routes->post('pointSave', 'Setting::processPoint');
+
+
 
 $routes->get('insertUser', 'Auth::testInsert');
 $routes->get('showAllUser', 'Auth::showAllUser');

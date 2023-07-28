@@ -4,7 +4,7 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class MDiscount extends Model
+class M_discount extends Model
 {
     protected $DBGroup          = 'default';
     protected $table            = 'mdiscounts';

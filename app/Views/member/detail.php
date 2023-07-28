@@ -104,6 +104,9 @@
     $('#datatable').DataTable({
         pageLength: 10,
         searching: false,
+        order: [
+            [0, 'desc']
+        ],
         columnDefs: [{
             "width": "120px",
             "targets": 0
