@@ -110,7 +110,7 @@
                     </div>
                 </li>
 
-                <li class="nav-item <?= @$menu_report; ?>">
+                <li class="nav-item <?= $menu_discount ?? ''; ?>">
                     <a href="<?= base_url() ?>discount">
                         <i class="fas fa-percentage"></i>
                         <p>Discount</p>

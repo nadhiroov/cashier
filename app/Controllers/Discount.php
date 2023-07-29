@@ -33,7 +33,7 @@ class Discount extends BaseController
     function getData()
     {
         $dtTable = $this->request->getVar();
-        $data = $this->model->select('discount.*, name')->join('product B', 'B.id = discount.product_id')->limit($dtTable['length'], $dtTable['start'])->orderBy('name', 'asc');
+        $data = $this->model->select('discount.*, name, price')->join('product B', 'B.id = discount.product_id')->limit($dtTable['length'], $dtTable['start'])->orderBy('name', 'asc');
         if (!empty($dtTable['search']['value'])) {
             $data = $this->model->like('product.name', $dtTable['search']['value']);
         }
@@ -49,5 +49,34 @@ class Discount extends BaseController
             "data" => $datas
         );
         return json_encode($return);
+    }
+
+    function process()
+    {
+        $form = $this->request->getPost('form');
+        $date = explode('-', $form['date']);
+        
+        $saveData = [
+            'product_id' => $form['product_id'],
+            'discount'   => $form['discount'],
+            'date_start' => date($date[0]),
+            'date_end'   => date($date[1])
+        ];
+
+        try {
+            $this->model->save($saveData);
+            $return = [
+                'status'    => 'success',
+                'title'     => 'Success',
+                'message'   => 'Data saved successfully'
+            ];
+        } catch (\Exception $th) {
+            $return = [
+                'status'    => 'error',
+                'title'     => 'Error',
+                'message'   => $th->getMessage()
+            ];
+        }
+        echo json_encode($return);
     }
 }

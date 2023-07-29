@@ -1,7 +1,7 @@
 <?= $this->extend('layout/template'); ?>
 <?= $this->section('css'); ?>
-<link rel="stylesheet" href="<?= base_url() ?>assets/css/datepicker.css">
-
+<link rel="stylesheet" href="<?= base_url() ?>assets/css/daterangepicker.css">
+<link rel="stylesheet" href="<?= base_url() ?>assets/css/select2.min.css">
 <?= $this->endSection(); ?>
 
 
@@ -104,10 +104,12 @@
 
 <?= $this->section('js'); ?>
 <script src="<?= base_url() ?>assets/js/plugin/datatables/datatables.min.js"></script>
-<script src="<?= base_url() ?>assets/js/moment.js"></script>
-<script src="<?= base_url() ?>assets/js/datepicker.js"></script>
 <script src="<?= base_url() ?>assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
 <script src="<?= base_url() ?>assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+
+<script src="<?= base_url() ?>assets/js/moment.min.js"></script>
+<script src="<?= base_url() ?>assets/js/daterangepicker.min.js"></script>
+<script src="<?= base_url() ?>assets/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
         $('#datatable').DataTable({
@@ -138,10 +140,17 @@
                     data: 'name'
                 },
                 {
-                    data: 'discount'
+                    data: 'discount',
+                    render: function(data, type, row) {
+                        return `${data} %`
+                    }
                 },
                 {
-                    data: 'date_start'
+                    data: 'date_start',
+                    render: function(data) {
+                        // Format the date using moment.js
+                        return moment(data).format('YYYY-MM-DD');
+                    }
                 },
                 {
                     data: 'date_start',
@@ -163,16 +172,24 @@
         saveData(this);
     });
 
-    $('#addnew').on('show.bs.modal', function(e) {
+    $('#addnew').on('shown.bs.modal', function(e) {
         $.ajax({
             type: 'get',
             url: `<?= base_url() ?>/discountAdd/`,
             success: function(data) {
                 $('.add-body').html(data);
-                // $('#datepicker').datepicker();
-                // $('#datepicker').datepicker();
-                $('[data-toggle="datepicker"]').datepicker({
-                    container: '#addnew',
+                $('.js-example-basic-single').select2({
+                    dropdownParent: $('#addnew'),
+                    placeholder: 'Select an option'
+                });
+                $('.daterange').daterangepicker({
+                    timePicker: true,
+                    startDate: moment().startOf('hour'),
+                    endDate: moment().startOf('hour').add(32, 'hour'),
+                    timePicker24Hour: true,
+                    locale: {
+                        format: 'D MMMM YYYY, HH:mm'
+                    },
                 });
             }
         });

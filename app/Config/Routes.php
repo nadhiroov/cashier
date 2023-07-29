@@ -92,6 +92,7 @@ $routes->post('memberSave', 'Member::process');
 $routes->get('discount', 'Discount::index');
 $routes->get('discountData', 'Discount::getData');
 $routes->get('discountAdd', 'Discount::add');
+$routes->post('discountSave', 'Discount::process');
 
 /* 
 * Setting
