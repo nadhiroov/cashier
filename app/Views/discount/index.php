@@ -1,4 +1,10 @@
 <?= $this->extend('layout/template'); ?>
+<?= $this->section('css'); ?>
+<link rel="stylesheet" href="<?= base_url() ?>assets/css/datepicker.css">
+
+<?= $this->endSection(); ?>
+
+
 <?= $this->section('content'); ?>
 <div class="page-inner">
     <div class="page-header">
@@ -62,27 +68,8 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form class="formEdit" action="<?= base_url() ?>/memberSave" method="POST">
-                <div class="modal-body">
-                    <div class="form-group form-inline">
-                        <label for="inlineinput" class="col-md-3 col-form-label">Name</label>
-                        <div class="col-md-9 p-0">
-                            <input type="text" class="form-control input-full" placeholder="Enter Input" name="form[name]">
-                        </div>
-                    </div>
-                    <div class="form-group form-inline">
-                        <label for="inlineinput" class="col-md-3 col-form-label">Phone</label>
-                        <div class="col-md-9 p-0">
-                            <input type="text" class="form-control input-full" placeholder="Enter Input" name="form[phone]">
-                        </div>
-                    </div>
-                    <div class="form-group form-inline">
-                        <label for="inlineinput" class="col-md-3 col-form-label">Address</label>
-                        <div class="col-md-9 p-0">
-                            <textarea class="form-control" id="comment" rows="3" cols="40" name="form[address]"></textarea>
-                        </div>
-                    </div>
-                </div>
+            <form class="formAdd" action="<?= base_url() ?>/discountSave" method="POST">
+                <div class="modal-body add-body"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-success">Save changes</button>
@@ -116,9 +103,11 @@
 <?= $this->endSection(); ?>
 
 <?= $this->section('js'); ?>
-<script src="<?= base_url() ?>/assets/js/plugin/datatables/datatables.min.js"></script>
-<script src="<?= base_url() ?>/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
-<script src="<?= base_url() ?>/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+<script src="<?= base_url() ?>assets/js/plugin/datatables/datatables.min.js"></script>
+<script src="<?= base_url() ?>assets/js/moment.js"></script>
+<script src="<?= base_url() ?>assets/js/datepicker.js"></script>
+<script src="<?= base_url() ?>assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+<script src="<?= base_url() ?>assets/js/plugin/sweetalert/sweetalert.min.js"></script>
 <script>
     $(document).ready(function() {
         $('#datatable').DataTable({
@@ -146,7 +135,7 @@
                         return meta.row + meta.settings._iDisplayStart + 1;
                     }
                 }, {
-                    data: 'product'
+                    data: 'name'
                 },
                 {
                     data: 'discount'
@@ -172,6 +161,21 @@
     $('.formAdd, .formEdit, .formChangePrice').submit(function(e) {
         e.preventDefault();
         saveData(this);
+    });
+
+    $('#addnew').on('show.bs.modal', function(e) {
+        $.ajax({
+            type: 'get',
+            url: `<?= base_url() ?>/discountAdd/`,
+            success: function(data) {
+                $('.add-body').html(data);
+                // $('#datepicker').datepicker();
+                // $('#datepicker').datepicker();
+                $('[data-toggle="datepicker"]').datepicker({
+                    container: '#addnew',
+                });
+            }
+        });
     });
 
     $('#edit').on('show.bs.modal', function(e) {

@@ -87,6 +87,13 @@ $routes->get('memberDetail/(:num)', 'Member::detail/$1');
 $routes->post('memberSave', 'Member::process');
 
 /* 
+* Discount
+*/
+$routes->get('discount', 'Discount::index');
+$routes->get('discountData', 'Discount::getData');
+$routes->get('discountAdd', 'Discount::add');
+
+/* 
 * Setting
 */
 $routes->get('setting', 'Setting::index');
