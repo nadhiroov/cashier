@@ -20,7 +20,7 @@
                 </div>
             </div>
             <ul class="nav nav-primary">
-                <li class="nav-item <?= @$menu_dashboard; ?>">
+                <li class="nav-item <?= $menu_dashboard ?? ''; ?>">
                     <a href="<?= base_url() ?>dashboard">
                         <i class="fas fa-home"></i>
                         <p>Dashboard</p>

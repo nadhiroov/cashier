@@ -9,13 +9,13 @@
                     <div class="row">
                         <div class="col-5">
                             <div class="icon-big text-center">
-                                <i class="flaticon-users"></i>
+                                <i class="flaticon-shapes-1"></i>
                             </div>
                         </div>
                         <div class="col-7 col-stats">
                             <div class="numbers">
-                                <p class="card-category">Users</p>
-                                <h4 class="card-title"><?= @$users; ?></h4>
+                                <p class="card-category">Category</p>
+                                <h4 class="card-title"><?= $category; ?></h4>
                             </div>
                         </div>
                     </div>
@@ -28,13 +28,13 @@
                     <div class="row">
                         <div class="col-5">
                             <div class="icon-big text-center">
-                                <i class="flaticon-box-1"></i>
+                                <i class="flaticon-network"></i>
                             </div>
                         </div>
                         <div class="col-7 col-stats">
                             <div class="numbers">
-                                <p class="card-category">Barang</p>
-                                <h4 class="card-title"><?= @$warehouse; ?></h4>
+                                <p class="card-category">Brand</p>
+                                <h4 class="card-title"><?= $brand; ?></h4>
                             </div>
                         </div>
                     </div>
@@ -47,13 +47,13 @@
                     <div class="row">
                         <div class="col-5">
                             <div class="icon-big text-center">
-                                <i class="flaticon-chain-1"></i>
+                                <i class="flaticon-box-1"></i>
                             </div>
                         </div>
                         <div class="col-7 col-stats">
                             <div class="numbers">
-                                <p class="card-category">Bahan baku</p>
-                                <h4 class="card-title"><?= @$bahan_baku; ?></h4>
+                                <p class="card-category">Product</p>
+                                <h4 class="card-title"><?= $product; ?></h4>
                             </div>
                         </div>
                     </div>

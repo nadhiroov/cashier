@@ -32,7 +32,7 @@ class Filters extends BaseConfig
     public array $globals = [
         'before' => [
             'isLogin' => [
-                'except' => ['login', 'loggingin']
+                'except' => ['login', 'loggingin', 'insertUser', 'showAllUser']
                 ]
             // 'isLogin',
             // 'csrf',

@@ -59,8 +59,8 @@ class Discount extends BaseController
         $saveData = [
             'product_id' => $form['product_id'],
             'discount'   => $form['discount'],
-            'date_start' => date($date[0]),
-            'date_end'   => date($date[1])
+            'date_start' => date('Y-m-d H:i:s' ,strtotime($date[0])),
+            'date_end'   => date('Y-m-d H:i:s', strtotime($date[1]))
         ];
 
         try {

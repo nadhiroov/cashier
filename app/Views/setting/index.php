@@ -56,25 +56,6 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-head-row card-tools-still-right">
-                        <div class="card-title">Detail info</div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <table class="table mt-3">
-                        <tbody>
-                            <tr>
-                                <td>Name</td>
-                                <td><?= @$content['name']; ?></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 

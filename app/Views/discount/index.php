@@ -148,12 +148,14 @@
                 {
                     data: 'date_start',
                     render: function(data) {
-                        // Format the date using moment.js
-                        return moment(data).format('YYYY-MM-DD');
+                        return moment(data).format('D MMMM YYYY, h:mm:ss');
                     }
                 },
                 {
                     data: 'date_start',
+                    render: function(data) {
+                        return moment(data).format('D MMMM YYYY, h:mm:ss');
+                    }
                 },
                 {
                     data: 'id',

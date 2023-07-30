@@ -12,7 +12,6 @@ class Auth extends BaseController
     public function __construct()
     {
         $this->model = new M_user();
-        $this->model = new M_user();
         helper(['form', 'url']);
     }
     public function index()
@@ -71,13 +70,17 @@ class Auth extends BaseController
             return redirect()->to('login')->withInput();
         }
     }
+
     function testInsert()
     {
         $data = [
-            'username'  => 'test123',
+            'username'  => 'admin',
             'password'  => password_hash('admin', PASSWORD_BCRYPT),
-            'fullname'  => 'Test rahat',
-            'email'     => 'test@gmail.com'
+            'fullname'  => 'Admin rahat',
+            'email'     => 'admin@gmail.com',
+            'img'       => 'profile.png',
+            'is_admin'  => '1',
+            'theme'     => 'light'
         ];
         
         if (!$this->model->validate($data)) {
