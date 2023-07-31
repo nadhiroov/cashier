@@ -137,4 +137,15 @@ class Products extends BaseController
         $json['status'] = 1;
         echo json_encode($json);
     }
+
+    function stock() {
+        $barcode = $this->request->getPost('barcode');
+        $stok = $this->request->getPost('stok');
+        $stock = $this->model->select('name, stock')->where('barcode', $barcode)->first();
+        if ($stok > $stock['stock']) {
+            echo json_encode(array('status' => 0, 'message' => "Stok untuk $stock[name] saat ini hanya tersisa $stock[stock]!"));
+        } else {
+            echo json_encode(array('status' => 1));
+        }
+    }
 }

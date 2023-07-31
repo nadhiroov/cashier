@@ -71,6 +71,7 @@ $routes->get('productChangePrice/(:num)', 'Products::editPrice/$1');
 $routes->delete('productDelete/(:num)', 'Products::delete/$1');
 $routes->get('productDetail/(:num)', 'Products::detail/$1');
 $routes->post('productFind', 'Products::find');
+$routes->post('productStock', 'Products::stock');
 
 /* 
 * Transaction

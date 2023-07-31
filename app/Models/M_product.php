@@ -23,7 +23,7 @@ class M_product extends Model
 
     // Validation
     protected $validationRules      = [
-        'name'     => 'required|alpha_numeric_space',
+        'name'     => 'required|alpha_numeric_punct',
         'stock'     => 'required|integer',
     ];
     protected $validationMessages   = [];
@@ -54,7 +54,7 @@ class M_product extends Model
 			FROM 
 				`product` 
 			WHERE 
-				`deleted_at` is not null 
+				`deleted_at` is null 
 				AND `stock` > 0 
 				AND ( 
 					`barcode` LIKE '%" . $db->escapeLikeString($keyword) . "%' 
@@ -64,5 +64,14 @@ class M_product extends Model
 		";
 
         return $db->query($sql);
+    }
+
+    function get_stok($barcode)
+    {
+        return $this->db
+        ->select('nama_barang, total_stok')
+        ->where('kode_barang', $barcode)
+        ->limit(1)
+        ->get('pj_barang');
     }
 }
