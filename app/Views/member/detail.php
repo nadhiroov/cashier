@@ -52,6 +52,20 @@
                                 <td><?= $content['address']; ?></td>
                             </tr>
                             <tr>
+                                <td>Earned Point</td>
+                                <td>
+                                    <div class="earned"></div>
+                                    <div class="spinner-border text-primary loading-earned" role="status"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Used Point</td>
+                                <td>
+                                    <div class="used"></div>
+                                    <div class="spinner-border text-primary loading-used" role="status"></div>
+                                </td>
+                            </tr>
+                            <tr>
                                 <td>Date created</td>
                                 <td><?= date('d, M Y H:i', strtotime($content['created_at'])); ?></td>
                             </tr>
@@ -79,12 +93,19 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <?php $count_plus = 0;
+                                $count_minus = 0; ?>
                                 <?php foreach ($point_history as $row) : ?>
                                     <tr>
                                         <td><?= date('d, M Y', strtotime($row->date)); ?></td>
                                         <td>
                                             <p class="<?= $row->type == 'add' ? "text-success" : "text-warning"; ?>"><?= ($row->type == 'add' ? "+ " : "- ") . $row->point; ?></p>
                                         </td>
+                                        <?php if ($row->type == 'add') : ?>
+                                            <?php $count_plus += $row->point; ?>
+                                        <?php elseif ($row->type == 'min') : ?>
+                                            <?php $count_minus += $row->point; ?>
+                                        <?php endif; ?>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
@@ -111,6 +132,12 @@
             "width": "120px",
             "targets": 0
         }],
+        initComplete: function(setting, json) {
+            $('.loading-earned').removeClass()
+            $('.earned').text('<?= $count_plus; ?>')
+            $('.loading-used').removeClass()
+            $('.used').text('<?= $count_minus; ?>')
+        }
     });
 
     // submited form

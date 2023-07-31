@@ -42,17 +42,16 @@ class Products extends BaseController
         $data = $this->model->find($id);
         if ($data['price_history'] == null) {
             $price = $data['price'];
-        }else{
-
+        } else {
         }
-        return view('product/edit', ['content' => $data]);
+        return view('product/editPrice', ['content' => $data]);
     }
 
-    function detail($id) {
-        $this->data['content'] = $this-> model->select('product.*, category, brand')->join('brand B', 'B.id = product.brand_id')->join('category C', 'C.id = B.category_id')->find($id);
+    function detail($id)
+    {
+        $this->data['content'] = $this->model->select('product.*, category, brand')->join('brand B', 'B.id = product.brand_id')->join('category C', 'C.id = B.category_id')->find($id);
         $this->data['submenu'] = 'Detail';
         return view('product/detail', $this->data);
-
     }
 
     function getData()
@@ -115,5 +114,27 @@ class Products extends BaseController
             ];
         }
         echo json_encode($return);
+    }
+
+    function find()
+    {
+        $keyword = $this->request->getPost('keyword');
+        $registered = $this->request->getPost('registered');
+
+        $item = $this->model->find_item($keyword, $registered);
+        $json['data']     = "<ul id='daftar-autocomplete'>";
+        foreach ($item->getResultObject() as $key) {
+            $json['data'] .= "
+						<li>
+							<b>Kode</b> : 
+							<span id='kodenya'>" . $key->barcode . "</span> <br />
+							<span id='barangnya'>" . $key->name . "</span>
+							<span id='harganya' style='display:none;'>" . $key->price . "</span>
+						</li>
+					";
+        }
+        $json['data'] .= "</ul>";
+        $json['status'] = 1;
+        echo json_encode($json);
     }
 }

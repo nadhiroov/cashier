@@ -1,3 +1,242 @@
 <?= $this->extend('layout/template'); ?>
+<?= $this->section('css'); ?>
+<style>
+    .white-text {
+        color: white;
+    }
+</style>
+<?= $this->endSection(); ?>
+
 <?= $this->section('content'); ?>
+<div class="page-inner">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Detail Nota</h4>
+
+                </div>
+                <div class="card-body">
+                    <div class="form-group form-inline">
+                        <label class="col-md-3 col-form-label">Number</label>
+                        <div class="col-md-9 p-0">
+                            <label class="col-form-label"><?= strtoupper(uniqid()); ?></label>
+                        </div>
+                    </div>
+                    <div class="form-group form-inline">
+                        <label class="col-md-3 col-form-label">Date</label>
+                        <div class="col-md-9 p-0">
+                            <label class="col-form-label"><?= date('Y-m-d H:i'); ?></label>
+                        </div>
+                    </div>
+                    <div class="form-group form-inline">
+                        <label class="col-md-3 col-form-label">Staff</label>
+                        <div class="col-md-9 p-0">
+                            <label class="col-form-label"><?= session()->get('fullname'); ?></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Transaction</h4>
+
+                </div>
+                <div class="card-body">
+                    <table class="table mt-3" id="transactionTable">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Code</th>
+                                <th scope="col">Item</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Qty</th>
+                                <th scope="col">Sub total</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <div class="card-sub bg-info">
+                        <button class="btn btn-primary" id="btn-newLine">
+                            <span class="btn-label">
+                                <i class="fa fa-plus"></i>
+                            </span>
+                            New Line (F7)
+                        </button>
+
+                        <div class="float-right">
+                            <h2 class="white-text">Total : <span id='TotalBayar' class="white-text">Rp. 0</span></h2>
+                            <input type="hidden" id='TotalBayarHidden'>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<?= $this->endSection(); ?>
+
+<?= $this->section('js'); ?>
+
+<script>
+    $(document).ready(function() {
+        newLine()
+    });
+
+    $('#btn-newLine').click(function() {
+        newLine();
+    });
+
+    function newLine() {
+        let Nomor = $('#transactionTable tbody tr').length + 1
+        let Baris = "<tr>"
+        Baris += "<td>" + Nomor + "</td>";
+        Baris += "<td>";
+        Baris += "<input type='text' class='form-control' name='kode_barang[]' id='pencarian_kode' placeholder='Code / item name'>";
+        Baris += "<div id='hasil_pencarian'></div>";
+        Baris += "</td>";
+        Baris += "<td></td>";
+        Baris += "<td>";
+        Baris += "<input type='hidden' name='harga_satuan[]'>";
+        Baris += "<span></span>";
+        Baris += "</td>";
+        Baris += "<td><input type='text' class='form-control' id='jumlah_beli' name='jumlah_beli[]' onkeypress='return check_int(event)' disabled></td>";
+        Baris += "<td>";
+        Baris += "<input type='hidden' name='sub_total[]'>";
+        Baris += "<span></span>";
+        Baris += "</td>";
+        Baris += "<td><button class='btn btn-default' id='deleteLine'><i class='fa fa-times' style='color:red;'></i></button></td>";
+        Baris += "</tr>";
+
+        $('#transactionTable tbody').append(Baris);
+
+        $('#transactionTable tbody tr').each(function() {
+            $(this).find('td:nth-child(2) input').focus();
+        });
+    }
+
+    $(document).on('click', '#deleteLine', function(e) {
+        e.preventDefault();
+        $(this).parent().parent().remove();
+
+        var Nomor = 1;
+        $('#transactionTable tbody tr').each(function() {
+            $(this).find('td:nth-child(1)').html(Nomor);
+            Nomor++;
+        });
+
+        // HitungTotalBayar();
+    });
+
+    $(document).on('keyup', '#pencarian_kode', function(e) {
+        if ($(this).val() !== '') {
+            let charCode = e.which || e.keyCode;
+            console.log(charCode)
+            if (charCode == 40) {
+                if ($('#TabelTransaksi tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(2)').find('div#hasil_pencarian li.autocomplete_active').length > 0) {
+                    var Selanjutnya = $('#TabelTransaksi tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(2)').find('div#hasil_pencarian li.autocomplete_active').next();
+                    $('#TabelTransaksi tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(2)').find('div#hasil_pencarian li.autocomplete_active').removeClass('autocomplete_active');
+
+                    Selanjutnya.addClass('autocomplete_active');
+                } else {
+                    $('#TabelTransaksi tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(2)').find('div#hasil_pencarian li:first').addClass('autocomplete_active');
+                }
+            } else if (charCode == 38) {
+                if ($('#TabelTransaksi tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(2)').find('div#hasil_pencarian li.autocomplete_active').length > 0) {
+                    var Sebelumnya = $('#TabelTransaksi tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(2)').find('div#hasil_pencarian li.autocomplete_active').prev();
+                    $('#TabelTransaksi tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(2)').find('div#hasil_pencarian li.autocomplete_active').removeClass('autocomplete_active');
+
+                    Sebelumnya.addClass('autocomplete_active');
+                } else {
+                    $('#TabelTransaksi tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(2)').find('div#hasil_pencarian li:first').addClass('autocomplete_active');
+                }
+            } else if (charCode == 13) {
+                var Field = $('#TabelTransaksi tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(2)');
+                var Kodenya = Field.find('div#hasil_pencarian li.autocomplete_active span#kodenya').html();
+                var Barangnya = Field.find('div#hasil_pencarian li.autocomplete_active span#barangnya').html();
+                var Harganya = Field.find('div#hasil_pencarian li.autocomplete_active span#harganya').html();
+
+                Field.find('div#hasil_pencarian').hide();
+                Field.find('input').val(Kodenya);
+
+                $('#TabelTransaksi tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(3)').html(Barangnya);
+                $('#TabelTransaksi tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(4) input').val(Harganya);
+                $('#TabelTransaksi tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(4) span').html(to_rupiah(Harganya));
+                $('#TabelTransaksi tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(5) input').removeAttr('disabled').val(1);
+                $('#TabelTransaksi tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(6) input').val(Harganya);
+                $('#TabelTransaksi tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(6) span').html(to_rupiah(Harganya));
+
+                var IndexIni = $(this).parent().parent().index() + 1;
+                var TotalIndex = $('#TabelTransaksi tbody tr').length;
+                if (IndexIni == TotalIndex) {
+                    BarisBaru();
+
+                    $('html, body').animate({
+                        scrollTop: $(document).height()
+                    }, 0);
+                } else {
+                    $('#TabelTransaksi tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(5) input').focus();
+                }
+            } else {
+                AutoCompleteGue($(this).width(), $(this).val(), $(this).parent().parent().index());
+            }
+        } else {
+            $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(2)').find('div#hasil_pencarian').hide();
+        }
+
+        // HitungTotalBayar();
+    });
+
+    function AutoCompleteGue(Lebar, KataKunci, Indexnya) {
+        $('div#hasil_pencarian').hide();
+        var Lebar = Lebar + 25;
+
+        var Registered = '';
+        $('#transactionTable tbody tr').each(function() {
+            if (Indexnya !== $(this).index()) {
+                if ($(this).find('td:nth-child(2) input').val() !== '') {
+                    Registered += $(this).find('td:nth-child(2) input').val() + ',';
+                }
+            }
+        });
+
+        if (Registered !== '') {
+            Registered = Registered.replace(/,\s*$/, "");
+        }
+
+        $.ajax({
+            url: "<?= base_url('productFind'); ?>",
+            type: "POST",
+            cache: false,
+            data: 'keyword=' + KataKunci + '&registered=' + Registered,
+            dataType: 'json',
+            success: function(json) {
+                if (json.status == 1) {
+                    $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(2)').find('div#hasil_pencarian').css({
+                        'width': Lebar + 'px'
+                    });
+                    $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(2)').find('div#hasil_pencarian').show('fast');
+                    $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(2)').find('div#hasil_pencarian').html(json.data);
+                }
+                if (json.status == 0) {
+                    $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(3)').html('');
+                    $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(4) input').val('');
+                    $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(4) span').html('');
+                    $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(5) input').prop('disabled', true).val('');
+                    $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(6) input').val(0);
+                    $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(6) span').html('');
+                }
+            }
+        });
+
+        // HitungTotalBayar();
+    }
+</script>
+
 <?= $this->endSection(); ?>
