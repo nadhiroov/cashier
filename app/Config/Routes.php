@@ -87,6 +87,7 @@ $routes->get('memberData', 'Member::getData');
 $routes->get('memberEdit/(:num)', 'Member::edit/$1');
 $routes->get('memberDetail/(:num)', 'Member::detail/$1');
 $routes->post('memberSave', 'Member::process');
+$routes->get('memberGet', 'Member::getAll');
 
 /* 
 * Discount

@@ -1,5 +1,6 @@
 <?= $this->extend('layout/template'); ?>
 <?= $this->section('css'); ?>
+<link href="<?= base_url() ?>/assets/css/select2.min.css" rel="stylesheet" />
 <style>
     .white-text {
         color: white;
@@ -44,7 +45,6 @@
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">Detail Nota</h4>
-
                 </div>
                 <div class="card-body">
                     <div class="form-group form-inline">
@@ -63,6 +63,33 @@
                         <label class="col-md-3 col-form-label">Staff</label>
                         <div class="col-md-9 p-0">
                             <label class="col-form-label"><?= session()->get('fullname'); ?></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Member Info</h4>
+                    <div class="card-head-row card-tools-still-right">
+                        <button class="btn btn-primary btn-round ml-auto btn-xs" data-toggle="modal" data-target="#addnew">
+                            Add new
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="form-group form-inline">
+                        <label class="col-md-3 col-form-label">Name</label>
+                        <div class="col-md-9 p-0">
+                            <select class="form-control member" name="form[member]" data-width="100%">
+                                <option>General</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group form-inline">
+                        <label class="col-md-3 col-form-label">Phone</label>
+                        <div class="col-md-9 p-0">
+                            <label class="col-form-label" id="member-phone">-</label>
                         </div>
                     </div>
                 </div>
@@ -107,17 +134,44 @@
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 <?= $this->endSection(); ?>
 
 <?= $this->section('js'); ?>
 <script src="<?= base_url() ?>/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+<script src="<?= base_url() ?>/assets/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
         newLine()
+        $('.member').select2()
+        getMember()
     });
+
+    function getMember() {
+        $.ajax({
+            url: '<?= base_url('memberGet'); ?>', // Replace this with your server endpoint
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                $('.member option:not(:first)').remove();
+                data.forEach(function(option) {
+                    $('.member').append(`<option value="${option.id}|${option.phone}">${option.name}</option>`);
+                });
+            }
+        });
+    }
+
+    $('.member').change(function() {
+        let selectedValue = $(this).val()
+        if (selectedValue == 'General') {
+            $('#member-phone').html('-');
+        } else {
+            let values = selectedValue.split('|')
+            let phone = parseFloat(values[1])
+            $('#member-phone').html(phone);
+        }
+    })
 
     $('#btn-newLine').click(function() {
         newLine();
