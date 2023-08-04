@@ -221,7 +221,7 @@
     $(document).on('keyup', '#pencarian_kode', function(e) {
         if ($(this).val() !== '') {
             let charCode = e.which || e.keyCode;
-            if (charCode == 40) {
+            if (charCode == 40) { // down arrow
                 if ($('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(2)').find('div#hasil_pencarian li.autocomplete_active').length > 0) {
                     var Selanjutnya = $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(2)').find('div#hasil_pencarian li.autocomplete_active').next();
                     $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(2)').find('div#hasil_pencarian li.autocomplete_active').removeClass('autocomplete_active');
@@ -230,7 +230,7 @@
                 } else {
                     $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(2)').find('div#hasil_pencarian li:first').addClass('autocomplete_active');
                 }
-            } else if (charCode == 38) {
+            } else if (charCode == 38) { // up arrow
                 if ($('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(2)').find('div#hasil_pencarian li.autocomplete_active').length > 0) {
                     var Sebelumnya = $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(2)').find('div#hasil_pencarian li.autocomplete_active').prev();
                     $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(2)').find('div#hasil_pencarian li.autocomplete_active').removeClass('autocomplete_active');
@@ -239,7 +239,7 @@
                 } else {
                     $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(2)').find('div#hasil_pencarian li:first').addClass('autocomplete_active');
                 }
-            } else if (charCode == 13) {
+            } else if (charCode == 13) { // enter
                 var Field = $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(2)');
                 var Kodenya = Field.find('div#hasil_pencarian li.autocomplete_active span#kodenya').html();
                 var Barangnya = Field.find('div#hasil_pencarian li.autocomplete_active span#barangnya').html();
@@ -266,8 +266,12 @@
                 } else {
                     $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(5) input').focus();
                 }
-            } else if (charCode == 27) {
-
+            } else if (charCode == 27) { // escape
+                let Indexnya = $(this).parent().parent().parent().parent().index();
+                var IndexIni = $(this).parent().parent().index() + 1;
+                console.info(Indexnya)
+                console.info(IndexIni)
+                // $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(2)').find('div#hasil_pencarian').hide();
             } else {
                 AutoCompleteGue($(this).width(), $(this).val(), $(this).parent().parent().index());
             }
@@ -342,9 +346,6 @@
 
         if (IndexIni == TotalIndex) {
             newLine();
-            $('html, body').animate({
-                scrollTop: $(document).height()
-            }, 0);
         } else {
             $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(5) input').focus();
         }

@@ -29,11 +29,17 @@ class Discount extends BaseController
         $this->data['product'] = $this->product->findAll();
         return view('discount/add', $this->data);
     }
+    
+    function edit($id) {
+        $this->data['content'] = $this->model->select('discount.*, name, price')->join('product B', 'B.id = discount.product_id')->find($id);
+        $this->data['product'] = $this->product->findAll();
+        return view('discount/edit', $this->data);
+    }
 
     function getData()
     {
         $dtTable = $this->request->getVar();
-        $data = $this->model->select('discount.*, name, price')->join('product B', 'B.id = discount.product_id')->limit($dtTable['length'], $dtTable['start'])->orderBy('name', 'asc');
+        $data = $this->model->select('discount.*, name, price')->join('product B', 'B.id = discount.product_id')->limit($dtTable['length'], $dtTable['start'])->orderBy('name', 'asc')->where('deleted_at is null');
         if (!empty($dtTable['search']['value'])) {
             $data = $this->model->like('product.name', $dtTable['search']['value']);
         }

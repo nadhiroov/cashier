@@ -63,7 +63,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addnewLabel">Add new member</h5>
+                <h5 class="modal-title" id="addnewLabel">Add new discount</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -84,7 +84,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addnewLabel">Edit member</h5>
+                <h5 class="modal-title" id="addnewLabel">Edit discount</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -152,7 +152,7 @@
                     }
                 },
                 {
-                    data: 'date_start',
+                    data: 'date_end',
                     render: function(data) {
                         return moment(data).format('D MMMM YYYY, h:mm:ss');
                     }
@@ -186,8 +186,6 @@
                 });
                 $('.daterange').daterangepicker({
                     timePicker: true,
-                    startDate: moment().startOf('hour'),
-                    endDate: moment().startOf('hour').add(32, 'hour'),
                     timePicker24Hour: true,
                     locale: {
                         format: 'D MMMM YYYY, HH:mm'
@@ -199,13 +197,23 @@
 
     $('#edit').on('show.bs.modal', function(e) {
         let rowid = $(e.relatedTarget).data('id');
-        console.log(rowid)
         if (typeof rowid != 'undefined') {
             $.ajax({
                 type: 'get',
-                url: `<?= base_url() ?>/memberEdit/${rowid}`,
+                url: `<?= base_url() ?>/discountEdit/${rowid}`,
                 success: function(data) {
                     $('.edited-body').html(data);
+                    $('.js-example-basic-single').select2({
+                        dropdownParent: $('#addnew'),
+                        placeholder: 'Select an option'
+                    });
+                    $('.daterange').daterangepicker({
+                        timePicker: true,
+                        timePicker24Hour: true,
+                        locale: {
+                            format: 'D MMMM YYYY, HH:mm'
+                        },
+                    });
                 }
             });
         }

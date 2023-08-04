@@ -95,6 +95,7 @@ $routes->get('memberGet', 'Member::getAll');
 $routes->get('discount', 'Discount::index');
 $routes->get('discountData', 'Discount::getData');
 $routes->get('discountAdd', 'Discount::add');
+$routes->get('discountEdit/(:num)', 'Discount::edit/$1');
 $routes->post('discountSave', 'Discount::process');
 
 /* 
