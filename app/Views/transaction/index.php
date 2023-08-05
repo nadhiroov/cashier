@@ -71,11 +71,6 @@
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">Member Info</h4>
-                    <div class="card-head-row card-tools-still-right">
-                        <button class="btn btn-primary btn-round ml-auto btn-xs" data-toggle="modal" data-target="#addnew">
-                            Add new
-                        </button>
-                    </div>
                 </div>
                 <div class="card-body">
                     <div class="form-group form-inline">
@@ -90,6 +85,13 @@
                         <label class="col-md-3 col-form-label">Phone</label>
                         <div class="col-md-9 p-0">
                             <label class="col-form-label" id="member-phone">-</label>
+                        </div>
+                    </div>
+                    <div class="form-group form-inline">
+                        <label class="col-md-3 col-form-label">Point</label>
+                        <div class="col-md-9 p-0">
+                            <label class="col-form-label" id="member-point">-</label>
+                            <input type="hidden" name="memberPoint" id="memberPoint">
                         </div>
                     </div>
                 </div>
@@ -127,8 +129,59 @@
                         </button>
 
                         <div class="float-right">
-                            <h2 class="white-text">Total : <span id='TotalBayar' class="white-text">Rp. 0</span></h2>
-                            <input type="hidden" id='TotalBayarHidden'>
+                            <h2 class="white-text">Total : <span id="TotalBayar" class="white-text">Rp. 0</span></h2>
+                            <input type="hidden" id="TotalBayarHidden">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><i class="fas fa-keyboard"></i> <b>Shortcut Keyboard : </b></p>
+                            <div class="row">
+                                <div class="col-sm-6">F7 = Tambah baris baru</div>
+                                <div class="col-sm-6">F8 = Fokus ke field bayar</div>
+                                <div class="col-sm-6">F10 = Simpan Transaksi</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-horizontal">
+                                <div class="form-group form-inline">
+                                    <label class="col-sm-5 control-label">Bayar (F8)</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" name="cash" id="UangCash" class="form-control" onkeypress="return check_int(event)">
+                                    </div>
+                                </div>
+                                <div class="form-check form-inline">
+                                    <label class="col-sm-5 control-label">Pay with point</label>
+                                    <div class="col-sm-2">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="checkbox" id="isMember" value="">
+                                            <span class="form-check-sign"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group form-inline">
+                                    <label class="col-sm-5 control-label"></label>
+                                    <div class="col-sm-7">
+                                        <input style="display: none;" type="text" name="payPoint" id="payPoint" class="form-control" disabled>
+                                    </div>
+                                </div>
+                                <div class="form-group form-inline">
+                                    <label class="col-sm-5 control-label">Kembali</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" id="UangKembali" class="form-control" disabled>
+                                    </div>
+                                </div>
+                                <div class="form-group form-inline">
+                                    <label class="col-sm-5 control-label"></label>
+                                    <div class="col-sm-6">
+                                        <button type="button" class="btn btn-primary btn-block" id="Simpann">
+                                            <i class="fas fa-save"></i> Simpan (F10)
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -156,20 +209,35 @@
             success: function(data) {
                 $('.member option:not(:first)').remove();
                 data.forEach(function(option) {
-                    $('.member').append(`<option value="${option.id}|${option.phone}">${option.name}</option>`);
+                    $('.member').append(`<option value="${option.id}|${option.phone}|${option.point}">${option.name}</option>`);
                 });
             }
         });
     }
 
+    $("#isMember").change(function() {
+        if (this.checked) {
+            $('#payPoint').css({
+                'display': 'block'
+            })
+            $('#payPoint').html($('#memberpoint').val())
+        } else {
+            $('#payPoint').css({
+                'display': 'none'
+            })
+        }
+    });
+
     $('.member').change(function() {
         let selectedValue = $(this).val()
         if (selectedValue == 'General') {
-            $('#member-phone').html('-');
+            $('#member-phone').html('-')
+            $('#member-point').html('-')
         } else {
             let values = selectedValue.split('|')
-            let phone = parseFloat(values[1])
-            $('#member-phone').html(phone);
+            $('#member-phone').html(parseFloat(values[1]))
+            $('#member-point').html(parseFloat(values[2]))
+            $('#memberPoint').val(parseFloat(values[2]))
         }
     })
 
@@ -258,7 +326,7 @@
                 var IndexIni = $(this).parent().parent().index() + 1;
                 var TotalIndex = $('#transactionTable tbody tr').length;
                 if (IndexIni == TotalIndex) {
-                    BarisBaru();
+                    newLine();
 
                     $('html, body').animate({
                         scrollTop: $(document).height()
@@ -267,11 +335,7 @@
                     $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(5) input').focus();
                 }
             } else if (charCode == 27) { // escape
-                let Indexnya = $(this).parent().parent().parent().parent().index();
-                var IndexIni = $(this).parent().parent().index() + 1;
-                console.info(Indexnya)
-                console.info(IndexIni)
-                // $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(2)').find('div#hasil_pencarian').hide();
+                $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(2)').find('div#hasil_pencarian').hide();
             } else {
                 AutoCompleteGue($(this).width(), $(this).val(), $(this).parent().parent().index());
             }
@@ -281,7 +345,19 @@
         HitungTotalBayar();
     });
 
-    function AutoCompleteGue(Lebar, KataKunci, Indexnya) {
+    function debounce(func, delay) {
+        let timer;
+        return function() {
+            const context = this;
+            const args = arguments;
+            clearTimeout(timer);
+            timer = setTimeout(function() {
+                func.apply(context, args);
+            }, delay);
+        };
+    }
+
+    const AutoCompleteGue = debounce(function(Lebar, KataKunci, Indexnya) {
         $('div#hasil_pencarian').hide();
         var Lebar = Lebar + 25;
 
@@ -324,7 +400,7 @@
         });
 
         HitungTotalBayar();
-    }
+    }, 500);
 
     $(document).on('click', '#daftar-autocomplete li', function() {
         $(this).parent().parent().parent().find('input').val($(this).find('span#kodenya').html());
@@ -346,6 +422,9 @@
 
         if (IndexIni == TotalIndex) {
             newLine();
+            $('html, body').animate({
+                scrollTop: $(document).height()
+            }, 0);
         } else {
             $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(5) input').focus();
         }
@@ -394,6 +473,10 @@
         });
     });
 
+    $(document).on('keyup', '#UangCash', function() {
+        HitungTotalKembalian();
+    });
+
     function to_rupiah(angka) {
         var rev = parseInt(angka, 10).toString().split('').reverse().join('');
         var rev2 = '';
@@ -421,6 +504,60 @@
         $('#UangCash').val('');
         $('#UangKembali').val('');
     }
+
+    function HitungTotalKembalian() {
+        var Cash = $('#UangCash').val();
+        var TotalBayar = $('#TotalBayarHidden').val();
+
+        if (parseInt(Cash) >= parseInt(TotalBayar)) {
+            var Selisih = parseInt(Cash) - parseInt(TotalBayar);
+            $('#UangKembali').val(to_rupiah(Selisih));
+        } else {
+            $('#UangKembali').val('');
+        }
+    }
+
+    function check_int(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+        return (charCode >= 48 && charCode <= 57 || charCode == 8);
+    }
+
+    $(document).on('keydown', 'body', function(e) {
+        let charCode = (e.which) ? e.which : event.keyCode;
+
+        if (charCode == 118) //F6
+        {
+            newLine();
+            return false;
+        }
+
+        if (charCode == 27) //esc
+        {
+            $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(2)').find('div#hasil_pencarian').hide();
+        }
+
+        if (charCode == 119) //F8
+        {
+            $('#UangCash').focus();
+            return false;
+        }
+
+        if (charCode == 121) //F10
+        {
+            $('.modal-dialog').removeClass('modal-lg');
+            $('.modal-dialog').addClass('modal-sm');
+            $('#ModalHeader').html('Konfirmasi');
+            $('#ModalContent').html("Apakah anda yakin ingin menyimpan transaksi ini ?");
+            $('#ModalFooter').html("<button type='button' class='btn btn-primary' id='SimpanTransaksi'>Ya, saya yakin</button><button type='button' class='btn btn-default' data-dismiss='modal'>Batal</button>");
+            $('#ModalGue').modal('show');
+
+            setTimeout(function() {
+                $('button#SimpanTransaksi').focus();
+            }, 500);
+
+            return false;
+        }
+    });
 </script>
 
 <?= $this->endSection(); ?>

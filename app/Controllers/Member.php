@@ -95,7 +95,7 @@ class Member extends BaseController
     }
 
     function getAll() {
-        $data = $this->model->select('id, name, phone')->findAll();
+        $data = $this->model->select('id, name, phone, point')->findAll();
         echo json_encode($data);
     }
 }
