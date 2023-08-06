@@ -7,13 +7,13 @@ use CodeIgniter\Model;
 class M_transaction extends Model
 {
     protected $DBGroup          = 'default';
-    protected $table            = 'mtransactions';
+    protected $table            = 'transaction';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [];
+    protected $allowedFields    = ['nota_number', 'member', 'grand_total', 'user_id', 'total_pay'];
 
     // Dates
     protected $useTimestamps = false;

@@ -77,6 +77,7 @@ $routes->post('productStock', 'Products::stock');
 * Transaction
 */
 $routes->get('transaction', 'Transaction::index');
+$routes->post('transactionSave', 'Transaction::process');
 
 
 /* 

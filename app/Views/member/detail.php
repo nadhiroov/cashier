@@ -95,7 +95,7 @@
                             <tbody>
                                 <?php $count_plus = 0;
                                 $count_minus = 0; ?>
-                                <?php foreach ($point_history as $row) : ?>
+                                <?php foreach ((array) $point_history as $row) : ?>
                                     <tr>
                                         <td><?= date('d, M Y', strtotime($row->date)); ?></td>
                                         <td>

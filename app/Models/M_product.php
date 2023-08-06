@@ -66,12 +66,12 @@ class M_product extends Model
         return $db->query($sql);
     }
 
-    function get_stok($barcode)
+    function update_stok($id, $total)
     {
-        return $this->db
-        ->select('nama_barang, total_stok')
-        ->where('kode_barang', $barcode)
-        ->limit(1)
-        ->get('pj_barang');
+        $sql = "
+			UPDATE `pj_barang` SET `total_stok` = `total_stok` - " . $total . " WHERE `id` = '" . $id . "'
+		";
+
+        return $this->db->query($sql);
     }
 }

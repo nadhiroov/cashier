@@ -50,7 +50,7 @@
                     <div class="form-group form-inline">
                         <label class="col-md-3 col-form-label">Number</label>
                         <div class="col-md-9 p-0">
-                            <label class="col-form-label"><?= strtoupper(uniqid()); ?></label>
+                            <label class="col-form-label " id="notaNumber"><?= strtoupper(uniqid()); ?></label>
                         </div>
                     </div>
                     <div class="form-group form-inline">
@@ -62,7 +62,8 @@
                     <div class="form-group form-inline">
                         <label class="col-md-3 col-form-label">Staff</label>
                         <div class="col-md-9 p-0">
-                            <label class="col-form-label"><?= session()->get('fullname'); ?></label>
+                            <label class="col-form-label" id="cashierStaff"><?= session()->get('fullname'); ?></label>
+                            <input type="hidden" value="<?= session()->get('id'); ?>" id="cashierId">
                         </div>
                     </div>
                 </div>
@@ -76,8 +77,8 @@
                     <div class="form-group form-inline">
                         <label class="col-md-3 col-form-label">Name</label>
                         <div class="col-md-9 p-0">
-                            <select class="form-control member" name="form[member]" data-width="100%">
-                                <option>General</option>
+                            <select class="form-control member" id="dropdownMember" name="form[member]" data-width="100%">
+                                <option value="0">General</option>
                             </select>
                         </div>
                     </div>
@@ -130,7 +131,7 @@
 
                         <div class="float-right">
                             <h2 class="white-text">Total : <span id="TotalBayar" class="white-text">Rp. 0</span></h2>
-                            <input type="hidden" id="TotalBayarHidden">
+                            <input type="hidden" id="grandTotal">
                         </div>
                     </div>
                 </div>
@@ -139,24 +140,24 @@
                         <div class="col-md-6">
                             <p><i class="fas fa-keyboard"></i> <b>Shortcut Keyboard : </b></p>
                             <div class="row">
-                                <div class="col-sm-6">F7 = Tambah baris baru</div>
-                                <div class="col-sm-6">F8 = Fokus ke field bayar</div>
-                                <div class="col-sm-6">F10 = Simpan Transaksi</div>
+                                <div class="col-sm-12">F7 = New line</div>
+                                <div class="col-sm-12">F8 = Pay</div>
+                                <div class="col-sm-12">F10 = Save transaction</div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-horizontal">
                                 <div class="form-group form-inline">
-                                    <label class="col-sm-5 control-label">Bayar (F8)</label>
+                                    <label class="col-sm-5 control-label">Pay (F8)</label>
                                     <div class="col-sm-7">
-                                        <input type="text" name="cash" id="UangCash" class="form-control" onkeypress="return check_int(event)">
+                                        <input type="text" name="cash" id="money" class="form-control" onkeypress="return check_int(event)">
                                     </div>
                                 </div>
                                 <div class="form-check form-inline">
                                     <label class="col-sm-5 control-label">Pay with point</label>
                                     <div class="col-sm-2">
                                         <label class="form-check-label">
-                                            <input class="form-check-input" type="checkbox" id="isMember" value="">
+                                            <input class="form-check-input" type="checkbox" id="withPoint" name="withPoint">
                                             <span class="form-check-sign"></span>
                                         </label>
                                     </div>
@@ -168,16 +169,16 @@
                                     </div>
                                 </div>
                                 <div class="form-group form-inline">
-                                    <label class="col-sm-5 control-label">Kembali</label>
+                                    <label class="col-sm-5 control-label">Change</label>
                                     <div class="col-sm-7">
-                                        <input type="text" id="UangKembali" class="form-control" disabled>
+                                        <input type="text" id="moneyChange" class="form-control" disabled>
                                     </div>
                                 </div>
                                 <div class="form-group form-inline">
                                     <label class="col-sm-5 control-label"></label>
                                     <div class="col-sm-6">
                                         <button type="button" class="btn btn-primary btn-block" id="Simpann">
-                                            <i class="fas fa-save"></i> Simpan (F10)
+                                            <i class="fas fa-save"></i> Save (F10)
                                         </button>
                                     </div>
                                 </div>
@@ -193,6 +194,7 @@
 
 <?= $this->section('js'); ?>
 <script src="<?= base_url() ?>/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+<script src="<?= base_url() ?>/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
 <script src="<?= base_url() ?>/assets/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
@@ -215,16 +217,24 @@
         });
     }
 
-    $("#isMember").change(function() {
-        if (this.checked) {
-            $('#payPoint').css({
-                'display': 'block'
-            })
-            $('#payPoint').html($('#memberpoint').val())
+    $("#withPoint").change(function() {
+        let member = $('#dropdownMember').find(":selected").val()
+        if (member == 0) {
+            swalert('error', 'Error', 'Please select member first')
+            $("#withPoint").prop("checked", false)
         } else {
-            $('#payPoint').css({
-                'display': 'none'
-            })
+            if (this.checked) {
+                $('#payPoint').css({
+                    'display': 'block'
+                })
+                // $('#payPoint').val($("#member-point").text())
+                HitungTotalKembalian()
+            } else {
+                $('#payPoint').css({
+                    'display': 'none'
+                })
+                $('#payPoint').val('-')
+            }
         }
     });
 
@@ -250,7 +260,7 @@
         let Baris = "<tr>"
         Baris += "<td>" + Nomor + "</td>";
         Baris += "<td>";
-        Baris += "<input type='text' class='form-control' name='kode_barang[]' id='pencarian_kode' placeholder='Code / item name'>";
+        Baris += "<input type='text' class='form-control' name='barcode[]' id='pencarian_kode' placeholder='Barcode / item name'>";
         Baris += "<div id='hasil_pencarian'></div>";
         Baris += "</td>";
         Baris += "<td></td>";
@@ -328,9 +338,9 @@
                 if (IndexIni == TotalIndex) {
                     newLine();
 
-                    $('html, body').animate({
+                    /* $('html, body').animate({
                         scrollTop: $(document).height()
-                    }, 0);
+                    }, 0); */
                 } else {
                     $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(5) input').focus();
                 }
@@ -422,9 +432,9 @@
 
         if (IndexIni == TotalIndex) {
             newLine();
-            $('html, body').animate({
+            /* $('html, body').animate({
                 scrollTop: $(document).height()
-            }, 0);
+            }, 0); */
         } else {
             $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(5) input').focus();
         }
@@ -460,21 +470,24 @@
                 }
                 if (data.status == 0) {
                     swalert('error', 'Error', data.message)
-                    // $('.modal-dialog').removeClass('modal-lg');
-                    // $('.modal-dialog').addClass('modal-sm');
-                    // $('#ModalHeader').html('Oops !');
-                    // $('#ModalContent').html(data.pesan);
-                    // $('#ModalFooter').html("<button type='button' class='btn btn-primary' data-dismiss='modal' autofocus>Ok, Saya Mengerti</button>");
-                    // $('#ModalGue').modal('show');
-
                     $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(5) input').val('1');
                 }
             }
         });
     });
 
-    $(document).on('keyup', '#UangCash', function() {
+    $(document).on('keyup', '#money', function() {
         HitungTotalKembalian();
+    });
+
+    $("#money").on("input", function() {
+        let inputValue = $("#money").val()
+        inputValue = inputValue.replace(/,/g, '')
+        let numberValue = parseFloat(inputValue)
+        if (!isNaN(numberValue)) {
+            let formattedValue = numberValue.toLocaleString()
+            $("#money").val(formattedValue)
+        }
     });
 
     function to_rupiah(angka) {
@@ -499,21 +512,47 @@
         });
 
         $('#TotalBayar').html(to_rupiah(Total));
-        $('#TotalBayarHidden').val(Total);
+        $('#grandTotal').val(Total);
 
-        $('#UangCash').val('');
-        $('#UangKembali').val('');
+        $('#money').val('');
+        $('#moneyChange').val('');
+    }
+
+    function payWithPoint(cash) {
+        let member = $('#dropdownMember').find(":selected").val().split('|')
+        let point = parseFloat(member[2])
+        return parseInt(cash) + parseInt(point)
     }
 
     function HitungTotalKembalian() {
-        var Cash = $('#UangCash').val();
-        var TotalBayar = $('#TotalBayarHidden').val();
+        let Cash = $('#money').val().replace(/,/g, '')
+        let TotalBayar = $('#grandTotal').val()
+        let withPoint = $('#withPoint').is(":checked")
+
+        if (withPoint) {
+            // Cash = payWithPoint(Cash)
+            let point = $('#memberPoint').val()
+            let kurang = parseInt(TotalBayar) - parseInt(Cash)
+            let needPoint = parseInt(kurang) - parseInt(point)
+            let pointCash = parseInt(point) + parseInt(Cash)
+            if (kurang <= 0) {
+                $('#payPoint').val('0')
+            } else if (pointCash >= TotalBayar) {
+                $('#payPoint').val(kurang)
+            } else {
+                $('#payPoint').val('Less point')
+            }
+        }
 
         if (parseInt(Cash) >= parseInt(TotalBayar)) {
-            var Selisih = parseInt(Cash) - parseInt(TotalBayar);
-            $('#UangKembali').val(to_rupiah(Selisih));
+            let Selisih = parseInt(Cash) - parseInt(TotalBayar);
+            if (parseInt($('#money').val().replace(/,/g, '')) == 0) {
+                $('#moneyChange').val('Rp. 0');
+            } else {
+                $('#moneyChange').val(to_rupiah(Selisih));
+            }
         } else {
-            $('#UangKembali').val('');
+            $('#moneyChange').val('');
         }
     }
 
@@ -538,25 +577,73 @@
 
         if (charCode == 119) //F8
         {
-            $('#UangCash').focus();
+            $('#money').focus();
             return false;
         }
 
         if (charCode == 121) //F10
         {
-            $('.modal-dialog').removeClass('modal-lg');
-            $('.modal-dialog').addClass('modal-sm');
-            $('#ModalHeader').html('Konfirmasi');
-            $('#ModalContent').html("Apakah anda yakin ingin menyimpan transaksi ini ?");
-            $('#ModalFooter').html("<button type='button' class='btn btn-primary' id='SimpanTransaksi'>Ya, saya yakin</button><button type='button' class='btn btn-default' data-dismiss='modal'>Batal</button>");
-            $('#ModalGue').modal('show');
-
-            setTimeout(function() {
-                $('button#SimpanTransaksi').focus();
-            }, 500);
-
+            $("#Simpann").trigger("click");
             return false;
         }
+    });
+
+    $(document).on('click', '#Simpann', function(e) {
+        e.preventDefault()
+        swal({
+            title: "Save this transaction?",
+            text: "You won't be able to revert this!",
+            type: "warning",
+            buttons: {
+                cancel: {
+                    visible: true,
+                    text: "Cancel",
+                    className: "btn btn-danger",
+                },
+                confirm: {
+                    text: "Yes, with nota!",
+                    className: "btn btn-success",
+                },
+                print: {
+                    text: "Yes, without nota!",
+                    className: "btn btn-success",
+                    value: "roll",
+                },
+            },
+        }).then((willDelete) => {
+            if (willDelete) {
+                let FormData = "notaNumber=" + encodeURI($('#notaNumber').text())
+                FormData += '&' + $('#transactionTable tbody input').serialize()
+                FormData += "&money=" + $('#money').val().replace(/,/g, '')
+                FormData += "&grandTotal=" + $('#grandTotal').val()
+                FormData += "&withPoint=" + $('#withPoint').is(":checked")
+                FormData += "&member=" + $('#dropdownMember').find(":selected").val()
+                FormData += "&cashier=" + $('#cashierStaff').text()
+                FormData += "&cashierId=" + $('#cashierId').val()
+                $.ajax({
+                    url: '<?= base_url('transactionSave'); ?>',
+                    type: "post",
+                    cache: false,
+                    dataType: "json",
+                    data: FormData,
+                    beforeSend: function() {
+                        // $('#absen-btn').html('<i class="fa fa-spin fa-spinner"></i>Loading...');
+                    },
+                    success: function(data) {
+                        if (data.status == 'success') {
+
+                        } else {
+                            swalert(data.status, data.title, data.message);
+                        }
+                    },
+                    error: function(err) {
+                        notif(err.status, err.title, err.message);
+                    },
+                });
+            } else {
+                swal.close();
+            }
+        });
     });
 </script>
 
