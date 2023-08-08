@@ -137,7 +137,7 @@
                 </div>
                 <div class="card-footer">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <p><i class="fas fa-keyboard"></i> <b>Shortcut Keyboard : </b></p>
                             <div class="row">
                                 <div class="col-sm-12">F7 = New line</div>
@@ -145,17 +145,11 @@
                                 <div class="col-sm-12">F10 = Save transaction</div>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-horizontal">
-                                <div class="form-group form-inline">
-                                    <label class="col-sm-5 control-label">Pay (F8)</label>
-                                    <div class="col-sm-7">
-                                        <input type="text" name="cash" id="money" class="form-control" onkeypress="return check_int(event)">
-                                    </div>
-                                </div>
                                 <div class="form-check form-inline">
                                     <label class="col-sm-5 control-label">Pay with point</label>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-7">
                                         <label class="form-check-label">
                                             <input class="form-check-input" type="checkbox" id="withPoint" name="withPoint">
                                             <span class="form-check-sign"></span>
@@ -168,6 +162,22 @@
                                         <input style="display: none;" type="text" name="payPoint" id="payPoint" class="form-control" disabled>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="form-group form-inline">
+                                <label class="col-sm-5 control-label">Total discount</label>
+                                <div class="col-sm-7">
+                                    <input type="text" id="discountTotal" class="form-control" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-horizontal">
+                                <div class="form-group form-inline">
+                                    <label class="col-sm-5 control-label">Pay (F8)</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" name="cash" id="money" class="form-control" onkeypress="return check_int(event)">
+                                    </div>
+                                </div>
                                 <div class="form-group form-inline">
                                     <label class="col-sm-5 control-label">Change</label>
                                     <div class="col-sm-7">
@@ -176,7 +186,7 @@
                                 </div>
                                 <div class="form-group form-inline">
                                     <label class="col-sm-5 control-label"></label>
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-7">
                                         <button type="button" class="btn btn-primary btn-block" id="Simpann">
                                             <i class="fas fa-save"></i> Save (F10)
                                         </button>
@@ -227,7 +237,6 @@
                 $('#payPoint').css({
                     'display': 'block'
                 })
-                // $('#payPoint').val($("#member-point").text())
                 HitungTotalKembalian()
             } else {
                 $('#payPoint').css({
@@ -273,7 +282,9 @@
         Baris += "<input type='hidden' name='sub_total[]'>";
         Baris += "<span></span>";
         Baris += "</td>";
-        Baris += "<td><button class='btn btn-icon btn-round btn-danger' id='deleteLine'><i class='fas fa-trash-alt'></i></button></td>";
+        Baris += "<td><button class='btn btn-icon btn-round btn-danger' id='deleteLine'><i class='fas fa-trash-alt'></i></button>";
+        Baris += "<input type='hidden' name='discount[]' id='discount_item'>";
+        Baris += "<input type='hidden' name='discount_[]' id='discount_total'></td>";
         Baris += "</tr>";
 
         $('#transactionTable tbody').append(Baris);
@@ -418,6 +429,7 @@
         let Indexnya = $(this).parent().parent().parent().parent().index();
         let NamaBarang = $(this).find('span#barangnya').html();
         let Harganya = $(this).find('span#harganya').html();
+        let Discountnya = $(this).find('span#discountnya').html();
 
         $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(2)').find('div#hasil_pencarian').hide();
         $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(3)').html(NamaBarang);
@@ -426,6 +438,8 @@
         $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(5) input').removeAttr('disabled').val(1);
         $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(6) input').val(Harganya);
         $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(6) span').html(to_rupiah(Harganya));
+        $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(7) input#discount_item').val(Discountnya);
+        $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(7) input#discount_total').val(Discountnya);
 
         let IndexIni = Indexnya + 1;
         let TotalIndex = $('#transactionTable tbody tr').length;
@@ -442,35 +456,43 @@
     });
 
     $(document).on('keyup', '#jumlah_beli', function() {
-        var Indexnya = $(this).parent().parent().index();
-        var Harga = $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(4) input').val();
-        var JumlahBeli = $(this).val();
-        var KodeBarang = $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(2) input').val();
+        let Indexnya = $(this).parent().parent().index()
+        let Harga = $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(4) input').val()
+        let JumlahBeli = $(this).val()
+        let KodeBarang = $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(2) input').val()
+        let Discont = $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(7) input#discount_total').val()
 
         $.ajax({
-            url: "<?= base_url('productStock'); ?>",
+            url: "<?= base_url('productStock') ?>",
             type: "POST",
             cache: false,
             data: "barcode=" + encodeURI(KodeBarang) + "&stok=" + JumlahBeli,
             dataType: 'json',
             success: function(data) {
                 if (data.status == 1) {
-                    var SubTotal = parseInt(Harga) * parseInt(JumlahBeli);
+                    let SubTotal = parseInt(Harga) * parseInt(JumlahBeli)
+                    let subDiscount = parseInt(Discont) * parseInt(JumlahBeli)
                     if (SubTotal > 0) {
-                        var SubTotalVal = SubTotal;
-                        SubTotal = to_rupiah(SubTotal);
+                        var SubTotalVal = SubTotal
+                        SubTotal = to_rupiah(SubTotal)
+
+                        var SubTotalDiscount = subDiscount
                     } else {
-                        SubTotal = '';
-                        var SubTotalVal = 0;
+                        SubTotal = ''
+                        var SubTotalVal = 0
+
+                        SubTotalDiscount = ''
+                        var discountTotal = 0
                     }
 
-                    $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(6) input').val(SubTotalVal);
-                    $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(6) span').html(SubTotal);
-                    HitungTotalBayar();
+                    $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(6) input').val(SubTotalVal)
+                    $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(6) span').html(SubTotal)
+                    $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(7) input#discount_total').val(SubTotalDiscount)
+                    HitungTotalBayar()
                 }
                 if (data.status == 0) {
                     swalert('error', 'Error', data.message)
-                    $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(5) input').val('1');
+                    $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(5) input').val('1')
                 }
             }
         });
@@ -503,19 +525,24 @@
     }
 
     function HitungTotalBayar() {
-        var Total = 0;
+        let Total = 0
+        let Totaldiscount = 0
         $('#transactionTable tbody tr').each(function() {
             if ($(this).find('td:nth-child(6) input').val() > 0) {
-                var SubTotal = $(this).find('td:nth-child(6) input').val();
-                Total = parseInt(Total) + parseInt(SubTotal);
+                let SubTotal = $(this).find('td:nth-child(6) input').val()
+                let Discount = $(this).find('td:nth-child(7) input#discount_total').val()
+                console.log("🚀 ~ file: index.php:536 ~ $ ~ Discount:", Discount)
+                Totaldiscount = parseInt(Totaldiscount) + parseInt(Discount)
+                Total = parseInt(Total) + parseInt(SubTotal) - parseInt(Discount)
             }
         });
 
-        $('#TotalBayar').html(to_rupiah(Total));
-        $('#grandTotal').val(Total);
+        $('#TotalBayar').html(to_rupiah(Total))
+        $('#grandTotal').val(Total)
+        $('#discountTotal').val(to_rupiah(Totaldiscount))
 
-        $('#money').val('');
-        $('#moneyChange').val('');
+        $('#money').val('')
+        $('#moneyChange').val('')
     }
 
     function payWithPoint(cash) {
@@ -528,6 +555,7 @@
         let Cash = $('#money').val().replace(/,/g, '')
         let TotalBayar = $('#grandTotal').val()
         let withPoint = $('#withPoint').is(":checked")
+        // let discount = $('#discount').val()
 
         if (withPoint) {
             // Cash = payWithPoint(Cash)
@@ -607,7 +635,7 @@
                 print: {
                     text: "Yes, without nota!",
                     className: "btn btn-success",
-                    value: "roll",
+                    value: "without nota",
                 },
             },
         }).then((willDelete) => {

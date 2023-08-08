@@ -130,6 +130,7 @@ class Products extends BaseController
 							<span id='kodenya'>" . $key->barcode . "</span> <br />
 							<span id='barangnya'>" . $key->name . "</span>
 							<span id='harganya' style='display:none;'>" . $key->price . "</span>
+							<span id='discountnya' style='display:none;'>" . $key->discount . "</span>
 						</li>
 					";
         }
@@ -138,7 +139,8 @@ class Products extends BaseController
         echo json_encode($json);
     }
 
-    function stock() {
+    function stock()
+    {
         $barcode = $this->request->getPost('barcode');
         $stok = $this->request->getPost('stok');
         $stock = $this->model->select('name, stock')->where('barcode', $barcode)->first();
