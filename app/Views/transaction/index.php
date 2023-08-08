@@ -460,7 +460,7 @@
         let Harga = $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(4) input').val()
         let JumlahBeli = $(this).val()
         let KodeBarang = $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(2) input').val()
-        let Discont = $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(7) input#discount_total').val()
+        let Discont = $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(7) input#discount_item').val()
 
         $.ajax({
             url: "<?= base_url('productStock') ?>",
