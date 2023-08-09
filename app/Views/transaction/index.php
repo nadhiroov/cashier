@@ -167,6 +167,7 @@
                                 <label class="col-sm-5 control-label">Total discount</label>
                                 <div class="col-sm-7">
                                     <input type="text" id="discountTotal" class="form-control" disabled>
+                                    <input type="hidden" id="discountTotalUnformated" class="form-control" disabled>
                                 </div>
                             </div>
                         </div>
@@ -531,7 +532,6 @@
             if ($(this).find('td:nth-child(6) input').val() > 0) {
                 let SubTotal = $(this).find('td:nth-child(6) input').val()
                 let Discount = $(this).find('td:nth-child(7) input#discount_total').val()
-                console.log("🚀 ~ file: index.php:536 ~ $ ~ Discount:", Discount)
                 Totaldiscount = parseInt(Totaldiscount) + parseInt(Discount)
                 Total = parseInt(Total) + parseInt(SubTotal) - parseInt(Discount)
             }
@@ -540,6 +540,7 @@
         $('#TotalBayar').html(to_rupiah(Total))
         $('#grandTotal').val(Total)
         $('#discountTotal').val(to_rupiah(Totaldiscount))
+        $('#discountTotalUnformated').val(Totaldiscount)
 
         $('#money').val('')
         $('#moneyChange').val('')
@@ -555,7 +556,6 @@
         let Cash = $('#money').val().replace(/,/g, '')
         let TotalBayar = $('#grandTotal').val()
         let withPoint = $('#withPoint').is(":checked")
-        // let discount = $('#discount').val()
 
         if (withPoint) {
             // Cash = payWithPoint(Cash)
@@ -580,7 +580,7 @@
                 $('#moneyChange').val(to_rupiah(Selisih));
             }
         } else {
-            $('#moneyChange').val('');
+            $('#moneyChange').val('Rp. 0');
         }
     }
 
@@ -648,6 +648,7 @@
                 FormData += "&member=" + $('#dropdownMember').find(":selected").val()
                 FormData += "&cashier=" + $('#cashierStaff').text()
                 FormData += "&cashierId=" + $('#cashierId').val()
+                FormData += "&totalDiscount=" + $('#discountTotalUnformated').val()
                 $.ajax({
                     url: '<?= base_url('transactionSave'); ?>',
                     type: "post",

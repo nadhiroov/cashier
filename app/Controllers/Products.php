@@ -150,4 +150,28 @@ class Products extends BaseController
             echo json_encode(array('status' => 1));
         }
     }
+
+    function updateStoct($barcode, $itemCount) {
+        $product = $this->model->where('barcode', $barcode)->first();
+
+        if (!$product) {
+            return "Produk tidak ditemukan";
+        }
+
+        // Menghitung stok yang tersisa
+        $remainingStock = $product['stock'] - $itemCount;
+
+        if ($remainingStock >= 0) {
+            // Update stok barang
+            $data = [
+                'stock' => $remainingStock
+            ];
+
+            $this->model->where('barcode', $barcode)->update($data);
+
+            return "Barang terjual. Stok terbaru: " . $remainingStock;
+        } else {
+            return "Stok tidak mencukupi";
+        }
+    }
 }

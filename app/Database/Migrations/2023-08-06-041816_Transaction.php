@@ -46,6 +46,13 @@ class Transaction extends Migration
                 'null'          => true,
                 'default'       => null
             ],
+            'discount' => [
+                'type'          => 'INT',
+                'unsigned'      => true,
+                'constraint'    => 11,
+                'null'          => true,
+                'default'       => null
+            ],
             'point_pay' => [
                 'type'          => 'INT',
                 'unsigned'      => true,
