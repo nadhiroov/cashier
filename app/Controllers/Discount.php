@@ -36,6 +36,25 @@ class Discount extends BaseController
         return view('discount/edit', $this->data);
     }
 
+    public function delete($id = null)
+    {
+        try {
+            $this->model->delete($id);
+            $return = [
+                'status'    => 'success',
+                'title'     => 'Success',
+                'message'   => 'Data deleted!'
+            ];
+        } catch (\Exception $th) {
+            $return = [
+                'status'    => 'error',
+                'title'     => 'Error',
+                'message'   => $th->getMessage()
+            ];
+        }
+        echo json_encode($return);
+    }
+
     function getData()
     {
         $dtTable = $this->request->getVar();

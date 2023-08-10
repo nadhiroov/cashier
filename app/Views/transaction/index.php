@@ -660,9 +660,12 @@
                     },
                     success: function(data) {
                         if (data.status == 'success') {
-
+                            swalert(data.status, data.title, data.message)
+                            setTimeout(() => {
+                                location.reload()
+                            }, 1000);
                         } else {
-                            swalert(data.status, data.title, data.message);
+                            swalert(data.status, data.title, data.message)
                         }
                     },
                     error: function(err) {
