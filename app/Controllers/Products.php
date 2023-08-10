@@ -121,7 +121,7 @@ class Products extends BaseController
     {
         $keyword = $this->request->getPost('keyword');
         $registered = $this->request->getPost('registered');
-
+        // var_dump($registered);die;
         $item = $this->model->find_item($keyword, $registered);
         $json['data']     = "<ul id='daftar-autocomplete'>";
         foreach ($item->getResultObject() as $key) {
@@ -152,27 +152,33 @@ class Products extends BaseController
         }
     }
 
-    function updateStoct($barcode, $itemCount) {
+    public function updateStoct($barcode, $itemCount)
+    {
         $product = $this->model->where('barcode', $barcode)->first();
-
+        $date = date('d-m-Y');
         if (!$product) {
             return "Produk tidak ditemukan";
         }
-
-        // Menghitung stok yang tersisa
         $remainingStock = $product['stock'] - $itemCount;
-
         if ($remainingStock >= 0) {
-            // Update stok barang
+            $soldHistory = json_decode($product['sold_history'], true);
+            if ($soldHistory == null) { // if the history is null
+                $soldHistory = [];
+                $updateHistory[$date] = intval($itemCount);
+            } elseif (isset($soldHistory[$date])) { // add in current date
+                $updateHistory[$date] = $soldHistory[$date] + intval($itemCount);
+            } else { // if null in date
+                $updateHistory[$date] = intval($itemCount);
+            }
             $data = [
-                'stock' => $remainingStock
+                'stock'         => $remainingStock,
+                'sold_history'  => json_encode(array_merge($soldHistory, $updateHistory))
             ];
-
-            $this->model->where('barcode', $barcode)->update($data);
-
-            return "Barang terjual. Stok terbaru: " . $remainingStock;
+            // var_dump($data);die;
+            $this->model->update($product['id'], $data);
+            return $product['id'];
         } else {
-            return "Stok tidak mencukupi";
+            return false;
         }
     }
 }

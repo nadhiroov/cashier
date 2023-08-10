@@ -3,8 +3,9 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Controllers\Products;
+use App\Controllers\Member;
 use App\Models\M_point;
-use App\Models\M_product;
 use App\Models\M_transaction;
 
 class Transaction extends BaseController
@@ -16,7 +17,8 @@ class Transaction extends BaseController
     {
         $this->model = new M_transaction();
         $this->point = new M_point();
-        $this->product = new M_product();
+        $this->product = new Products();
+        $this->member = new Member();
         $this->view = \Config\Services::renderer();
         $this->view->setData(['menu_selling' => 'active', 'submenu_transaction' => 'active']);
         $this->data['menu'] = 'Products';
@@ -51,7 +53,8 @@ class Transaction extends BaseController
             return false;
         }
 
-        $member = explode('|', $form['member']);
+        $member = $form['member'] == '0' ? 0 : explode('|', $form['member']);
+        // $member = explode('|', $form['member']);
         if ($member != '0') {
             $form['member'] = $member[0];
             $pointSetting = $this->point->first();
@@ -64,7 +67,6 @@ class Transaction extends BaseController
         if ($form['withPoint'] == 'true') {
             $form['money'] = $form['money'] + $member[2];
             $form['minusPoint'] = $form['grandTotal'] - $money;
-            $form['updatedPoint'] = $member[2] - $form['minusPoint'];
         }
 
         // less payment
@@ -77,16 +79,25 @@ class Transaction extends BaseController
             echo json_encode($return);
             return false;
         }
-
+        
         for ($i=0; $i < count($form['barcode']); $i++) { 
             if ($form['barcode'][$i] != '') {
+                $id = $this->product->updateStoct($form['barcode'][$i], $form['jumlah_beli'][$i]);
                 $item[] = [
-                    'id'    => $form['barcode'][$i],
+                    'id'    => $id,
                     'price' => $form['harga_satuan'][$i],
                     'qty'   => $form['jumlah_beli'][$i]
                 ];
                 
             }
+        }
+
+        if ($form['withPoint'] == 'true') { // point subtraction
+            $this->member->pointSubtraction($member[0], intval($form['minusPoint']));
+        }
+        
+        if ($member != '0' && intval($earnedPoint) > 0) { // point adding
+            $this->member->pointAddition($member[0], intval($earnedPoint));
         }
 
         $transactionData = [
@@ -96,16 +107,27 @@ class Transaction extends BaseController
             'user_id'       => $form['cashierId'],
             'total_pay'     => $money,
             'discount'      => $form['totalDiscount'],
-            'point_pay'     => $form['minusPoint'],
+            'point_pay'     => $form['minusPoint'] ?? null,
             'point_earned'  => $earnedPoint ?? null,
             'items'         => json_encode($item)
         ];
-        $this->model->save($transactionData);
-
-        // update stock
-
-
-        // update point member
-        var_dump($transactionData);
+        try {
+            $this->model->save($transactionData);
+            $return = [
+                'status'  => 'success',
+                'title'   => 'Success',
+                'message' => 'Transaction success!'
+            ];
+            echo json_encode($return);
+            return true;
+        } catch (\Exception $er) {
+            $return = [
+                'status'  => 'error',
+                'title'   => 'Error',
+                'message' => 'Transaction error'
+            ];
+            echo json_encode($return);
+            return false;
+        }
     }
 }

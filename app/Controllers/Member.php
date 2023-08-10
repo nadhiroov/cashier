@@ -94,8 +94,57 @@ class Member extends BaseController
         echo json_encode($return);
     }
 
-    function getAll() {
+    function getAll()
+    {
         $data = $this->model->select('id, name, phone, point')->findAll();
         echo json_encode($data);
+    }
+
+    function pointSubtraction($id, $subtraction)
+    {
+        $member = $this->model->find($id);
+        if (intval($member['point']) >= $subtraction) {
+            // current point
+            $data['id'] = $id;
+            $data['point'] = intval($member['point']) - $subtraction;
+            $history = [
+                'type'  => 'min',
+                'date'  => date('Y-m-d H:i:s'),
+                'point' => $subtraction
+            ];
+            // point history
+            $data['point_history'] = json_decode($member['point_history'], true);
+            $data['point_history'][] = $history;
+            $data['point_history'] = json_encode($data['point_history']);
+            try {
+                $this->model->save($data);
+                return true;
+            } catch (\Exception $er) {
+                //throw $th;
+            }
+        }
+    }
+
+    function pointAddition($id, $addition)
+    {
+        $member = $this->model->find($id);
+        // current point
+        $data['id'] = $id;
+        $data['point'] = intval($member['point'] ?? 0)  + intval($addition);
+        $history = [
+            'type'  => 'add',
+            'date'  => date('Y-m-d H:i:s'),
+            'point' => $addition
+        ];
+        // point history
+        $currentPointHistory = $member['point_history'] == null ? [] : json_decode($member['point_history'], true);
+        $currentPointHistory[] = $history;
+        $data['point_history'] = json_encode($currentPointHistory);
+        try {
+            $this->model->save($data);
+            return true;
+        } catch (\Exception $er) {
+            //throw $th;
+        }
     }
 }

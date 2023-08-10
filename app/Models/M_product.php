@@ -34,15 +34,7 @@ class M_product extends Model
     function find_item($keyword, $registered)
     {
         $db = db_connect();
-        $notInConditions = [];
-
-        $koma = explode(',', $registered);
-        if (count($koma) > 1) {
-            $notInConditions[] = 'barcode NOT IN (' . implode(',', $koma) . ')';
-        }
-        if (count($koma) == 1) {
-            $notInConditions[] = 'barcode != ' . $db->escape($registered);
-        }
+        $registered = explode(',', $registered);
 
         $query = $db->table('product')
             ->select('barcode, name, price, if(discount is not null, (price*(discount/100)), 0) as discount')
@@ -54,10 +46,7 @@ class M_product extends Model
             ->orLike('name', $keyword)
             ->groupEnd();
 
-        foreach ($notInConditions as $condition) {
-            $query->where($condition);
-        }
-
+        $query->whereNotIn('barcode', $registered);
         return $query->get();
     }
 
@@ -80,6 +69,22 @@ class M_product extends Model
             $not_in .= " AND `barcode` != '" . $registered . "' ";
         }
 
+         $sql = "
+        	SELECT 
+        		`barcode`, `name`, `price`, `discount`
+        	FROM 
+        		`product`
+            LEFT JOIN `discount` as `B` on product.id = B.product_id
+        	WHERE 
+        		`deleted_at` is null 
+        		AND `stock` > 0 
+        		AND ( 
+        			`barcode` LIKE '%" . $db->escapeLikeString($keyword) . "%' 
+        			OR `name` LIKE '%" . $db->escapeLikeString($keyword) . "%' 
+        		) 
+        		 ". $not_in."
+        ";
+
         // $sql = "SELECT
         //         `name`,
         //         barcode,
@@ -98,39 +103,9 @@ class M_product extends Model
         //         ) $not_in
         //     ";
 
-        $sql = "
-        	SELECT 
-        		`barcode`, `name`, `price`, `discount`
-        	FROM 
-        		`product`
-            LEFT JOIN `discount` as `B` on product.id = B.product_id
-        	WHERE 
-        		`deleted_at` is null 
-        		AND `stock` > 0 
-        		AND ( 
-        			`barcode` LIKE '%" . $db->escapeLikeString($keyword) . "%' 
-        			OR `name` LIKE '%" . $db->escapeLikeString($keyword) . "%' 
-        		) 
-        		 ". $not_in."
-        ";
+       
 
         return $db->query($sql);
-        // $keyword = $db->escapeLikeString($keyword);
-        // $query = $db->table('product')
-        // ->select('barcode, name, price, discount')
-        // ->join('discount as B', 'product.id = B.product_id', 'left')
-        // ->where('deleted_at', null)
-        // ->where('stock >', 0)
-        // ->groupStart()
-        // ->like('barcode', $keyword)
-        // ->orLike('name', $keyword)
-        // ->groupEnd();
-
-        // if ($not_in) {
-        //     $query->where($not_in);
-        // }
-
-        // return $query->get()->getResult();
     } */
 
     function update_stok($id, $total)
