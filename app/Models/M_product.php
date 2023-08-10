@@ -12,7 +12,7 @@ class M_product extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['brand_id', 'barcode', 'name', 'stock', 'price', 'price_history', 'sold_history', 'incoming_history'];
+    protected $allowedFields    = ['brand_id', 'barcode', 'name', 'stock', 'price', 'price_history', 'sold_history', 'incoming_history', 'purchase_price', 'percent'];
 
     // Dates
     protected $useTimestamps = true;

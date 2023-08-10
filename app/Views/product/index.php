@@ -121,6 +121,7 @@
 <script src="<?= base_url() ?>/assets/js/plugin/datatables/datatables.min.js"></script>
 <script src="<?= base_url() ?>/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
 <script src="<?= base_url() ?>/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+<script src="<?= base_url() ?>/assets/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
         $('#datatable').DataTable({
@@ -172,6 +173,7 @@
             url: '<?= base_url() ?>/productAdd',
             success: function(data) {
                 $('.add-body').html(data);
+                // $('.brand').select2();
             }
         });
     });

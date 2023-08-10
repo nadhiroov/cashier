@@ -80,6 +80,7 @@ class Products extends BaseController
     function process()
     {
         $form = $this->request->getPost('form');
+        $form['price'] = intval($form['purchase_price']) + (intval($form['purchase_price']) * (intval($form['percent'])/ 100));
         try {
             $this->model->save($form);
             $return = [

@@ -48,7 +48,15 @@
                                 <td><?= $content['stock']; ?></td>
                             </tr>
                             <tr>
-                                <td>Price</td>
+                                <td>Purchase price</td>
+                                <td><?= $content['purchase_price']; ?></td>
+                            </tr>
+                            <tr>
+                                <td>Percent</td>
+                                <td><?= $content['percent']; ?></td>
+                            </tr>
+                            <tr>
+                                <td>Sell price</td>
                                 <td><?= $content['price']; ?></td>
                             </tr>
                             <tr>
