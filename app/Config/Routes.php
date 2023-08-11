@@ -111,6 +111,7 @@ $routes->post('pointSave', 'Setting::processPoint');
 $routes->get('insertUser', 'Auth::testInsert');
 $routes->get('showAllUser', 'Auth::showAllUser');
 $routes->get('deleteUser/(:num)', 'Auth::testDelete/$1');
+$routes->get('print', 'Transaction::testPrint');
 /*
  * --------------------------------------------------------------------
  * Additional Routing
