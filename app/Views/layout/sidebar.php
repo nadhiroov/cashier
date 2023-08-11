@@ -19,6 +19,14 @@
                     <div class="clearfix"></div>
                 </div>
             </div>
+            <?php 
+            if (isset($menu_selling)) {
+                unset($menu_warehouse);
+                unset($submenu_product);
+                unset($menu_member);
+                unset($submenu_members);
+            }
+            ?>
             <ul class="nav nav-primary">
                 <li class="nav-item <?= $menu_dashboard ?? ''; ?>">
                     <a href="<?= base_url() ?>dashboard">
@@ -72,11 +80,11 @@
                                     <span class="sub-item">Transaction</span>
                                 </a>
                             </li>
-                            <li class="<?= $submenu_save ?? ''; ?>">
+                            <!-- <li class="<?= $submenu_save ?? ''; ?>">
                                 <a href="<?= base_url() ?>brand">
                                     <span class="sub-item">Saved transaction</span>
                                 </a>
-                            </li>
+                            </li> -->
                             <li class="<?= $submenu_history ?? ''; ?>">
                                 <a href="<?= base_url() ?>brand">
                                     <span class="sub-item">History</span>
@@ -117,7 +125,7 @@
                     </a>
                 </li>
 
-                <li class="nav-item <?= @$menu_report; ?>">
+                <li class="nav-item <?= $menu_report ?? ''; ?>">
                     <a href="<?= base_url() ?>/report">
                         <i class="fas fa-clipboard-list"></i>
                         <p>Report</p>

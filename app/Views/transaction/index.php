@@ -628,14 +628,14 @@
                     text: "Cancel",
                     className: "btn btn-danger",
                 },
+                print: {
+                    text: "Yes, without nota!",
+                    className: "btn btn-warning",
+                    value: "without nota",
+                },
                 confirm: {
                     text: "Yes, with nota!",
                     className: "btn btn-success",
-                },
-                print: {
-                    text: "Yes, without nota!",
-                    className: "btn btn-success",
-                    value: "without nota",
                 },
             },
         }).then((willDelete) => {
@@ -649,6 +649,7 @@
                 FormData += "&cashier=" + $('#cashierStaff').text()
                 FormData += "&cashierId=" + $('#cashierId').val()
                 FormData += "&totalDiscount=" + $('#discountTotalUnformated').val()
+                FormData += "&nota=" + willDelete
                 $.ajax({
                     url: '<?= base_url('transactionSave'); ?>',
                     type: "post",

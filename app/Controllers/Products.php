@@ -157,7 +157,7 @@ class Products extends BaseController
         $product = $this->model->where('barcode', $barcode)->first();
         $date = date('d-m-Y');
         if (!$product) {
-            return "Produk tidak ditemukan";
+            return "Produk not found";
         }
         $remainingStock = $product['stock'] - $itemCount;
         if ($remainingStock >= 0) {
@@ -176,7 +176,11 @@ class Products extends BaseController
             ];
             // var_dump($data);die;
             $this->model->update($product['id'], $data);
-            return $product['id'];
+            $ret = [
+                'id'    => $product['id'],
+                'name'  => $product['name']
+            ];
+            return $ret;
         } else {
             return false;
         }
