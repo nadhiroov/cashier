@@ -61,7 +61,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form class="formEdit" action="<?= base_url() ?>/productSave" method="POST">
+            <form class="formAdd" action="<?= base_url() ?>/productSave" method="POST">
                 <div class="modal-body add-body"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -165,6 +165,14 @@
     $('.formAdd, .formEdit, .formChangePrice').submit(function(e) {
         e.preventDefault();
         saveData(this);
+    });
+
+    $('.formAdd, .formEdit').on("keyup keypress", function(e) {
+        var code = e.keyCode || e.which;
+        if (code == 13) {
+            e.preventDefault();
+            return false;
+        }
     });
 
     $('#addnew').on('show.bs.modal', function(e) {

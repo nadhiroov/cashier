@@ -188,7 +188,7 @@
                                 <div class="form-group form-inline">
                                     <label class="col-sm-5 control-label"></label>
                                     <div class="col-sm-7">
-                                        <button type="button" class="btn btn-primary btn-block" id="Simpann">
+                                        <button type="button" class="btn btn-primary btn-block" id="saveTransaction">
                                             <i class="fas fa-save"></i> Save (F10)
                                         </button>
                                     </div>
@@ -330,6 +330,7 @@
                     $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(2)').find('div#hasil_pencarian li:first').addClass('autocomplete_active');
                 }
             } else if (charCode == 13) { // enter
+                return false;
                 var Field = $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(2)');
                 var Kodenya = Field.find('div#hasil_pencarian li.autocomplete_active span#kodenya').html();
                 var Barangnya = Field.find('div#hasil_pencarian li.autocomplete_active span#barangnya').html();
@@ -611,12 +612,12 @@
 
         if (charCode == 121) //F10
         {
-            $("#Simpann").trigger("click");
+            $("#saveTransaction").trigger("click");
             return false;
         }
     });
 
-    $(document).on('click', '#Simpann', function(e) {
+    $(document).on('click', '#saveTransaction', function(e) {
         e.preventDefault()
         swal({
             title: "Save this transaction?",
