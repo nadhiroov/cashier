@@ -137,7 +137,7 @@
                 </li>
                 <?php if (session()->get('is_admin') == 1) : ?>
                     <li class="nav-item <?= @$menu_user; ?>">
-                        <a href="<?= base_url() ?>/user">
+                        <a href="<?= base_url() ?>user">
                             <i class="fas fa-user"></i>
                             <p>User</p>
                         </a>

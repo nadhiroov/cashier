@@ -107,6 +107,14 @@ $routes->get('setting', 'Setting::index');
 $routes->post('pointSave', 'Setting::processPoint');
 
 
+/* 
+* User
+*/
+$routes->get('user', 'User::index');
+$routes->get('userData', 'User::getData');
+$routes->post('userSave', 'User::process');
+
+
 
 $routes->get('insertUser', 'Auth::testInsert');
 $routes->get('showAllUser', 'Auth::showAllUser');
