@@ -21,6 +21,17 @@ class User extends BaseController
         return view('user/index', $this->data);
     }
 
+    function add()
+    {
+        return view('user/add');
+    }
+
+    function edit($id)
+    {
+        $this->data['content'] = $this->model->find($id);
+        return view('user/edit', $this->data);
+    }
+
     function getData()
     {
         $dtTable = $this->request->getVar();
@@ -47,15 +58,17 @@ class User extends BaseController
     function process()
     {
         $form = $this->request->getPost('form');
-        $image = $this->request->getFile('userimage');
+        // var_dump($form);die;
+        /*  $img = $this->request->getFile('img');
         $validateImage = $this->validate([
             'file' => [
+                'uploaded[img]',
                 'mime_in[file, image/png, image/jpg,image/jpeg, image/gif]',
                 'max_size[file, 4096]',
             ],
-        ]);
+        ]); */
         
-        if (!$this->model->validate($form)) {
+        if (!isset($form['id']) && !$this->model->validate($form)) {
             $errors = $this->model->errors();
             $errorMessages = implode("<br>", $errors);
             $return = [
@@ -66,10 +79,17 @@ class User extends BaseController
             echo json_encode($return);
             return false;
         }
+        if ($form['password'] == '') {
+            unset($form['password']);
+        }else{
+            $form['password'] = password_hash($form['password'], PASSWORD_BCRYPT);
+        }
+        
+        $form['is_admin'] = isset($form['is_admin']) ? 1 : 0;
         try {
-            if ($image->isValid()) {
-                # code...
-            }
+            // if ($image->isValid()) {
+            //     # code...
+            // }
             $this->model->save($form);
             $return = [
                 'status'    => 'success',
@@ -77,6 +97,25 @@ class User extends BaseController
                 'message'   => 'Data saved successfully'
             ];
         } catch (\Throwable $th) {
+            $return = [
+                'status'    => 'error',
+                'title'     => 'Error',
+                'message'   => $th->getMessage()
+            ];
+        }
+        echo json_encode($return);
+    }
+
+    public function delete($id = null)
+    {
+        try {
+            $this->model->delete($id);
+            $return = [
+                'status'    => 'success',
+                'title'     => 'Success',
+                'message'   => 'Data deleted!'
+            ];
+        } catch (\Exception $th) {
             $return = [
                 'status'    => 'error',
                 'title'     => 'Error',

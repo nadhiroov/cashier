@@ -17,6 +17,9 @@ class Discount extends BaseController
         $this->view = \Config\Services::renderer();
         $this->view->setData(['menu_discount' => 'active']);
         $this->data['menu'] = 'Discount';
+        if (session()->get('is_admin') != 1) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
     }
     
     public function index()

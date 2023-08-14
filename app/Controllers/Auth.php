@@ -79,7 +79,7 @@ class Auth extends BaseController
             'fullname'  => 'Admin rahat',
             'email'     => 'admin@gmail.com',
             'img'       => 'profile.png',
-            'is_admin'  => '1',
+            'is_admin'  => 1,
             'theme'     => 'light'
         ];
         

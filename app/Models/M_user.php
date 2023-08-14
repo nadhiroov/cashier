@@ -10,7 +10,7 @@ class M_user extends Model
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
-    protected $useSoftDeletes   = true;
+    protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = ['username', 'password', 'fullname', 'email', 'img', 'is_admin', 'theme'];
 
@@ -44,10 +44,10 @@ class M_user extends Model
             'min_length' => 'Password must be at least 8 characters long.'
         ],
         'img' => [
-            'mime_in[file, image/png, image/jpg,image/jpeg, image/gif]',
-            'max_size[file, 4096]',
+            'mime_in[file, image/gif]',
+            'max_size[file, 100]',
         ],
     ];
-    protected $skipValidation       = false;
+    protected $skipValidation       = true;
     protected $cleanValidationRules = true;
 }

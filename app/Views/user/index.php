@@ -67,53 +67,8 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form class="formEdit" action="<?= base_url() ?>/userSave" method="POST">
-                <div class="modal-body">
-                    <div class="form-group form-inline">
-                        <label for="inlineinput" class="col-md-3 col-form-label">Fullname</label>
-                        <div class="col-md-9 p-0">
-                            <input type="text" class="form-control input-full" placeholder="Enter brand" name="form[fullname]">
-                        </div>
-                    </div>
-                    <div class="form-group form-inline">
-                        <label for="inlineinput" class="col-md-3 col-form-label">Username</label>
-                        <div class="col-md-9 p-0">
-                            <input type="text" class="form-control input-full" placeholder="Enter brand" name="form[username]">
-                        </div>
-                    </div>
-                    <div class="form-group form-inline">
-                        <label for="inlineinput" class="col-md-3 col-form-label">Email</label>
-                        <div class="col-md-9 p-0">
-                            <input type="text" class="form-control input-full" placeholder="Enter brand" name="form[email]">
-                        </div>
-                    </div>
-                    <div class="form-group form-inline">
-                        <label for="inlineinput" class="col-md-3 col-form-label">Password</label>
-                        <div class="col-md-9 p-0">
-                            <input type="text" class="form-control input-full" placeholder="Enter brand" name="form[password]">
-                        </div>
-                    </div>
-                    <div class="form-group form-inline">
-                        <label for="inlineinput" class="col-md-3 col-form-label">Admin</label>
-                        <div class="col-md-1 p-0">
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" value="1" name="form[is_admin]">
-                                    <span class="form-check-sign"></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group form-show-validation row">
-                        <label class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right">Image profile </label>
-                        <div class="col-lg-4 col-md-9 col-sm-8">
-                            <div class="input-file input-file-image">
-                                <img class="img-upload-preview img-circle" width="100" height="100" src="<?= base_url('assets/img/profile.png') ?>" alt="preview">
-                                <input type="file" class="form-control form-control-file" id="uploadImg" name="userimage" accept="image/*">
-                                <label for="uploadImg" class="btn btn-primary btn-round btn-lg"><i class="fa fa-file-image"></i> &nbsp; Select an Image</label>
-                            </div>
-                        </div>
-                    </div>
+            <form class="formAdd" action="<?= base_url() ?>/userSave" method="POST">
+                <div class="modal-body add-body">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -129,12 +84,12 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addnewLabel">Add new Categories</h5>
+                <h5 class="modal-title" id="addnewLabel">Edit user</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form class="formEdit" action="<?= base_url() ?>/brandSave" method="POST">
+            <form class="formEdit" action="<?= base_url() ?>/userSave" method="POST">
                 <div class="modal-body edited-body"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -192,7 +147,7 @@
                 {
                     data: 'id',
                     render: function(data, type, row) {
-                        return `<a href="userDetail/${data}" class="btn btn-sm btn-round btn-primary"><i class="fas fa-external-link-alt"></i></a> <a href="#edit" data-toggle="modal" data-id="${data}" class="btn btn-sm btn-round btn-warning"><i class="fas fa-edit"></i></a>
+                        return `<a href="#edit" data-toggle="modal" data-id="${data}" class="btn btn-sm btn-round btn-warning"><i class="fas fa-edit"></i></a>
                         <a onclick="confirmDelete(this)" target="<?= base_url() ?>/userDelete/${data}" class="btn btn-delete btn-sm btn-round btn-danger"><i class="far fa-trash-alt"></i></a>`;
                     }
                 }
@@ -200,13 +155,19 @@
         });
     });
 
-    $('.category').select2({
-        placeholder: "Please select a category"
-    });
-
     $('.formAdd, .formEdit').submit(function(e) {
         e.preventDefault();
         saveData(this);
+    });
+
+    $('#addnew').on('show.bs.modal', function(e) {
+        $.ajax({
+            type: 'get',
+            url: '<?= base_url() ?>/userAdd',
+            success: function(data) {
+                $('.add-body').html(data)
+            }
+        });
     });
 
     $('#edit').on('show.bs.modal', function(e) {
@@ -217,9 +178,6 @@
                 url: `<?= base_url() ?>/userEdit/${rowid}`,
                 success: function(data) {
                     $('.edited-body').html(data);
-                    $('.category').select2({
-                        placeholder: "Please select a category"
-                    });
                 }
             });
         }

@@ -17,6 +17,9 @@ class Category extends BaseController
         $this->view = \Config\Services::renderer();
         $this->view->setData(['menu_warehouse' => 'active', 'submenu_category' => 'active']);
         $this->data['menu'] = 'Category';
+        if (session()->get('is_admin') != 1) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
     }
 
     public function index()

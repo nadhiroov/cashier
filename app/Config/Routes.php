@@ -113,9 +113,10 @@ $routes->post('pointSave', 'Setting::processPoint');
 */
 $routes->get('user', 'User::index');
 $routes->get('userData', 'User::getData');
+$routes->get('userAdd', 'User::add');
 $routes->get('userEdit/(:num)', 'User::edit/$1');
 $routes->post('userSave', 'User::process');
-
+$routes->delete('userDelete/(:num)', 'User::delete/$1');
 
 
 $routes->get('insertUser', 'Auth::testInsert');

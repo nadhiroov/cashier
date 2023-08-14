@@ -14,6 +14,9 @@ class Setting extends BaseController
         $this->view = \Config\Services::renderer();
         $this->view->setData(['menu_setting' => 'active']);
         $this->data['menu'] = 'Settings';
+        if (session()->get('is_admin') != 1) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
     }
 
     public function index()

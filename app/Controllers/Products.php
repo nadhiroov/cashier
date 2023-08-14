@@ -89,7 +89,6 @@ class Products extends BaseController
     {
         $this->data['content'] = $this->model->select('product.*, category, brand')->join('brand B', 'B.id = product.brand_id')->join('category C', 'C.id = B.category_id')->find($id);
         $this->data['submenu'] = 'Detail';
-        var_dump($this->data['content']);die;
         return view('product/detail', $this->data);
     }
 
