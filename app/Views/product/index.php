@@ -103,7 +103,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form class="formChangePrice" action="<?= base_url() ?>/productChangePrice" method="POST">
+            <form class="formChangePrice" action="<?= base_url() ?>/productSavePrice" method="POST">
                 <div class="modal-body price-body"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -147,7 +147,10 @@
                     data: 'stock'
                 },
                 {
-                    data: 'price'
+                    data: 'price',
+                    render: function(data, type, row) {
+                        return rupiah(data)
+                    }
                 },
                 {
                     data: 'id',
@@ -162,9 +165,15 @@
         });
     });
 
-    $('.formAdd, .formEdit, .formChangePrice').submit(function(e) {
+    $('.formAdd, .formEdit').submit(function(e) {
         e.preventDefault();
         saveData(this);
+    });
+
+    $('.formChangePrice').submit(function(e) {
+        e.preventDefault();
+        saveData(this);
+        $("#changePrice").modal("hide");
     });
 
     $('.formAdd, .formEdit').on("keyup keypress", function(e) {

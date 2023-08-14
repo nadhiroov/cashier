@@ -65,6 +65,7 @@ $routes->delete('brandDelete/(:num)', 'Brand::delete/$1');
 $routes->get('product', 'Products::index');
 $routes->get('productData', 'Products::getData');
 $routes->post('productSave', 'Products::process');
+$routes->post('productSavePrice', 'Products::processEditPrice');
 $routes->get('productAdd', 'Products::add');
 $routes->get('productEdit/(:num)', 'Products::edit/$1');
 $routes->get('productChangePrice/(:num)', 'Products::editPrice/$1');
@@ -112,6 +113,7 @@ $routes->post('pointSave', 'Setting::processPoint');
 */
 $routes->get('user', 'User::index');
 $routes->get('userData', 'User::getData');
+$routes->get('userEdit/(:num)', 'User::edit/$1');
 $routes->post('userSave', 'User::process');
 
 

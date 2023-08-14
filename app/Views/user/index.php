@@ -162,7 +162,7 @@
             serverSide: true,
             processing: true,
             "columnDefs": [{
-                "width": "13%",
+                "width": "15%",
                 "targets": 5
             }, {
                 "targets": 5,
@@ -214,7 +214,7 @@
         if (typeof rowid != 'undefined') {
             $.ajax({
                 type: 'get',
-                url: `<?= base_url() ?>/brandEdit/${rowid}`,
+                url: `<?= base_url() ?>/userEdit/${rowid}`,
                 success: function(data) {
                     $('.edited-body').html(data);
                     $('.category').select2({

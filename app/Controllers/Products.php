@@ -47,10 +47,49 @@ class Products extends BaseController
         return view('product/editPrice', ['content' => $data]);
     }
 
+    function processEditPrice() {
+        $form = $this->request->getPost('form');
+        $form['price'] = intval($form['purchase_price']) + (intval($form['purchase_price']) * (intval($form['percent']) / 100));
+        $data = $this->model->find($form['id']);
+        $price = [
+            'date'  => date('d-m-Y'),
+            'buy'   => intval($form['purchase_price']),
+            'percent'=>intval($form['percent']),
+            'sell'  => $form['price']
+        ];
+        if ($data['price_history'] == null) {
+            $save['price_history'] = json_encode([$price]);
+        }else{
+            $oldPrice = json_decode($data['price_history'], true);
+            array_push($oldPrice, $price);
+            $save['price_history'] = json_encode($oldPrice);
+        }
+        $save['purchase_price'] = $form['purchase_price'];
+        $save['percent']        = $form['percent'];
+        $save['price']          = $form['price'];
+        $save['id']             = $form['id'];
+        try {
+            $this->model->save($save);
+            $return = [
+                'status'    => 'success',
+                'title'     => 'Success',
+                'message'   => 'Data saved successfully'
+            ];
+        } catch (\Exception $th) {
+            $return = [
+                'status'    => 'error',
+                'title'     => 'Error',
+                'message'   => $th->getMessage()
+            ];
+        }
+        echo json_encode($return);
+    }
+
     function detail($id)
     {
         $this->data['content'] = $this->model->select('product.*, category, brand')->join('brand B', 'B.id = product.brand_id')->join('category C', 'C.id = B.category_id')->find($id);
         $this->data['submenu'] = 'Detail';
+        var_dump($this->data['content']);die;
         return view('product/detail', $this->data);
     }
 
