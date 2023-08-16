@@ -23,16 +23,17 @@ class Transaction extends BaseController
         $this->product = new Products();
         $this->member = new Member();
         $this->view = \Config\Services::renderer();
-        $this->view->setData(['menu_selling' => 'active', 'submenu_transaction' => 'active']);
+        $this->view->setData(['menu_selling' => 'active']);
         $this->data['menu'] = 'Products';
     }
-
+    
     public function index()
     {
+        $this->view->setData(['submenu_transaction' => 'active']);
         return view('transaction/index', $this->data);
     }
 
-    function process()
+    public function process()
     {
         $form = $this->request->getPost();
         // if not select product at all
@@ -177,7 +178,7 @@ class Transaction extends BaseController
         }
     }
 
-    function buatBaris1Kolom($kolom1)
+    public function buatBaris1Kolom($kolom1)
     {
         // Mengatur lebar setiap kolom (dalam satuan karakter)
         $lebar_kolom_1 = 42;
@@ -209,7 +210,7 @@ class Transaction extends BaseController
         return implode("\n", $hasilBaris) . "\n";
     }
 
-    function buatBaris3Kolom($kolom1, $kolom2, $kolom3)
+    public function buatBaris3Kolom($kolom1, $kolom2, $kolom3)
     {
         // Mengatur lebar setiap kolom (dalam satuan karakter)
         $lebar_kolom_1 = 14;
@@ -251,7 +252,7 @@ class Transaction extends BaseController
         return implode("\n", $hasilBaris) . "\n";
     }
 
-    function buatBaris3KolomPoint($kolom1, $kolom2, $kolom3)
+    public function buatBaris3KolomPoint($kolom1, $kolom2, $kolom3)
     {
         // Mengatur lebar setiap kolom (dalam satuan karakter)
         $lebar_kolom_1 = 20;
@@ -293,7 +294,7 @@ class Transaction extends BaseController
         return implode("\n", $hasilBaris) . "\n";
     }
 
-    function testPrint()
+    public function testPrint()
     {
         $profile = CapabilityProfile::load("simple");
         $connector = new WindowsPrintConnector("POS58 Printer");
@@ -321,5 +322,32 @@ class Transaction extends BaseController
         $printer->text($this->buatBaris3KolomPoint('Point: Rp. 1.000', '', ''));
         $printer->cut();
         $printer->close();
+    }
+
+    public function historyIndex() {
+        $this->view->setData(['submenu_history' => 'active']);
+        return view('transHistory/index', $this->data);
+    }
+
+    public function getDataHistory()
+    {
+        $dtTable = $this->request->getVar();
+        $data = $this->model->select('transaction.*, JSON_LENGTH(transaction.items) as item, name')->join('member B', 'transaction.member = B.id', 'left')->limit($dtTable['length'], $dtTable['start'])->orderBy('created_at', 'desc');
+        if (!empty($dtTable['search']['value'])) {
+            $data = $this->model->like('nota_number', $dtTable['search']['value']);
+            $data = $this->model->orLike('name', $dtTable['search']['value']);
+        }
+        if (!empty($dtTable['order'][0]['column'])) {
+            $data = $this->model->orderBy($dtTable['columns'][$dtTable['order'][0]['column']]['data'], $dtTable['order'][0]['dir']);
+        }
+        $filtered = $data->countAllResults(false);
+        $datas = $data->find();
+        $return = array(
+            "draw" => $dtTable['draw'],
+            "recordsFiltered" => $filtered,
+            "recordsTotal" => $this->model->countAllResults(),
+            "data" => $datas
+        );
+        return json_encode($return);
     }
 }

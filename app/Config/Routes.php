@@ -80,6 +80,12 @@ $routes->post('productStock', 'Products::stock');
 $routes->get('transaction', 'Transaction::index');
 $routes->post('transactionSave', 'Transaction::process');
 
+/* 
+* Transaction History
+*/
+$routes->get('transHistory', 'Transaction::historyIndex');
+$routes->get('transHistoryData', 'Transaction::getDataHistory');
+
 
 /* 
 * Member

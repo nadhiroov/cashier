@@ -82,13 +82,8 @@
                                     <span class="sub-item">Transaction</span>
                                 </a>
                             </li>
-                            <!-- <li class="<?= $submenu_save ?? ''; ?>">
-                                <a href="<?= base_url() ?>brand">
-                                    <span class="sub-item">Saved transaction</span>
-                                </a>
-                            </li> -->
                             <li class="<?= $submenu_history ?? ''; ?>">
-                                <a href="<?= base_url() ?>brand">
+                                <a href="<?= base_url() ?>transHistory">
                                     <span class="sub-item">History</span>
                                 </a>
                             </li>

@@ -64,7 +64,7 @@ class User extends BaseController
             $form['password'] = password_hash($form['password'], PASSWORD_BCRYPT);
         }
 
-        if (!$this->model->validate($form)) {
+        if (!$this->model->validate([$form, $form['id']])) {
             $errors = $this->model->errors();
             $errorMessages = implode("<br>", $errors);
             $return = [
@@ -75,7 +75,6 @@ class User extends BaseController
             echo json_encode($return);
             return false;
         }
-        
         $form['is_admin'] = isset($form['is_admin']) ? 1 : 0;
         try {
             // if ($image->isValid()) {

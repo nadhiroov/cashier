@@ -24,20 +24,20 @@ class Products extends BaseController
         return view('product/index', $this->data);
     }
 
-    function add()
+    public function add()
     {
         $data = $this->brand->findAll();
         return view('product/add', ['brand' => $data]);
     }
 
-    function edit($id)
+    public function edit($id)
     {
         $data = $this->model->find($id);
         $brand = $this->brand->findAll();
         return view('product/edit', ['content' => $data, 'brand' => $brand]);
     }
 
-    function editPrice($id)
+    public function editPrice($id)
     {
         $data = $this->model->find($id);
         if ($data['price_history'] == null) {
@@ -47,7 +47,7 @@ class Products extends BaseController
         return view('product/editPrice', ['content' => $data]);
     }
 
-    function processEditPrice() {
+    public function processEditPrice() {
         $form = $this->request->getPost('form');
         $form['price'] = intval($form['purchase_price']) + (intval($form['purchase_price']) * (intval($form['percent']) / 100));
         $data = $this->model->find($form['id']);
@@ -85,14 +85,14 @@ class Products extends BaseController
         echo json_encode($return);
     }
 
-    function detail($id)
+    public function detail($id)
     {
         $this->data['content'] = $this->model->select('product.*, category, brand')->join('brand B', 'B.id = product.brand_id')->join('category C', 'C.id = B.category_id')->find($id);
         $this->data['submenu'] = 'Detail';
         return view('product/detail', $this->data);
     }
 
-    function getData()
+    public function getData()
     {
         $dtTable = $this->request->getVar();
         $data = $this->model->select('product.*, category, brand')->join('brand B', 'B.id = product.brand_id')->join('category C', 'C.id = B.category_id')->limit($dtTable['length'], $dtTable['start'])->orderBy('name', 'asc');
@@ -115,7 +115,7 @@ class Products extends BaseController
         return json_encode($return);
     }
 
-    function process()
+    public function process()
     {
         $form = $this->request->getPost('form');
         $form['price'] = intval($form['purchase_price']) + (intval($form['purchase_price']) * (intval($form['percent'])/ 100));
@@ -155,7 +155,7 @@ class Products extends BaseController
         echo json_encode($return);
     }
 
-    function find()
+    public function find()
     {
         $keyword = $this->request->getPost('keyword');
         $registered = $this->request->getPost('registered');
@@ -178,7 +178,7 @@ class Products extends BaseController
         echo json_encode($json);
     }
 
-    function stock()
+    public function stock()
     {
         $barcode = $this->request->getPost('barcode');
         $stok = $this->request->getPost('stok');
