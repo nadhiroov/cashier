@@ -23,21 +23,22 @@ class M_user extends Model
 
      // Validation
     protected $validationRules      = [
-        'username'     => 'required|alpha_dash|min_length[5]|is_unique[users.username]',
-        'email'        => 'required|valid_email|is_unique[users.email]',
+        'email'        => 'required|valid_email',
+        'username'     => 'required|alpha_dash|min_length[5]',
         'password'     => 'required|min_length[8]',
     ];
+
     protected $validationMessages   = [
         'username' => [
             'required' => 'Username is required.',
             'alpha_dash' => 'Username can only contain letters, numbers, dashes, and underscores.',
             'min_length' => 'Username must be at least 5 characters long.',
-            'is_unique' => 'Username is already taken.'
+            // 'is_unique' => 'Username is already taken.'
         ],
         'email' => [
             'required' => 'Email is required.',
             'valid_email' => 'Please provide a valid email address.',
-            'is_unique' => 'Email is already taken.'
+            // 'is_unique' => 'Email is already taken.'
         ],
         'password' => [
             'required' => 'Password is required.',
@@ -48,6 +49,6 @@ class M_user extends Model
             'max_size[file, 100]',
         ],
     ];
-    protected $skipValidation       = true;
+    protected $skipValidation       = false;
     protected $cleanValidationRules = true;
 }

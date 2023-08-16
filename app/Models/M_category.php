@@ -23,11 +23,11 @@ class M_category extends Model
 
     // Validation
     protected $validationRules      = [
-        'category'     => 'required|alpha_numeric|is_unique[category.category]'
+        'category'     => 'required|alpha_numeric'
     ];
     protected $validationMessages   = [
         'category' => [
-            'is_unique' => 'This category already exist',
+            'alpha_numeric' => 'Alpha numeric allowed.',
         ],
     ];
     protected $skipValidation       = false;

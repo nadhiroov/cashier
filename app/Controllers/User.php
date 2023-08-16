@@ -16,23 +16,23 @@ class User extends BaseController
         $this->data['menu'] = 'User management';
     }
 
-    function index()
+    public function index()
     {
         return view('user/index', $this->data);
     }
 
-    function add()
+    public function add()
     {
         return view('user/add');
     }
 
-    function edit($id)
+    public function edit($id)
     {
         $this->data['content'] = $this->model->find($id);
         return view('user/edit', $this->data);
     }
 
-    function getData()
+    public function getData()
     {
         $dtTable = $this->request->getVar();
         $data = $this->model->limit($dtTable['length'], $dtTable['start'])->orderBy('fullname', 'asc');
@@ -55,20 +55,16 @@ class User extends BaseController
         return json_encode($return);
     }
 
-    function process()
+    public function process()
     {
         $form = $this->request->getPost('form');
-        // var_dump($form);die;
-        /*  $img = $this->request->getFile('img');
-        $validateImage = $this->validate([
-            'file' => [
-                'uploaded[img]',
-                'mime_in[file, image/png, image/jpg,image/jpeg, image/gif]',
-                'max_size[file, 4096]',
-            ],
-        ]); */
-        
-        if (!isset($form['id']) && !$this->model->validate($form)) {
+        if ($form['password'] == '') {
+            unset($form['password']);
+        } else {
+            $form['password'] = password_hash($form['password'], PASSWORD_BCRYPT);
+        }
+
+        if (!$this->model->validate($form)) {
             $errors = $this->model->errors();
             $errorMessages = implode("<br>", $errors);
             $return = [
@@ -78,11 +74,6 @@ class User extends BaseController
             ];
             echo json_encode($return);
             return false;
-        }
-        if ($form['password'] == '') {
-            unset($form['password']);
-        }else{
-            $form['password'] = password_hash($form['password'], PASSWORD_BCRYPT);
         }
         
         $form['is_admin'] = isset($form['is_admin']) ? 1 : 0;

@@ -28,13 +28,13 @@ class Brand extends BaseController
         return view('brand/index', $this->data);
     }
 
-    function edit($id) {
+    public function edit($id) {
         $data = $this->model->find($id);
         $category = $this->category->findAll();
         return view('brand/edit', ['content' => $data, 'category' => $category]);
     }
 
-    function getData($id = null) {
+    public function getData($id = null) {
         $dtTable = $this->request->getVar();
         $data = $this->model->select('brand.id, brand.brand, category')->join('category B', 'B.id = brand.category_id', 'left')
         ->limit($dtTable['length'], $dtTable['start'])->where('brand.deleted_at', null)->orderBy('brand', 'asc');
@@ -58,7 +58,7 @@ class Brand extends BaseController
         return json_encode($return);
     }
 
-    function process()
+    public function process()
     {
         $form = $this->request->getPost('form');
         try {

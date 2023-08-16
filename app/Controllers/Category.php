@@ -34,14 +34,14 @@ class Category extends BaseController
         return view('category/detail', $this->data);
     }
 
-    function edit() 
+    public function edit()
     {
         $id = $this->request->getPost('id');
         $data = $this->model->find($id);
         return view('category/edit', ['content' => $data]);
     }
 
-    function editBrand($id)
+    public function editBrand($id)
     {
         $this->data['content'] = $this->brand->find($id);
         $this->data['category'] = $this->model->findAll();
@@ -49,7 +49,7 @@ class Category extends BaseController
         return view('brand/edit', $this->data);
     }
 
-    function getData()
+    public function getData()
     {
         $dtTable = $this->request->getVar();
         $data = $this->model->limit($dtTable['length'], $dtTable['start'])->orderBy('category', 'asc');
@@ -70,10 +70,11 @@ class Category extends BaseController
         return json_encode($return);
     }
 
-    function process()
+    public function process()
     {
         $form = $this->request->getPost('form');
-        if (!$this->model->validate($form)) {
+        $id = intval($form['id']);
+        if (!$this->model->validate($form, $id)) {
             $return = [
                 'status' => 'error',
                 'title'  => 'Error',
