@@ -50,7 +50,7 @@
                     <div class="form-group form-inline">
                         <label class="col-md-3 col-form-label">Number</label>
                         <div class="col-md-9 p-0">
-                            <label class="col-form-label " id="notaNumber"><?= strtoupper(uniqid()); ?></label>
+                            <label class="col-form-label " id="notaNumber"><?= $notaNumber ?></label>
                         </div>
                     </div>
                     <div class="form-group form-inline">

@@ -16,11 +16,10 @@ class M_transaction extends Model
     protected $allowedFields    = ['nota_number', 'member', 'grand_total', 'user_id', 'total_pay', 'discount', 'point_pay', 'point_earned', 'items'];
 
     // Dates
-    protected $useTimestamps = false;
+    protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
-    protected $deletedField  = 'deleted_at';
 
     // Validation
     protected $validationRules      = [];

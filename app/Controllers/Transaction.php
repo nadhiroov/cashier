@@ -26,10 +26,13 @@ class Transaction extends BaseController
         $this->view->setData(['menu_selling' => 'active']);
         $this->data['menu'] = 'Products';
     }
-    
+
     public function index()
     {
         $this->view->setData(['submenu_transaction' => 'active']);
+        $today = date('Y-m-d');
+        $records = $this->model->where("DATE(created_at) = '$today'")->countAllResults();
+        $this->data['notaNumber'] = date('dmy') . '-' . (sprintf('%03d', $records + 1));
         return view('transaction/index', $this->data);
     }
 
@@ -324,7 +327,8 @@ class Transaction extends BaseController
         $printer->close();
     }
 
-    public function historyIndex() {
+    public function historyIndex()
+    {
         $this->view->setData(['submenu_history' => 'active']);
         return view('transHistory/index', $this->data);
     }
