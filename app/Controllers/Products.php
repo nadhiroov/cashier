@@ -201,24 +201,36 @@ class Products extends BaseController
         if ($remainingStock >= 0) {
             $soldHistory = json_decode($product['sold_history'], true);
             if ($soldHistory == null) { // if the history is null
-                $soldHistory = [];
-                $updateHistory[$date] = intval($itemCount);
-            } elseif (isset($soldHistory[$date])) { // add in current date
-                $updateHistory[$date] = $soldHistory[$date] + intval($itemCount);
-            } else { // if null in date
-                $updateHistory[$date] = intval($itemCount);
+                $soldHistory[] = [
+                    'date' => $date,
+                    'count'=> intval($itemCount)
+                ];
+            } else {
+                $currentDate = false;
+                for ($i=0; $i < count($soldHistory) ; $i++) {
+                    if ($soldHistory[$i]['date'] == $date) { // add in current date
+                        $soldHistory[$i]['count'] = intval($soldHistory[$i]['count']) + intval($itemCount);
+                        $currentDate = true;
+                        break;
+                    }
+                }
+                if (!$currentDate) { // add in another day
+                    $soldHistory[] = [
+                        'date' => $date,
+                        'count' => intval($itemCount)
+                    ];
+                }
             }
             $data = [
                 'stock'         => $remainingStock,
-                'sold_history'  => json_encode(array_merge($soldHistory, $updateHistory))
+                'sold_history'  => json_encode($soldHistory)
             ];
             // var_dump($data);die;
             $this->model->update($product['id'], $data);
-            $ret = [
+            return [
                 'id'    => $product['id'],
                 'name'  => $product['name']
             ];
-            return $ret;
         } else {
             return false;
         }

@@ -123,10 +123,26 @@
                         </a>
                     </li>
                     <li class="nav-item <?= $menu_report ?? ''; ?>">
-                        <a href="<?= base_url() ?>/report">
+                        <a data-toggle="collapse" href="#report">
                             <i class="fas fa-clipboard-list"></i>
                             <p>Report</p>
+                            <span class="caret"></span>
                         </a>
+                        <div class="collapse <?= isset($menu_report) ? 'show' : '' ?>" id="report">
+                            <ul class="nav nav-collapse">
+                                <li class="<?= $submenu_byProduct ?? ''; ?>">
+                                    <a href="<?= base_url() ?>byProduct">
+                                        <span class="sub-item">By product</span>
+                                    </a>
+                                </li>
+                                <li class="<?= $submenu_point ?? ''; ?>">
+                                    <a href="<?= base_url() ?>price">
+                                        <span class="sub-item">Price</span>
+                                    </a>
+                                </li>
+                                <li>
+                            </ul>
+                        </div>
                     </li>
 
                     <li class="nav-section">
