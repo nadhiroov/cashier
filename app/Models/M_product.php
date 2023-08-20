@@ -31,7 +31,7 @@ class M_product extends Model
     protected $cleanValidationRules = true;
 
 
-    function find_item($keyword, $registered)
+    public function find_item($keyword, $registered)
     {
         $db = db_connect();
         $registered = explode(',', $registered);
@@ -50,65 +50,7 @@ class M_product extends Model
         return $query->get();
     }
 
-
-    /* function find_item($keyword, $registered)
-    {
-        $db = db_connect();
-        $not_in = '';
-
-        $koma = explode(',', $registered);
-        if (count($koma) > 1) {
-            $not_in .= " AND `barcode` NOT IN (";
-            foreach ($koma as $k) {
-                $not_in .= " '" . $k . "', ";
-            }
-            $not_in = rtrim(trim($not_in), ',');
-            $not_in = $not_in . ")";
-        }
-        if (count($koma) == 1) {
-            $not_in .= " AND `barcode` != '" . $registered . "' ";
-        }
-
-         $sql = "
-        	SELECT 
-        		`barcode`, `name`, `price`, `discount`
-        	FROM 
-        		`product`
-            LEFT JOIN `discount` as `B` on product.id = B.product_id
-        	WHERE 
-        		`deleted_at` is null 
-        		AND `stock` > 0 
-        		AND ( 
-        			`barcode` LIKE '%" . $db->escapeLikeString($keyword) . "%' 
-        			OR `name` LIKE '%" . $db->escapeLikeString($keyword) . "%' 
-        		) 
-        		 ". $not_in."
-        ";
-
-        // $sql = "SELECT
-        //         `name`,
-        //         barcode,
-        //         price,
-        //         discount 
-        //     FROM
-        //         product a
-        //         LEFT JOIN discount b ON a.id = b.product_id 
-        //         AND ( CURRENT_TIMESTAMP BETWEEN b.date_start AND b.date_end ) 
-        //     WHERE
-        //         stock > 0 
-        //     AND deleted_at IS NULL
-        //     AND (
-        //         barcode LIKE '%$db->escapeLikeString($keyword)%'
-        //     OR  name LIKE '%$db->escapeLikeString($keyword)%'
-        //         ) $not_in
-        //     ";
-
-       
-
-        return $db->query($sql);
-    } */
-
-    function update_stok($id, $total)
+    public function update_stok($id, $total)
     {
         $sql = "
 			UPDATE `pj_barang` SET `total_stok` = `total_stok` - " . $total . " WHERE `id` = '" . $id . "'

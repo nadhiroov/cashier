@@ -331,10 +331,12 @@
                 }
             } else if (charCode == 13) { // enter
                 return false;
+            } else if (charCode == 16) { // shift
                 var Field = $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(2)');
                 var Kodenya = Field.find('div#hasil_pencarian li.autocomplete_active span#kodenya').html();
                 var Barangnya = Field.find('div#hasil_pencarian li.autocomplete_active span#barangnya').html();
                 var Harganya = Field.find('div#hasil_pencarian li.autocomplete_active span#harganya').html();
+                let Discountnya = Field.find('div#hasil_pencarian li.autocomplete_active span#discountnya').html();
 
                 Field.find('div#hasil_pencarian').hide();
                 Field.find('input').val(Kodenya);
@@ -345,6 +347,8 @@
                 $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(5) input').removeAttr('disabled').val(1);
                 $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(6) input').val(Harganya);
                 $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(6) span').html(to_rupiah(Harganya));
+                $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(7) input#discount_item').val(Discountnya);
+                $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(7) input#discount_total').val(Discountnya);
 
                 var IndexIni = $(this).parent().parent().index() + 1;
                 var TotalIndex = $('#transactionTable tbody tr').length;

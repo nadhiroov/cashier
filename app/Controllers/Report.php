@@ -18,7 +18,7 @@ class Report extends BaseController
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
     }
-    
+
     public function byProduct()
     {
         $this->view->setData(['submenu_byProduct' => 'active']);
@@ -55,12 +55,24 @@ class Report extends BaseController
     public function detailByProduct($id = null)
     {
         $this->view->setData(['submenu_byProduct' => 'active']);
+        $this->data['content'] = $this->model->find($id);
+        // dd($this->data['content']);
         return view('report/detailByProduct', $this->data);
     }
 
     public function detailByProductDataDaily()
     {
         $id = $this->request->getPost('id');
-        return true;
+        $monthYear = $this->request->getPost('monthYear');
+        $data = $this->model->select("DATE_FORMAT(STR_TO_DATE(dt, '%d-%m-%Y'), '%d %b') as tgl, cast(count as SIGNED) as count")->join("json_table (
+    sold_history,
+  '$[*]' COLUMNS ( dt VARCHAR ( 20 ) path '$.date', count INT path '$.count' )) AS tb", '1 = 1')->where('id', $id)->like('dt', $monthYear)->find();
+        if (count($data) == 0) {
+            $data = [
+                'tgl' => 0,
+                'count' => 0
+            ];
+        }
+        return json_encode($data);
     }
 }

@@ -165,7 +165,7 @@ class Products extends BaseController
         foreach ($item->getResultObject() as $key) {
             $json['data'] .= "
 						<li>
-							<b>Barcode</b> : 
+							<b>Barcode</b> :
 							<span id='kodenya'>" . $key->barcode . "</span> <br />
 							<span id='barangnya'>" . $key->name . "</span>
 							<span id='harganya' style='display:none;'>" . $key->price . "</span>
