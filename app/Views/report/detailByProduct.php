@@ -1,12 +1,32 @@
 <?= $this->extend('layout/template'); ?>
 
 <?= $this->section('css'); ?>
+<link href="<?= base_url() ?>assets/css/datepicker.min.css" rel="stylesheet" />
 <?= $this->endSection(); ?>
 
 <?= $this->section('content'); ?>
 <div class="page-inner">
     <h4 class="page-title">Detail report</h4>
-    <div class="page-category">Simple yet flexible JavaScript charting for designers & developers. Please checkout their <a href="https://www.chartjs.org/" target="_blank">full documentation</a>.</div>
+    <div class="page-category">
+        <div class="col-md-6">
+            <div class="form-group form-inline">
+                <label for="inlineinput" class="col-md-1 col-form-label">Month</label>
+                <div class="col-md-11 input-group">
+                    <div class="input-group date" data-provide="datepicker">
+                        <input type="text" id="datepickerInput" class="form-control">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-th"></span>
+                        </div>
+                    </div>
+                    &nbsp;
+                    &nbsp;
+                    <button type="button" id="resetButton" class="btn btn-icon btn-primary">
+                        <i class="fas fa-undo"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-6">
             <div class="card">
@@ -38,9 +58,22 @@
 
 <?= $this->section('js'); ?>
 <script src="<?= base_url() ?>assets/js/plugin/chart.js/chart.min.js"></script>
-<script src="<?= base_url() ?>/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+<script src="<?= base_url() ?>assets/js/plugin/datepicker/datepicker.min.js"></script>
+<script src="<?= base_url() ?>assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
 <script>
     $(document).ready(function() {
+        $('.date').datepicker({
+            clearBtn: true,
+            autoclose: true,
+            format: "M yyyy",
+            viewMode: "months",
+            minViewMode: "months",
+            defaultViewDate: {
+                year: new Date().getFullYear(),
+                month: new Date().getMonth()
+            }
+        });
+
         let lineChartDaily = document.getElementById('lineChartDaily').getContext('2d')
         let myLineChartDaily = new Chart(lineChartDaily, {
             type: 'line',
@@ -139,7 +172,10 @@
                 }
             }
         });
-        /* $.ajax({
+    });
+
+    function getSummary() {
+        $.ajax({
             url: '<?= base_url() ?>/detailByProductDataDaily',
             data: {
                 'id': 'id'
@@ -201,7 +237,7 @@
                 console.log(err)
                 notif(err.status, err.title, err.message);
             },
-        }); */
-    });
+        });
+    }
 </script>
 <?= $this->endSection(); ?>
