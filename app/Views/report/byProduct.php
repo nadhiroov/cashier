@@ -69,58 +69,13 @@
         </div>
     </div>
 </div>
-
-<!-- Modal add new -->
-<div class="modal fade" id="addnew" tabindex="-1" role="dialog" aria-labelledby="addnewLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addnewLabel">Add new discount</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form class="formAdd" action="<?= base_url() ?>/discountSave" method="POST">
-                <div class="modal-body add-body"></div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-success">Save changes</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Modal edit -->
-<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="addnewLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addnewLabel">Edit discount</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form class="formEdit" action="<?= base_url() ?>/memberSave" method="POST">
-                <div class="modal-body edited-body"></div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-success">Save changes</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
 <?= $this->endSection(); ?>
 
 <?= $this->section('js'); ?>
 <script src="<?= base_url() ?>assets/js/plugin/datatables/datatables.min.js"></script>
-<script src="<?= base_url() ?>assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
-<script src="<?= base_url() ?>assets/js/plugin/sweetalert/sweetalert.min.js"></script>
-
 <script src="<?= base_url() ?>assets/js/moment.min.js"></script>
 <script src="<?= base_url() ?>assets/js/daterangepicker.min.js"></script>
+<script src="<?= base_url() ?>assets/js/plugin/chart.js/chart.min.js"></script>
 <script>
     $(document).ready(function() {
         $('.daterange').daterangepicker({
@@ -170,7 +125,7 @@
                 {
                     data: 'id',
                     render: function(data, type, row) {
-                        return `<a href="memberDetail/${data}" class="btn btn-sm btn-round btn-primary"><i class="fas fa-external-link-alt"></i></a>`;
+                        return `<a href="detailByProduct/${data}" class="btn btn-sm btn-round btn-primary"><i class="fas fa-external-link-alt"></i></a>`;
                     }
                 }
             ]
@@ -193,54 +148,63 @@
         });
     });
 
-    $('.formAdd, .formEdit, .formChangePrice').submit(function(e) {
-        e.preventDefault();
-        saveData(this);
-    });
-
-    $('#addnew').on('shown.bs.modal', function(e) {
+    $('#detail').on('shown.bs.modal', function(e) {
         $.ajax({
             type: 'get',
-            url: `<?= base_url() ?>/discountAdd/`,
+            url: `<?= base_url() ?>/detailiByProduct/`,
             success: function(data) {
-                $('.add-body').html(data);
-                $('.js-example-basic-single').select2({
-                    dropdownParent: $('#addnew'),
-                    placeholder: 'Select an option'
-                });
-                $('.daterange').daterangepicker({
-                    timePicker: true,
-                    timePicker24Hour: true,
-                    locale: {
-                        format: 'D MMMM YYYY, HH:mm'
+                $('.detail-body').html(data);
+                let lineChart = document.getElementById('lineChart').getContext('2d')
+                let myLineChart = new Chart(lineChart, {
+                    type: 'line',
+                    data: {
+                        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                        datasets: [{
+                            label: "Active Users",
+                            borderColor: "#1d7af3",
+                            pointBorderColor: "#FFF",
+                            pointBackgroundColor: "#1d7af3",
+                            pointBorderWidth: 2,
+                            pointHoverRadius: 4,
+                            pointHoverBorderWidth: 1,
+                            pointRadius: 4,
+                            backgroundColor: 'transparent',
+                            fill: true,
+                            borderWidth: 2,
+                            data: [542, 480, 430, 550, 530, 453, 380, 434, 568, 610, 700, 900]
+                        }]
                     },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 10,
+                                fontColor: '#1d7af3',
+                            }
+                        },
+                        tooltips: {
+                            bodySpacing: 4,
+                            mode: "nearest",
+                            intersect: 0,
+                            position: "nearest",
+                            xPadding: 10,
+                            yPadding: 10,
+                            caretPadding: 10
+                        },
+                        layout: {
+                            padding: {
+                                left: 15,
+                                right: 15,
+                                top: 15,
+                                bottom: 15
+                            }
+                        }
+                    }
                 });
             }
         });
-    });
-
-    $('#edit').on('show.bs.modal', function(e) {
-        let rowid = $(e.relatedTarget).data('id');
-        if (typeof rowid != 'undefined') {
-            $.ajax({
-                type: 'get',
-                url: `<?= base_url() ?>/discountEdit/${rowid}`,
-                success: function(data) {
-                    $('.edited-body').html(data);
-                    $('.js-example-basic-single').select2({
-                        dropdownParent: $('#addnew'),
-                        placeholder: 'Select an option'
-                    });
-                    $('.daterange').daterangepicker({
-                        timePicker: true,
-                        timePicker24Hour: true,
-                        locale: {
-                            format: 'D MMMM YYYY, HH:mm'
-                        },
-                    });
-                }
-            });
-        }
     });
 </script>
 <?= $this->endSection(); ?>

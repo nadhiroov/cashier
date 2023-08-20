@@ -129,6 +129,8 @@ $routes->delete('userDelete/(:num)', 'User::delete/$1');
 */
 $routes->get('rbyProduct', 'Report::ByProduct');
 $routes->get('rbyProductData', 'Report::getDataByProduct');
+$routes->get('detailByProduct/(:num)', 'Report::detailByProduct/$1');
+$routes->post('detailByProductDataDaily', 'Report::detailByProductDataDaily');
 
 
 $routes->get('insertUser', 'Auth::testInsert');

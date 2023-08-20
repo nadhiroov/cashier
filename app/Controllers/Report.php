@@ -51,4 +51,16 @@ class Report extends BaseController
         );
         return json_encode($return);
     }
+
+    public function detailByProduct($id = null)
+    {
+        $this->view->setData(['submenu_byProduct' => 'active']);
+        return view('report/detailByProduct', $this->data);
+    }
+
+    public function detailByProductDataDaily()
+    {
+        $id = $this->request->getPost('id');
+        return true;
+    }
 }
