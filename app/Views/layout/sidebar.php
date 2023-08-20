@@ -131,7 +131,7 @@
                         <div class="collapse <?= isset($menu_report) ? 'show' : '' ?>" id="report">
                             <ul class="nav nav-collapse">
                                 <li class="<?= $submenu_byProduct ?? ''; ?>">
-                                    <a href="<?= base_url() ?>byProduct">
+                                    <a href="<?= base_url() ?>rbyProduct">
                                         <span class="sub-item">By product</span>
                                     </a>
                                 </li>

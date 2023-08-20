@@ -33,7 +33,7 @@ class Discount extends BaseController
         return view('discount/add', $this->data);
     }
     
-    function edit($id) {
+    public function edit($id) {
         $this->data['content'] = $this->model->select('discount.*, name, price')->join('product B', 'B.id = discount.product_id')->find($id);
         $this->data['product'] = $this->product->findAll();
         return view('discount/edit', $this->data);
@@ -58,7 +58,7 @@ class Discount extends BaseController
         echo json_encode($return);
     }
 
-    function getData()
+    public function getData() : string
     {
         $dtTable = $this->request->getVar();
         $data = $this->model->select('discount.*, name, price')->join('product B', 'B.id = discount.product_id')->limit($dtTable['length'], $dtTable['start'])->orderBy('name', 'asc')->where('deleted_at is null');
@@ -79,7 +79,7 @@ class Discount extends BaseController
         return json_encode($return);
     }
 
-    function process()
+    public function process()
     {
         $form = $this->request->getPost('form');
         $date = explode('-', $form['date']);

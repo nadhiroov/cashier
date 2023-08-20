@@ -36,7 +36,7 @@ $routes->post('loggingin', 'Auth::process');
 $routes->get('logout', 'Auth::logout');
 $routes->get('dashboard', 'Home::dashboard');
 
-/* 
+/*
  * Categories
 */
 $routes->get('category', 'Category::index');
@@ -48,7 +48,7 @@ $routes->delete('categoryDelete/(:num)', 'Category::delete/$1');
 $routes->get('categoryDetail/(:num)', 'Category::detail/$1');
 // $routes->get('categoryDetails/(:num)', 'Category::detailData/$1');
 
-/* 
+/*
 * Brands
 */
 $routes->get('brand', 'Brand::index');
@@ -59,7 +59,7 @@ $routes->get('brandEdit/(:num)', 'Brand::edit/$1');
 $routes->delete('brandDelete/(:num)', 'Brand::delete/$1');
 
 
-/* 
+/*
 * Products
 */
 $routes->get('product', 'Products::index');
@@ -74,20 +74,20 @@ $routes->get('productDetail/(:num)', 'Products::detail/$1');
 $routes->post('productFind', 'Products::find');
 $routes->post('productStock', 'Products::stock');
 
-/* 
+/*
 * Transaction
 */
 $routes->get('transaction', 'Transaction::index');
 $routes->post('transactionSave', 'Transaction::process');
 
-/* 
+/*
 * Transaction History
 */
 $routes->get('transHistory', 'Transaction::historyIndex');
 $routes->get('transHistoryData', 'Transaction::getDataHistory');
 
 
-/* 
+/*
 * Member
 */
 $routes->get('member', 'Member::index');
@@ -97,7 +97,7 @@ $routes->get('memberDetail/(:num)', 'Member::detail/$1');
 $routes->post('memberSave', 'Member::process');
 $routes->get('memberGet', 'Member::getAll');
 
-/* 
+/*
 * Discount
 */
 $routes->get('discount', 'Discount::index');
@@ -107,14 +107,14 @@ $routes->get('discountEdit/(:num)', 'Discount::edit/$1');
 $routes->post('discountSave', 'Discount::process');
 $routes->delete('discountDelete/(:num)', 'Discount::delete/$1');
 
-/* 
+/*
 * Setting
 */
 $routes->get('setting', 'Setting::index');
 $routes->post('pointSave', 'Setting::processPoint');
 
 
-/* 
+/*
 * User
 */
 $routes->get('user', 'User::index');
@@ -123,6 +123,12 @@ $routes->get('userAdd', 'User::add');
 $routes->get('userEdit/(:num)', 'User::edit/$1');
 $routes->post('userSave', 'User::process');
 $routes->delete('userDelete/(:num)', 'User::delete/$1');
+
+/*
+* Report
+*/
+$routes->get('rbyProduct', 'Report::ByProduct');
+$routes->get('rbyProductData', 'Report::getDataByProduct');
 
 
 $routes->get('insertUser', 'Auth::testInsert');
