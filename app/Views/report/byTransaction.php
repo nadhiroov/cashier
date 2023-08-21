@@ -6,7 +6,7 @@
 
 <?= $this->section('content'); ?>
 <div class="page-inner">
-    <h4 class="page-title">Detail report <?= $content['name']; ?></h4>
+    <h4 class="page-title"><?= esc($menu); ?></h4>
     <div class="page-category">
         <div class="col-md-6">
             <div class="form-group form-inline">
@@ -26,7 +26,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">Daily report</div>
+                    <div class="card-title">Daily transaction</div>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
@@ -38,7 +38,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">Monthly report</div>
+                    <div class="card-title">Monthly transaction</div>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
@@ -99,8 +99,7 @@
             }
         }).on('changeDate', function(e) {
             myLineChartDaily.destroy()
-            myLineChartMonthly.destroy()
-            myLineChartPrice.destroy()
+            // myLineChartMonthly.destroy()
             getSummary()
             // `e` here contains the extra attributes
         });
@@ -110,9 +109,8 @@
     function getSummary() {
         // daily
         $.ajax({
-            url: '<?= base_url() ?>/detailByProductDataDaily',
+            url: '<?= base_url() ?>/byTransactionDataDaily',
             data: {
-                'id': <?= $content['id']; ?>,
                 'monthYear': $('#datepickerInput').val()
             },
             method: "POST",
@@ -122,48 +120,41 @@
                 myLineChartDaily = new Chart(lineChartDaily, {
                     type: 'line',
                     data: {
-                        labels: data.tgl,
+                        labels: data.dt,
                         datasets: [{
-                            label: "Total sales",
-                            borderColor: "#1d7af3",
-                            pointBorderColor: "#FFF",
-                            pointBackgroundColor: "#1d7af3",
-                            pointBorderWidth: 2,
-                            pointHoverRadius: 4,
-                            pointHoverBorderWidth: 1,
-                            pointRadius: 4,
-                            backgroundColor: 'transparent',
-                            fill: true,
-                            borderWidth: 2,
-                            data: data.count
-                        }]
+                            label: "Items",
+                            backgroundColor: '#fdaf4b',
+                            borderColor: '#fdaf4b',
+                            data: data.items,
+                        }, {
+                            label: "Transaction",
+                            backgroundColor: '#177dff',
+                            borderColor: '#177dff',
+                            data: data.count,
+                        }],
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
                         legend: {
-                            position: 'bottom',
-                            labels: {
-                                padding: 10,
-                                fontColor: '#1d7af3',
-                            }
+                            position: 'bottom'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Traffic Stats'
                         },
                         tooltips: {
-                            bodySpacing: 4,
-                            mode: "nearest",
-                            intersect: 0,
-                            position: "nearest",
-                            xPadding: 10,
-                            yPadding: 10,
-                            caretPadding: 10
+                            mode: 'index',
+                            intersect: false
                         },
-                        layout: {
-                            padding: {
-                                left: 15,
-                                right: 15,
-                                top: 15,
-                                bottom: 15
-                            }
+                        responsive: true,
+                        scales: {
+                            xAxes: [{
+                                stacked: true,
+                            }],
+                            yAxes: [{
+                                stacked: true
+                            }]
                         }
                     }
                 });
@@ -175,77 +166,75 @@
         });
 
         // montly
-        $.ajax({
-            url: '<?= base_url() ?>/detailByProductDataMontly',
-            data: {
-                'id': <?= $content['id']; ?>,
-                'monthYear': $('#datepickerInput').val()
-            },
-            method: "POST",
-            dataType: "json",
-            success: function(data) {
-                console.log(data)
-                let lineChartMonthly = document.getElementById('lineChartMonthly').getContext('2d')
-                myLineChartMonthly = new Chart(lineChartMonthly, {
-                    type: 'line',
-                    data: {
-                        labels: data.month_year,
-                        datasets: [{
-                            label: "Total sales",
-                            borderColor: "#1d7af3",
-                            pointBorderColor: "#FFF",
-                            pointBackgroundColor: "#1d7af3",
-                            pointBorderWidth: 2,
-                            pointHoverRadius: 4,
-                            pointHoverBorderWidth: 1,
-                            pointRadius: 4,
-                            backgroundColor: 'transparent',
-                            fill: true,
-                            borderWidth: 2,
-                            data: data.count
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                padding: 10,
-                                fontColor: '#1d7af3',
-                            }
-                        },
-                        tooltips: {
-                            bodySpacing: 4,
-                            mode: "nearest",
-                            intersect: 0,
-                            position: "nearest",
-                            xPadding: 10,
-                            yPadding: 10,
-                            caretPadding: 10
-                        },
-                        layout: {
-                            padding: {
-                                left: 15,
-                                right: 15,
-                                top: 15,
-                                bottom: 15
-                            }
-                        }
-                    }
-                });
-            },
-            error: function(err) {
-                console.log(err)
-                notif(err.status, err.title, err.message);
-            },
-        });
+        /*  $.ajax({
+             url: '<?= base_url() ?>/detailByProductDataMontly',
+             data: {
+                 'monthYear': $('#datepickerInput').val()
+             },
+             method: "POST",
+             dataType: "json",
+             success: function(data) {
+                 console.log(data)
+                 let lineChartMonthly = document.getElementById('lineChartMonthly').getContext('2d')
+                 myLineChartMonthly = new Chart(lineChartMonthly, {
+                     type: 'line',
+                     data: {
+                         labels: data.month_year,
+                         datasets: [{
+                             label: "Active Users",
+                             borderColor: "#1d7af3",
+                             pointBorderColor: "#FFF",
+                             pointBackgroundColor: "#1d7af3",
+                             pointBorderWidth: 2,
+                             pointHoverRadius: 4,
+                             pointHoverBorderWidth: 1,
+                             pointRadius: 4,
+                             backgroundColor: 'transparent',
+                             fill: true,
+                             borderWidth: 2,
+                             data: data.count
+                         }]
+                     },
+                     options: {
+                         responsive: true,
+                         maintainAspectRatio: false,
+                         legend: {
+                             position: 'bottom',
+                             labels: {
+                                 padding: 10,
+                                 fontColor: '#1d7af3',
+                             }
+                         },
+                         tooltips: {
+                             bodySpacing: 4,
+                             mode: "nearest",
+                             intersect: 0,
+                             position: "nearest",
+                             xPadding: 10,
+                             yPadding: 10,
+                             caretPadding: 10
+                         },
+                         layout: {
+                             padding: {
+                                 left: 15,
+                                 right: 15,
+                                 top: 15,
+                                 bottom: 15
+                             }
+                         }
+                     }
+                 });
+             },
+             error: function(err) {
+                 console.log(err)
+                 notif(err.status, err.title, err.message);
+             },
+         }); */
 
         // price
-        $.ajax({
+        /* $.ajax({
             url: '<?= base_url() ?>/detailByProductDataPrice',
             data: {
-                'id': <?= $content['id']; ?>,
                 'monthYear': $('#datepickerInput').val()
             },
             method: "POST",
@@ -281,7 +270,7 @@
                         },
                         title: {
                             display: true,
-                            text: 'Price Stats'
+                            text: 'Traffic Stats'
                         },
                         tooltips: {
                             mode: 'index',
@@ -303,7 +292,7 @@
                 console.log(err)
                 notif(err.status, err.title, err.message);
             },
-        });
+        }); */
     }
 </script>
 <?= $this->endSection(); ?>

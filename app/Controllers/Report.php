@@ -4,24 +4,27 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\M_product;
+use App\Models\M_transaction;
 
 class Report extends BaseController
 {
     protected $model;
+    protected $trans;
     public function __construct()
     {
         $this->model = new M_product();
+        $this->trans = new M_transaction();
         $this->view = \Config\Services::renderer();
         $this->view->setData(['menu_report' => 'active']);
-        $this->data['menu'] = 'Report by product';
         if (session()->get('is_admin') != 1) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
     }
-
+    
     public function byProduct()
     {
         $this->view->setData(['submenu_byProduct' => 'active']);
+        $this->data['menu'] = 'Report by product';
         return view('report/byProduct', $this->data);
     }
 
@@ -110,6 +113,30 @@ class Report extends BaseController
             $return['buy'][]    = 0;
             $return['percent'][]= 0;
             $return['sell'][]   = 0;
+        }
+        return json_encode($return);
+    }
+
+    public function byTransaction()
+    {
+        $this->view->setData(['submenu_byTransaction' => 'active']);
+        $this->data['menu'] = 'Transaction report';
+        return view('report/byTransaction', $this->data);
+    }
+
+    public function transactionDaily() {
+        $monthYear = $this->request->getPost('monthYear');
+        $monthYear = explode('-', $monthYear);
+        $data = $this->trans->select('DATE(created_at) AS dt, sum(JSON_LENGTH(items)) as items ,COUNT(*) AS count')->where('YEAR(created_at)', $monthYear[1])->where('MONTH(created_at)', $monthYear[0])->groupBy('dt')->orderBy('dt', 'asc')->find();
+        if (count($data) > 0) {
+            foreach ($data as $row) {
+                $return['dt'][] = date('d M', strtotime($row['dt']));
+                $return['count'][] = intval($row['count']);
+                $return['items'][] = intval($row['items']);
+            }
+        } else {
+            $return['dt'][] = 0;
+            $return['count'][] = 0;
         }
         return json_encode($return);
     }

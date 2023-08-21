@@ -132,12 +132,12 @@
                             <ul class="nav nav-collapse">
                                 <li class="<?= $submenu_byProduct ?? ''; ?>">
                                     <a href="<?= base_url() ?>rbyProduct">
-                                        <span class="sub-item">By product</span>
+                                        <span class="sub-item">Product</span>
                                     </a>
                                 </li>
-                                <li class="<?= $submenu_point ?? ''; ?>">
-                                    <a href="<?= base_url() ?>price">
-                                        <span class="sub-item">Price</span>
+                                <li class="<?= $submenu_byTransaction ?? ''; ?>">
+                                    <a href="<?= base_url() ?>rbyTransaction">
+                                        <span class="sub-item">Transaction</span>
                                     </a>
                                 </li>
                                 <li>
