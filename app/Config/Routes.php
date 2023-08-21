@@ -131,6 +131,8 @@ $routes->get('rbyProduct', 'Report::ByProduct');
 $routes->get('rbyProductData', 'Report::getDataByProduct');
 $routes->get('detailByProduct/(:num)', 'Report::detailByProduct/$1');
 $routes->post('detailByProductDataDaily', 'Report::detailByProductDataDaily');
+$routes->post('detailByProductDataMontly', 'Report::detailByProductDataMontly');
+$routes->post('detailByProductDataPrice', 'Report::detailByProductDataPrice');
 
 
 $routes->get('insertUser', 'Auth::testInsert');

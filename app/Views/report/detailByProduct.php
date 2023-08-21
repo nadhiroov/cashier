@@ -18,11 +18,6 @@
                             <span class="glyphicon glyphicon-th"></span>
                         </div>
                     </div>
-                    &nbsp;
-                    &nbsp;
-                    <button type="button" id="resetButton" class="btn btn-icon btn-primary">
-                        <i class="fas fa-undo"></i>
-                    </button>
                 </div>
             </div>
         </div>
@@ -53,6 +48,33 @@
             </div>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Price report</div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="lineChartPrice"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Stock report</div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="lineChartStock"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <?= $this->endSection(); ?>
 
@@ -62,9 +84,11 @@
 <script src="<?= base_url() ?>assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
 <script>
     let myLineChartDaily
+    let myLineChartMonthly
+    let myLineChartPrice
     $(document).ready(function() {
         $('.date').datepicker({
-            clearBtn: true,
+            todayBtn: true,
             autoclose: true,
             format: "m-yyyy",
             viewMode: "months",
@@ -75,62 +99,15 @@
             }
         }).on('changeDate', function(e) {
             myLineChartDaily.destroy()
+            myLineChartMonthly.destroy()
             getSummary()
             // `e` here contains the extra attributes
         });
         getSummary()
-        let lineChartMonthly = document.getElementById('lineChartMonthly').getContext('2d')
-        let myLineChartMonthly = new Chart(lineChartMonthly, {
-            type: 'line',
-            data: {
-                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                datasets: [{
-                    label: "Active Users",
-                    borderColor: "#1d7af3",
-                    pointBorderColor: "#FFF",
-                    pointBackgroundColor: "#1d7af3",
-                    pointBorderWidth: 2,
-                    pointHoverRadius: 4,
-                    pointHoverBorderWidth: 1,
-                    pointRadius: 4,
-                    backgroundColor: 'transparent',
-                    fill: true,
-                    borderWidth: 2,
-                    data: [542, 480, 430, 550, 530, 453, 380, 434, 568, 610, 700, 900]
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        padding: 10,
-                        fontColor: '#1d7af3',
-                    }
-                },
-                tooltips: {
-                    bodySpacing: 4,
-                    mode: "nearest",
-                    intersect: 0,
-                    position: "nearest",
-                    xPadding: 10,
-                    yPadding: 10,
-                    caretPadding: 10
-                },
-                layout: {
-                    padding: {
-                        left: 15,
-                        right: 15,
-                        top: 15,
-                        bottom: 15
-                    }
-                }
-            }
-        });
     });
 
     function getSummary() {
+        // daily
         $.ajax({
             url: '<?= base_url() ?>/detailByProductDataDaily',
             data: {
@@ -186,6 +163,137 @@
                                 top: 15,
                                 bottom: 15
                             }
+                        }
+                    }
+                });
+            },
+            error: function(err) {
+                console.log(err)
+                notif(err.status, err.title, err.message);
+            },
+        });
+
+        // montly
+        $.ajax({
+            url: '<?= base_url() ?>/detailByProductDataMontly',
+            data: {
+                'id': <?= $content['id']; ?>,
+                'monthYear': $('#datepickerInput').val()
+            },
+            method: "POST",
+            dataType: "json",
+            success: function(data) {
+                console.log(data)
+                let lineChartMonthly = document.getElementById('lineChartMonthly').getContext('2d')
+                myLineChartMonthly = new Chart(lineChartMonthly, {
+                    type: 'line',
+                    data: {
+                        labels: data.month_year,
+                        datasets: [{
+                            label: "Active Users",
+                            borderColor: "#1d7af3",
+                            pointBorderColor: "#FFF",
+                            pointBackgroundColor: "#1d7af3",
+                            pointBorderWidth: 2,
+                            pointHoverRadius: 4,
+                            pointHoverBorderWidth: 1,
+                            pointRadius: 4,
+                            backgroundColor: 'transparent',
+                            fill: true,
+                            borderWidth: 2,
+                            data: data.count
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 10,
+                                fontColor: '#1d7af3',
+                            }
+                        },
+                        tooltips: {
+                            bodySpacing: 4,
+                            mode: "nearest",
+                            intersect: 0,
+                            position: "nearest",
+                            xPadding: 10,
+                            yPadding: 10,
+                            caretPadding: 10
+                        },
+                        layout: {
+                            padding: {
+                                left: 15,
+                                right: 15,
+                                top: 15,
+                                bottom: 15
+                            }
+                        }
+                    }
+                });
+            },
+            error: function(err) {
+                console.log(err)
+                notif(err.status, err.title, err.message);
+            },
+        });
+
+        // price
+        $.ajax({
+            url: '<?= base_url() ?>/detailByProductDataPrice',
+            data: {
+                'id': <?= $content['id']; ?>,
+                'monthYear': $('#datepickerInput').val()
+            },
+            method: "POST",
+            dataType: "json",
+            success: function(data) {
+                let lineChartPrice = document.getElementById('lineChartPrice').getContext('2d')
+                myLineChartPrice = new Chart(lineChartPrice, {
+                    type: 'bar',
+                    data: {
+                        labels: data.dt,
+                        datasets: [{
+                            label: "Percent",
+                            backgroundColor: '#f3545d',
+                            borderColor: '#f3545d',
+                            data: data.percent,
+                        }, {
+                            label: "Buy",
+                            backgroundColor: '#fdaf4b',
+                            borderColor: '#fdaf4b',
+                            data: data.buy,
+                        }, {
+                            label: "Sell",
+                            backgroundColor: '#177dff',
+                            borderColor: '#177dff',
+                            data: data.sell,
+                        }],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        legend: {
+                            position: 'bottom'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Traffic Stats'
+                        },
+                        tooltips: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        responsive: true,
+                        scales: {
+                            xAxes: [{
+                                stacked: true,
+                            }],
+                            yAxes: [{
+                                stacked: true
+                            }]
                         }
                     }
                 });

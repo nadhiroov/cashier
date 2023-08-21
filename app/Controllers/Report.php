@@ -64,9 +64,7 @@ class Report extends BaseController
     {
         $id = $this->request->getPost('id');
         $monthYear = $this->request->getPost('monthYear');
-        $data = $this->model->select("DATE_FORMAT(STR_TO_DATE(dt, '%d-%m-%Y'), '%d %b') as tgl, count")->join("json_table (
-    sold_history,
-  '$[*]' COLUMNS ( dt VARCHAR ( 20 ) path '$.date', count INT path '$.count' )) AS tb", '1 = 1')->where('id', $id)->like('dt', $monthYear)->find();
+        $data = $this->model->select("DATE_FORMAT(STR_TO_DATE(dt, '%d-%m-%Y'), '%d %b') as tgl, count")->join("json_table (sold_history, '$[*]' COLUMNS ( dt VARCHAR ( 20 ) path '$.date', count INT path '$.count' )) AS tb", '1 = 1')->where('id', $id)->like('dt', $monthYear)->find();
         if (count($data) > 0) {
             foreach ($data as $row) {
                 $return['tgl'][] = $row['tgl'];
@@ -75,6 +73,43 @@ class Report extends BaseController
         } else {
             $return['tgl'][] = 0;
             $return['count'][] = 0;
+        }
+        return json_encode($return);
+    }
+
+    public function detailByProductDataMontly(){
+        $id = $this->request->getPost('id');
+        $monthYear = $this->request->getPost('monthYear');
+        $monthYear = explode('-', $monthYear);
+        $data = $this->model->select(" DATE_FORMAT(STR_TO_DATE(dt, '%d-%m-%Y'), '%b %Y') as month_year, SUM(count) as count")->join('json_table(sold_history, \'$[*]\' COLUMNS ( dt VARCHAR ( 20 ) path \'$.date\', count INT path \'$.count\' )) AS tb', '1 = 1')->where('id', $id)->like('dt', $monthYear[1])->groupBy('YEAR(STR_TO_DATE(dt, \'%d-%m-%Y\')), MONTH(STR_TO_DATE(dt, \'%d-%m-%Y\'))')->orderBy('YEAR(STR_TO_DATE(dt, \'%d-%m-%Y\')), MONTH(STR_TO_DATE(dt, \'%d-%m-%Y\'))')->find();
+        if (count($data) > 0) {
+            foreach ($data as $row) {
+                $return['month_year'][] = $row['month_year'];
+                $return['count'][] = intval($row['count']);
+            }
+        } else {
+            $return['month_year'][] = 0;
+            $return['count'][] = 0;
+        }
+        return json_encode($return);
+    }
+
+    public function detailByProductDataPrice(){
+        $id = $this->request->getPost('id');
+        $monthYear = $this->request->getPost('monthYear');
+        $data = $this->model->select("dt, buy, tb.percent,sell")->join("json_table (price_history,'$[*]' COLUMNS ( dt VARCHAR ( 20 ) path '$.date', buy INT path '$.buy', percent INT path '$.percent', sell INT path '$.sell' )) AS tb", '1 = 1')->where('id', $id)->like('dt', $monthYear)->orderBy('dt', 'asc')->find();
+        if (count($data) > 0) {
+            foreach ($data as $row) {
+                $return['dt'][]     = date('d M Y', strtotime($row['dt']));
+                $return['buy'][]    = intval($row['buy']);
+                $return['percent'][]= intval($row['percent']);
+                $return['sell'][]   = intval($row['sell']);
+            }
+        } else {
+            $return['dt'][]     = 0;
+            $return['buy'][]    = 0;
+            $return['percent'][]= 0;
+            $return['sell'][]   = 0;
         }
         return json_encode($return);
     }
