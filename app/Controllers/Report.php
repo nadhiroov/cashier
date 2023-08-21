@@ -64,15 +64,18 @@ class Report extends BaseController
     {
         $id = $this->request->getPost('id');
         $monthYear = $this->request->getPost('monthYear');
-        $data = $this->model->select("DATE_FORMAT(STR_TO_DATE(dt, '%d-%m-%Y'), '%d %b') as tgl, cast(count as SIGNED) as count")->join("json_table (
+        $data = $this->model->select("DATE_FORMAT(STR_TO_DATE(dt, '%d-%m-%Y'), '%d %b') as tgl, count")->join("json_table (
     sold_history,
   '$[*]' COLUMNS ( dt VARCHAR ( 20 ) path '$.date', count INT path '$.count' )) AS tb", '1 = 1')->where('id', $id)->like('dt', $monthYear)->find();
-        if (count($data) == 0) {
-            $data = [
-                'tgl' => 0,
-                'count' => 0
-            ];
+        if (count($data) > 0) {
+            foreach ($data as $row) {
+                $return['tgl'][] = $row['tgl'];
+                $return['count'][] = intval($row['count']);
+            }
+        } else {
+            $return['tgl'][] = 0;
+            $return['count'][] = 0;
         }
-        return json_encode($data);
+        return json_encode($return);
     }
 }

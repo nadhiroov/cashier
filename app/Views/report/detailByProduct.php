@@ -61,6 +61,7 @@
 <script src="<?= base_url() ?>assets/js/plugin/datepicker/datepicker.min.js"></script>
 <script src="<?= base_url() ?>assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
 <script>
+    let myLineChartDaily
     $(document).ready(function() {
         $('.date').datepicker({
             clearBtn: true,
@@ -73,6 +74,7 @@
                 month: new Date().getMonth()
             }
         }).on('changeDate', function(e) {
+            myLineChartDaily.destroy()
             getSummary()
             // `e` here contains the extra attributes
         });
@@ -138,14 +140,13 @@
             method: "POST",
             dataType: "json",
             success: function(data) {
-                console.log(data)
                 let lineChartDaily = document.getElementById('lineChartDaily').getContext('2d')
-                let myLineChartDaily = new Chart(lineChartDaily, {
+                myLineChartDaily = new Chart(lineChartDaily, {
                     type: 'line',
                     data: {
                         labels: data.tgl,
                         datasets: [{
-                            label: "Active Users",
+                            label: "Total biaya BBL",
                             borderColor: "#1d7af3",
                             pointBorderColor: "#FFF",
                             pointBackgroundColor: "#1d7af3",
