@@ -1,7 +1,7 @@
 <div class="form-group form-inline">
     <label for="inlineinput" class="col-md-3 col-form-label">Brand</label>
     <div class="col-md-9 p-0">
-        <select class="form-control category" id="exampleFormControlSelect1" name="form[brand_id]">
+        <select class="form-control brand" id="exampleFormControlSelect1" name="form[brand_id]" data-width="100%" data-placeholder="select a brand">
             <option></option>
             <?php foreach ($brand as $row) : ?>
                 <option value="<?= $row['id'] ?>" <?= $content['brand_id'] == $row['id'] ? 'selected' : ''; ?>><?= $row['brand'] ?></option>
@@ -34,7 +34,7 @@
             <div class="input-group-prepend">
                 <span class="input-group-text" id="basic-addon1">Rp</span>
             </div>
-            <input type="text" class="form-control" placeholder="Enter price" name="form[purchase_price]" value="<?= $content['purchase_price']; ?>" aria-label="Price" aria-describedby="basic-addon1">
+            <input type="text" class="form-control purchase" placeholder="Enter price" name="form[purchase_price]" value="<?= $content['purchase_price']; ?>" aria-label="Price" aria-describedby="basic-addon1">
         </div>
     </div>
 </div>
@@ -45,7 +45,18 @@
             <div class="input-group-prepend">
                 <span class="input-group-text" id="basic-addon1">%</span>
             </div>
-            <input type="text" class="form-control" placeholder="Enter percent" name="form[percent]" value="<?= $content['percent']; ?>" aria-label="Percent" aria-describedby="basic-addon1">
+            <input type="text" class="form-control percent" placeholder="Enter percent" name="form[percent]" value="<?= $content['percent']; ?>" aria-label="Percent" aria-describedby="basic-addon1">
+        </div>
+    </div>
+</div>
+<div class="form-group form-inline">
+    <label for="inlineinput" class="col-md-3 col-form-label">Selling price</label>
+    <div class="col-md-9 p-0">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">Rp</span>
+            </div>
+            <input type="text" class="form-control sell" placeholder="Enter price" name="form[price]" value="<?= $content['price']; ?>" aria-label="Price" aria-describedby="basic-addon1">
         </div>
     </div>
 </div>

@@ -105,7 +105,7 @@ class Report extends BaseController
             foreach ($data as $row) {
                 $return['dt'][]     = date('d M Y', strtotime($row['dt']));
                 $return['buy'][]    = intval($row['buy']);
-                $return['percent'][]= intval($row['percent']);
+                $return['percent'][]= (float) $row['percent'];
                 $return['sell'][]   = intval($row['sell']);
             }
         } else {

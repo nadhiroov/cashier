@@ -49,24 +49,42 @@ class Products extends BaseController
 
     public function processEditPrice() {
         $form = $this->request->getPost('form');
-        $form['price'] = intval($form['purchase_price']) + (intval($form['purchase_price']) * (intval($form['percent']) / 100));
         $data = $this->model->find($form['id']);
-        $price = [
-            'date'  => date('d-m-Y'),
-            'buy'   => intval($form['purchase_price']),
-            'percent'=>intval($form['percent']),
-            'sell'  => $form['price']
-        ];
-        if ($data['price_history'] == null) {
-            $save['price_history'] = json_encode([$price]);
-        }else{
-            $oldPrice = json_decode($data['price_history'], true);
-            array_push($oldPrice, $price);
-            $save['price_history'] = json_encode($oldPrice);
+
+        if (isset($form['checkPrice'])) {
+            $form['price'] = (int) str_replace('.', '', $form['price']);
+            $form['purchase_price'] = (int) str_replace('.', '', $form['purchase_price']);
+            $price = [
+                'date'  => date('d-m-Y'),
+                'buy'   => intval($form['purchase_price']),
+                'percent'=> (float) $form['percent'],
+                'sell'  => $form['price']
+            ];
+            if ($data['price_history'] == null) {
+                $save['price_history'] = json_encode([$price]);
+            }else{
+                $oldPrice = json_decode($data['price_history'], true);
+                array_push($oldPrice, $price);
+                $save['price_history'] = json_encode($oldPrice);
+            }
+            $save['purchase_price'] = $form['purchase_price'];
+            $save['percent']        = $form['percent'];
+            $save['price']          = $form['price'];
         }
-        $save['purchase_price'] = $form['purchase_price'];
-        $save['percent']        = $form['percent'];
-        $save['price']          = $form['price'];
+
+        if (isset($form['checkStock'])) {
+            $price = [
+                'date'  => date('d-m-Y'),
+                'count'   => intval($form['stock']),
+            ];
+            if ($data['incoming_history'] == null) {
+                $save['incoming_history'] = json_encode([$price]);
+            } else {
+                $oldPrice = json_decode($data['incoming_history'], true);
+                array_push($oldPrice, $price);
+                $save['incoming_history'] = json_encode($oldPrice);
+            }
+        }
         $save['id']             = $form['id'];
         try {
             $this->model->save($save);
@@ -118,7 +136,18 @@ class Products extends BaseController
     public function process()
     {
         $form = $this->request->getPost('form');
-        $form['price'] = intval($form['purchase_price']) + (intval($form['purchase_price']) * (intval($form['percent'])/ 100));
+        $form['price'] = (int) str_replace('.', '', $form['price']);
+        $form['purchase_price'] = (int) str_replace('.', '', $form['purchase_price']);
+
+        if ($form['purchase_price'] != '' && !isset($form['id'])) {
+            $price = [
+                'date'  => date('d-m-Y'),
+                'buy'   => intval($form['purchase_price']),
+                'percent'=> (float) $form['percent'],
+                'sell'  => $form['price']
+            ];
+            $form['price_history'] = json_encode([$price]);
+        }
         try {
             $this->model->save($form);
             $return = [

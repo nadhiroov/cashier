@@ -1,4 +1,8 @@
 <?= $this->extend('layout/template'); ?>
+<?= $this->section('css'); ?>
+<link href="<?= base_url() ?>/assets/css/select2.min.css" rel="stylesheet" />
+<?= $this->endSection(); ?>
+
 <?= $this->section('content'); ?>
 <div class="page-inner">
     <div class="page-header">
@@ -189,35 +193,116 @@
             type: 'get',
             url: '<?= base_url() ?>/productAdd',
             success: function(data) {
-                $('.add-body').html(data);
-                // $('.brand').select2();
+                $('.add-body').html(data)
+                $('.brand').select2()
+                $('.purchase').keyup(function() {
+                    let inputValue = $(this).val().replace(/\./g, '').replace(/,/g, '')
+                    let formattedValue = Number(inputValue).toLocaleString("id-ID")
+                    $(this).val(formattedValue)
+                })
+
+                $('.purchase, .percent').keyup(function() {
+                    let purchase = parseFloat($('.purchase').val().replace(/\./g, '').replace(/,/g, '.'))
+                    let percent = parseFloat($('.percent').val())
+
+                    if (!isNaN(purchase) && !isNaN(percent) && percent !== 0) {
+                        let selling = purchase + (purchase * percent / 100)
+                        let formattedSelling = selling.toLocaleString('id-ID', {
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 0,
+                        })
+                        $('.sell').val(formattedSelling)
+                    }
+                })
             }
         });
     });
 
     $('#edit').on('show.bs.modal', function(e) {
-        let rowid = $(e.relatedTarget).data('id');
-        console.log(rowid)
+        let rowid = $(e.relatedTarget).data('id')
         if (typeof rowid != 'undefined') {
             $.ajax({
                 type: 'get',
                 url: `<?= base_url() ?>/productEdit/${rowid}`,
                 success: function(data) {
-                    $('.edited-body').html(data);
+                    $('.edited-body').html(data)
+                    $('.brand').select2()
+                    $('.purchase').keyup(function() {
+                        let inputValue = $(this).val().replace(/\./g, '').replace(/,/g, '')
+                        let formattedValue = Number(inputValue).toLocaleString("id-ID")
+                        $(this).val(formattedValue)
+                    })
+
+                    $('.purchase, .percent').keyup(function() {
+                        let purchase = parseFloat($('.purchase').val().replace(/\./g, '').replace(/,/g, '.'))
+                        let percent = parseFloat($('.percent').val())
+
+                        if (!isNaN(purchase) && !isNaN(percent) && percent !== 0) {
+                            let selling = purchase + (purchase * percent / 100)
+                            let formattedSelling = selling.toLocaleString('id-ID', {
+                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 0,
+                            })
+                            $('.sell').val(formattedSelling)
+                        }
+                    })
                 }
             });
         }
     });
 
     $('#changePrice').on('show.bs.modal', function(e) {
-        let rowid = $(e.relatedTarget).data('id');
-        console.log(rowid)
+        let rowid = $(e.relatedTarget).data('id')
         if (typeof rowid != 'undefined') {
             $.ajax({
                 type: 'get',
                 url: `<?= base_url() ?>/productChangePrice/${rowid}`,
                 success: function(data) {
-                    $('.price-body').html(data);
+                    $('.price-body').html(data)
+                    // format price
+                    $('.purchase').keyup(function() {
+                        let inputValue = $(this).val().replace(/\./g, '').replace(/,/g, '')
+                        let formattedValue = Number(inputValue).toLocaleString("id-ID")
+                        $(this).val(formattedValue)
+                    })
+
+                    // trigger purchase sell price
+                    $('.purchase, .percent').keyup(function() {
+                        let purchase = parseFloat($('.purchase').val().replace(/\./g, '').replace(/,/g, '.'))
+                        let percent = parseFloat($('.percent').val())
+
+                        if (!isNaN(purchase) && !isNaN(percent) && percent !== 0) {
+                            let selling = purchase + (purchase * percent / 100)
+                            let formattedSelling = selling.toLocaleString('id-ID', {
+                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 0,
+                            })
+                            $('.sell').val(formattedSelling)
+                        }
+                    })
+
+                    // show hide form
+                    let checkPrice = $('.checkPrice');
+                    let checkStock = $('.checkStock');
+                    let priceForm = $('.priceForm');
+                    let stockForm = $('.stockForm');
+
+                    checkPrice.change(function() {
+                        if (checkPrice.is(':checked')) {
+                            priceForm.show()
+                        } else {
+                            priceForm.hide()
+                        }
+                    })
+
+                    checkStock.change(function() {
+                        if (checkStock.is(':checked')) {
+                            stockForm.show()
+                        } else {
+                            stockForm.hide()
+                        }
+                    })
+
                 }
             });
         }
