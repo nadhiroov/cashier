@@ -140,70 +140,10 @@
         });
 
         $('#resetButton').click(function() {
-            // Reset the DateRangePicker input by setting its value to an empty string
             $('#start_date').val('')
             $('#end_date').val('')
             $('.daterange').val('');
             dttb.ajax.reload()
-        });
-    });
-
-    $('#detail').on('shown.bs.modal', function(e) {
-        $.ajax({
-            type: 'get',
-            url: `<?= base_url() ?>/detailiByProduct/`,
-            success: function(data) {
-                $('.detail-body').html(data);
-                let lineChart = document.getElementById('lineChart').getContext('2d')
-                let myLineChart = new Chart(lineChart, {
-                    type: 'line',
-                    data: {
-                        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                        datasets: [{
-                            label: "Active Users",
-                            borderColor: "#1d7af3",
-                            pointBorderColor: "#FFF",
-                            pointBackgroundColor: "#1d7af3",
-                            pointBorderWidth: 2,
-                            pointHoverRadius: 4,
-                            pointHoverBorderWidth: 1,
-                            pointRadius: 4,
-                            backgroundColor: 'transparent',
-                            fill: true,
-                            borderWidth: 2,
-                            data: [542, 480, 430, 550, 530, 453, 380, 434, 568, 610, 700, 900]
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                padding: 10,
-                                fontColor: '#1d7af3',
-                            }
-                        },
-                        tooltips: {
-                            bodySpacing: 4,
-                            mode: "nearest",
-                            intersect: 0,
-                            position: "nearest",
-                            xPadding: 10,
-                            yPadding: 10,
-                            caretPadding: 10
-                        },
-                        layout: {
-                            padding: {
-                                left: 15,
-                                right: 15,
-                                top: 15,
-                                bottom: 15
-                            }
-                        }
-                    }
-                });
-            }
         });
     });
 </script>

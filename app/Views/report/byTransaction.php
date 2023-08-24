@@ -99,9 +99,9 @@
             }
         }).on('changeDate', function(e) {
             myLineChartDaily.destroy()
-            // myLineChartMonthly.destroy()
+            myLineChartMonthly.destroy()
+            myLineChartPrice.destroy()
             getSummary()
-            // `e` here contains the extra attributes
         });
         getSummary()
     });
@@ -116,6 +116,7 @@
             method: "POST",
             dataType: "json",
             success: function(data) {
+                // daily report
                 let lineChartDaily = document.getElementById('lineChartDaily').getContext('2d')
                 myLineChartDaily = new Chart(lineChartDaily, {
                     type: 'line',
@@ -141,7 +142,128 @@
                         },
                         title: {
                             display: true,
-                            text: 'Traffic Stats'
+                            text: 'Daily Stats'
+                        },
+                        tooltips: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        responsive: true,
+                        scales: {
+                            xAxes: [{
+                                stacked: true,
+                            }],
+                            yAxes: [{
+                                stacked: true
+                            }]
+                        }
+                    }
+                });
+
+                // daily price and discount
+                let lineChartPrice = document.getElementById('lineChartPrice').getContext('2d')
+                myLineChartPrice = new Chart(lineChartPrice, {
+                    type: 'line',
+                    data: {
+                        labels: data.dt,
+                        datasets: [{
+                            label: "Sold total",
+                            borderColor: "#1d7af3",
+                            pointBorderColor: "#FFF",
+                            pointBackgroundColor: "#1d7af3",
+                            pointBorderWidth: 2,
+                            pointHoverRadius: 4,
+                            pointHoverBorderWidth: 1,
+                            pointRadius: 4,
+                            backgroundColor: 'transparent',
+                            fill: true,
+                            borderWidth: 2,
+                            data: data.grand_total
+                        }, {
+                            label: "Discount total",
+                            borderColor: "#fdaf4b",
+                            pointBorderColor: "#FFF",
+                            pointBackgroundColor: "#fdaf4b",
+                            pointBorderWidth: 2,
+                            pointHoverRadius: 4,
+                            pointHoverBorderWidth: 1,
+                            pointRadius: 4,
+                            backgroundColor: 'transparent',
+                            fill: true,
+                            borderWidth: 2,
+                            data: data.discount_total
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 10,
+                                fontColor: '#1d7af3',
+                            }
+                        },
+                        tooltips: {
+                            bodySpacing: 4,
+                            mode: "nearest",
+                            intersect: 0,
+                            position: "nearest",
+                            xPadding: 10,
+                            yPadding: 10,
+                            caretPadding: 10
+                        },
+                        layout: {
+                            padding: {
+                                left: 15,
+                                right: 15,
+                                top: 15,
+                                bottom: 15
+                            }
+                        }
+                    }
+                });
+            },
+            error: function(err) {
+                notif(err.status, err.title, err.message);
+            },
+        });
+
+        // montly
+        $.ajax({
+            url: '<?= base_url() ?>/byTransactionMonthly',
+            data: {
+                'monthYear': $('#datepickerInput').val()
+            },
+            method: "POST",
+            dataType: "json",
+            success: function(data) {
+                let lineChartMonthly = document.getElementById('lineChartMonthly').getContext('2d')
+                myLineChartMonthly = new Chart(lineChartMonthly, {
+                    type: 'line',
+                    data: {
+                        labels: data.dt,
+                        datasets: [{
+                            label: "Items",
+                            backgroundColor: '#fdaf4b',
+                            borderColor: '#fdaf4b',
+                            data: data.items,
+                        }, {
+                            label: "Transaction",
+                            backgroundColor: '#177dff',
+                            borderColor: '#177dff',
+                            data: data.count,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        legend: {
+                            position: 'bottom'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Monthly Stats'
                         },
                         tooltips: {
                             mode: 'index',
@@ -164,135 +286,6 @@
                 notif(err.status, err.title, err.message);
             },
         });
-
-        // montly
-        /*  $.ajax({
-             url: '<?= base_url() ?>/detailByProductDataMontly',
-             data: {
-                 'monthYear': $('#datepickerInput').val()
-             },
-             method: "POST",
-             dataType: "json",
-             success: function(data) {
-                 console.log(data)
-                 let lineChartMonthly = document.getElementById('lineChartMonthly').getContext('2d')
-                 myLineChartMonthly = new Chart(lineChartMonthly, {
-                     type: 'line',
-                     data: {
-                         labels: data.month_year,
-                         datasets: [{
-                             label: "Active Users",
-                             borderColor: "#1d7af3",
-                             pointBorderColor: "#FFF",
-                             pointBackgroundColor: "#1d7af3",
-                             pointBorderWidth: 2,
-                             pointHoverRadius: 4,
-                             pointHoverBorderWidth: 1,
-                             pointRadius: 4,
-                             backgroundColor: 'transparent',
-                             fill: true,
-                             borderWidth: 2,
-                             data: data.count
-                         }]
-                     },
-                     options: {
-                         responsive: true,
-                         maintainAspectRatio: false,
-                         legend: {
-                             position: 'bottom',
-                             labels: {
-                                 padding: 10,
-                                 fontColor: '#1d7af3',
-                             }
-                         },
-                         tooltips: {
-                             bodySpacing: 4,
-                             mode: "nearest",
-                             intersect: 0,
-                             position: "nearest",
-                             xPadding: 10,
-                             yPadding: 10,
-                             caretPadding: 10
-                         },
-                         layout: {
-                             padding: {
-                                 left: 15,
-                                 right: 15,
-                                 top: 15,
-                                 bottom: 15
-                             }
-                         }
-                     }
-                 });
-             },
-             error: function(err) {
-                 console.log(err)
-                 notif(err.status, err.title, err.message);
-             },
-         }); */
-
-        // price
-        /* $.ajax({
-            url: '<?= base_url() ?>/detailByProductDataPrice',
-            data: {
-                'monthYear': $('#datepickerInput').val()
-            },
-            method: "POST",
-            dataType: "json",
-            success: function(data) {
-                let lineChartPrice = document.getElementById('lineChartPrice').getContext('2d')
-                myLineChartPrice = new Chart(lineChartPrice, {
-                    type: 'bar',
-                    data: {
-                        labels: data.dt,
-                        datasets: [{
-                            label: "Percent",
-                            backgroundColor: '#f3545d',
-                            borderColor: '#f3545d',
-                            data: data.percent,
-                        }, {
-                            label: "Buy",
-                            backgroundColor: '#fdaf4b',
-                            borderColor: '#fdaf4b',
-                            data: data.buy,
-                        }, {
-                            label: "Sell",
-                            backgroundColor: '#177dff',
-                            borderColor: '#177dff',
-                            data: data.sell,
-                        }],
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        legend: {
-                            position: 'bottom'
-                        },
-                        title: {
-                            display: true,
-                            text: 'Traffic Stats'
-                        },
-                        tooltips: {
-                            mode: 'index',
-                            intersect: false
-                        },
-                        responsive: true,
-                        scales: {
-                            xAxes: [{
-                                stacked: true,
-                            }],
-                            yAxes: [{
-                                stacked: true
-                            }]
-                        }
-                    }
-                });
-            },
-            error: function(err) {
-                console.log(err)
-                notif(err.status, err.title, err.message);
-            },
-        }); */
     }
 </script>
 <?= $this->endSection(); ?>

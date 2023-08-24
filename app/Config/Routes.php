@@ -133,8 +133,10 @@ $routes->get('detailByProduct/(:num)', 'Report::detailByProduct/$1');
 $routes->post('detailByProductDataDaily', 'Report::detailByProductDataDaily');
 $routes->post('detailByProductDataMontly', 'Report::detailByProductDataMontly');
 $routes->post('detailByProductDataPrice', 'Report::detailByProductDataPrice');
+$routes->post('detailByProductDataIncoming', 'Report::detailByProductDataIncoming');
 $routes->get('rbyTransaction', 'Report::byTransaction');
 $routes->post('byTransactionDataDaily', 'Report::transactionDaily');
+$routes->post('byTransactionMonthly', 'Report::transactionMonthly');
 
 
 $routes->get('insertUser', 'Auth::testInsert');

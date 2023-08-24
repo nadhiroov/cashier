@@ -65,7 +65,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">Stock report</div>
+                    <div class="card-title">Incoming product</div>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
@@ -86,6 +86,8 @@
     let myLineChartDaily
     let myLineChartMonthly
     let myLineChartPrice
+    let myLineChartStock
+
     $(document).ready(function() {
         $('.date').datepicker({
             todayBtn: true,
@@ -101,8 +103,8 @@
             myLineChartDaily.destroy()
             myLineChartMonthly.destroy()
             myLineChartPrice.destroy()
+            myLineChartStock.destroy()
             getSummary()
-            // `e` here contains the extra attributes
         });
         getSummary()
     });
@@ -124,7 +126,7 @@
                     data: {
                         labels: data.tgl,
                         datasets: [{
-                            label: "Total sales",
+                            label: "Sold total",
                             borderColor: "#1d7af3",
                             pointBorderColor: "#FFF",
                             pointBackgroundColor: "#1d7af3",
@@ -169,7 +171,6 @@
                 });
             },
             error: function(err) {
-                console.log(err)
                 notif(err.status, err.title, err.message);
             },
         });
@@ -184,14 +185,13 @@
             method: "POST",
             dataType: "json",
             success: function(data) {
-                console.log(data)
                 let lineChartMonthly = document.getElementById('lineChartMonthly').getContext('2d')
                 myLineChartMonthly = new Chart(lineChartMonthly, {
                     type: 'line',
                     data: {
                         labels: data.month_year,
                         datasets: [{
-                            label: "Total sales",
+                            label: "Sold total",
                             borderColor: "#1d7af3",
                             pointBorderColor: "#FFF",
                             pointBackgroundColor: "#1d7af3",
@@ -236,7 +236,6 @@
                 });
             },
             error: function(err) {
-                console.log(err)
                 notif(err.status, err.title, err.message);
             },
         });
@@ -300,7 +299,59 @@
                 });
             },
             error: function(err) {
-                console.log(err)
+                notif(err.status, err.title, err.message);
+            },
+        });
+
+        // stock
+        $.ajax({
+            url: '<?= base_url() ?>/detailByProductDataIncoming',
+            data: {
+                'id': <?= $content['id']; ?>,
+                'monthYear': $('#datepickerInput').val()
+            },
+            method: "POST",
+            dataType: "json",
+            success: function(data) {
+                let lineChartStock = document.getElementById('lineChartStock').getContext('2d')
+                myLineChartStock = new Chart(lineChartStock, {
+                    type: 'bar',
+                    data: {
+                        labels: data.dt,
+                        datasets: [{
+                            label: "Incoming",
+                            backgroundColor: '#177dff',
+                            borderColor: '#177dff',
+                            data: data.count,
+                        }],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        legend: {
+                            position: 'bottom'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Incoming products'
+                        },
+                        tooltips: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        responsive: true,
+                        scales: {
+                            xAxes: [{
+                                stacked: true,
+                            }],
+                            yAxes: [{
+                                stacked: true
+                            }]
+                        }
+                    }
+                });
+            },
+            error: function(err) {
                 notif(err.status, err.title, err.message);
             },
         });
