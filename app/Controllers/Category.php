@@ -73,8 +73,7 @@ class Category extends BaseController
     public function process()
     {
         $form = $this->request->getPost('form');
-        $id = intval($form['id']);
-        if (!$this->model->validate($form, $id)) {
+        if (!$this->model->validate($form)) {
             $return = [
                 'status' => 'error',
                 'title'  => 'Error',

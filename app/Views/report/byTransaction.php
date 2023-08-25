@@ -53,7 +53,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">Price report</div>
+                    <div class="card-title">Price daily report</div>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
@@ -62,18 +62,18 @@
                 </div>
             </div>
         </div>
-        <!-- <div class="col-md-6">
+        <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">Stock report</div>
+                    <div class="card-title">Price Monthly report</div>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
-                        <canvas id="lineChartStock"></canvas>
+                        <canvas id="lineChartPriceMonthly"></canvas>
                     </div>
                 </div>
             </div>
-        </div> -->
+        </div>
     </div>
 </div>
 <?= $this->endSection(); ?>
@@ -86,8 +86,10 @@
     let myLineChartDaily
     let myLineChartMonthly
     let myLineChartPrice
-    
+    let myLineChartPriceMonthly
+
     $(document).ready(function() {
+        
         $('.date').datepicker({
             todayBtn: true,
             autoclose: true,
@@ -102,10 +104,18 @@
             myLineChartDaily.destroy()
             myLineChartMonthly.destroy()
             myLineChartPrice.destroy()
+            myLineChartPriceMonthly.destroy()
             getSummary()
         });
         getSummary()
     });
+
+    function formatCurrency(number) {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR'
+        }).format(number);
+    }
 
     function getSummary() {
         // daily
@@ -239,6 +249,7 @@
             method: "POST",
             dataType: "json",
             success: function(data) {
+
                 let lineChartMonthly = document.getElementById('lineChartMonthly').getContext('2d')
                 myLineChartMonthly = new Chart(lineChartMonthly, {
                     type: 'line',
@@ -281,9 +292,72 @@
                         }
                     }
                 });
+
+                // monthly price and discount
+                let lineChartPriceMonthly = document.getElementById('lineChartPriceMonthly').getContext('2d')
+                myLineChartPriceMonthly = new Chart(lineChartPriceMonthly, {
+                    type: 'line',
+                    data: {
+                        labels: data.dt,
+                        datasets: [{
+                            label: "Sold total",
+                            borderColor: "#1d7af3",
+                            pointBorderColor: "#FFF",
+                            pointBackgroundColor: "#1d7af3",
+                            pointBorderWidth: 2,
+                            pointHoverRadius: 4,
+                            pointHoverBorderWidth: 1,
+                            pointRadius: 4,
+                            backgroundColor: 'transparent',
+                            fill: true,
+                            borderWidth: 2,
+                            data: data.grand_total
+                        }, {
+                            label: "Discount total",
+                            borderColor: "#fdaf4b",
+                            pointBorderColor: "#FFF",
+                            pointBackgroundColor: "#fdaf4b",
+                            pointBorderWidth: 2,
+                            pointHoverRadius: 4,
+                            pointHoverBorderWidth: 1,
+                            pointRadius: 4,
+                            backgroundColor: 'transparent',
+                            fill: true,
+                            borderWidth: 2,
+                            data: data.discount_total
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 10,
+                                fontColor: '#1d7af3',
+                            }
+                        },
+                        tooltips: {
+                            bodySpacing: 4,
+                            mode: "nearest",
+                            intersect: 0,
+                            position: "nearest",
+                            xPadding: 10,
+                            yPadding: 10,
+                            caretPadding: 10
+                        },
+                        layout: {
+                            padding: {
+                                left: 15,
+                                right: 15,
+                                top: 15,
+                                bottom: 15
+                            }
+                        }
+                    }
+                });
             },
             error: function(err) {
-                console.log(err)
                 notif(err.status, err.title, err.message);
             },
         });

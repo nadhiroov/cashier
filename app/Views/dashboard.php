@@ -112,7 +112,7 @@
                         <div class="col col-stats ml-3 ml-sm-0">
                             <div class="numbers">
                                 <p class="card-category">Today Items</p>
-                                <h4 class="card-title"><?= $items['items']; ?></h4>
+                                <h4 class="card-title"><?= $items['items'] ?? 0; ?></h4>
                             </div>
                         </div>
                     </div>

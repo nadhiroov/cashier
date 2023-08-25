@@ -165,17 +165,21 @@ class Report extends BaseController
     public function transactionMonthly() {
         $monthYear = $this->request->getPost('monthYear');
         $monthYear = explode('-', $monthYear);
-        $data = $this->trans->select('created_at AS dt, sum(JSON_LENGTH(items)) as items ,COUNT(*) AS count')->where('YEAR(created_at)', $monthYear[1])->groupBy('MONTH(created_at)', $monthYear[0])->orderBy('dt', 'asc')->find();
+        $data = $this->trans->select('created_at AS dt, sum(JSON_LENGTH(items)) as items ,COUNT(*) AS count, sum(grand_total) as grand_total, sum(discount) as discount_total')->where('YEAR(created_at)', $monthYear[1])->groupBy('MONTH(created_at)', $monthYear[0])->orderBy('dt', 'asc')->find();
         if (count($data) > 0) {
             foreach ($data as $row) {
                 $return['dt'][] = date('M Y', strtotime($row['dt']));
                 $return['count'][] = intval($row['count']);
                 $return['items'][] = intval($row['items']);
+                $return['grand_total'][]    = intval($row['grand_total']);
+                $return['discount_total'][] = intval($row['discount_total']);
             }
         } else {
             $return['dt'][] = 0;
             $return['count'][] = 0;
             $return['items'][] = 0;
+            $return['grand_total'][]    = 0;
+            $return['discount_total'][] = 0;
         }
         return json_encode($return);
     }

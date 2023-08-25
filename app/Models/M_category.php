@@ -23,11 +23,11 @@ class M_category extends Model
 
     // Validation
     protected $validationRules      = [
-        'category'     => 'required|alpha_numeric'
+        'category'     => 'required|alpha_numeric_punct'
     ];
     protected $validationMessages   = [
         'category' => [
-            'alpha_numeric' => 'Alpha numeric allowed.',
+            'alpha_numeric_punct' => 'Alpha numeric allowed.',
         ],
     ];
     protected $skipValidation       = false;
