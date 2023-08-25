@@ -83,7 +83,7 @@
                             <input type="text" class="form-control input-full" placeholder="Enter Input" name="form[point]" value="<?= $point['point'] ?? ''; ?>">
                         </div>
                     </div>
-                    <?php if (isset($point['id'])) echo "<input type='hidden' class='form-control input-full' placeholder='Enter Input' name='form[id]' value='$point[id]'"; ?>
+                    <?php if (isset($point['id'])){ echo "<input type='hidden' class='form-control input-full' placeholder='Enter Input' name='form[id]' value='$point[id]'>"; }?>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
