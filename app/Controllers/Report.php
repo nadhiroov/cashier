@@ -33,7 +33,7 @@ class Report extends BaseController
         $dtTable = $this->request->getVar();
         $startDate = $this->request->getVar('startDate');
         $endDate = $this->request->getVar('endDate');
-        $data = $this->model->select('id, name, sum(tb.count) as total')->join('json_table(sold_history, \'$[*]\' COLUMNS ( dt VARCHAR(20) path \'$.date\', count INT path \'$.count\' )) as tb', '1= 1')->limit($dtTable['length'], $dtTable['start'])->groupBy('id')->orderBy('total', 'desc')->where('deleted_at is null');
+        $data = $this->model->select('id, name, sum(tb.count) as total')->join("json_table(sold_history, '$[*]' COLUMNS ( dt VARCHAR(20) path '$.date', count INT path '$.count' )) as tb", '1= 1')->limit($dtTable['length'], $dtTable['start'])->groupBy('id')->orderBy('total', 'desc')->where('deleted_at is null');
         if ($startDate != '') {
             $data = $this->model->where('tb.dt >=', $startDate)->where('tb.dt <=', $endDate);
         }
@@ -143,7 +143,7 @@ class Report extends BaseController
     public function transactionDaily() {
         $monthYear = $this->request->getPost('monthYear');
         $monthYear = explode('-', $monthYear);
-        $data = $this->trans->select('DATE(created_at) AS dt, sum(JSON_LENGTH(items)) as items ,COUNT(*) AS count, sum(grand_total) as grand_total, sum(discount) as discount_total')->where('YEAR(created_at)', $monthYear[1])->where('MONTH(created_at)', $monthYear[0])->groupBy('dt')->orderBy('dt', 'asc')->find();
+        $data = $this->trans->select('DATE(created_at) AS dt,sum(qty) as items ,COUNT(*) AS count, sum(grand_total) as grand_total, sum(discount) as discount_total')->join("json_table (items,'$[*]' COLUMNS ( qty INT path '$.qty')) AS tb", '1= 1')->where('YEAR(created_at)', $monthYear[1])->where('MONTH(created_at)', $monthYear[0])->groupBy('dt')->orderBy('dt', 'asc')->find();
         if (count($data) > 0) {
             foreach ($data as $row) {
                 $return['dt'][]             = date('d M', strtotime($row['dt']));
@@ -165,7 +165,7 @@ class Report extends BaseController
     public function transactionMonthly() {
         $monthYear = $this->request->getPost('monthYear');
         $monthYear = explode('-', $monthYear);
-        $data = $this->trans->select('created_at AS dt, sum(JSON_LENGTH(items)) as items ,COUNT(*) AS count, sum(grand_total) as grand_total, sum(discount) as discount_total')->where('YEAR(created_at)', $monthYear[1])->groupBy('MONTH(created_at)', $monthYear[0])->orderBy('dt', 'asc')->find();
+        $data = $this->trans->select('created_at AS dt, sum(qty) as items ,COUNT(*) AS count, sum(grand_total) as grand_total, sum(discount) as discount_total')->join("json_table (items,'$[*]' COLUMNS ( qty INT path '$.qty')) AS tb", '1= 1')->where('YEAR(created_at)', $monthYear[1])->groupBy('MONTH(created_at)', $monthYear[0])->orderBy('dt', 'asc')->find();
         if (count($data) > 0) {
             foreach ($data as $row) {
                 $return['dt'][] = date('M Y', strtotime($row['dt']));

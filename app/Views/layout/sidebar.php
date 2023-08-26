@@ -137,10 +137,14 @@
                                 </li>
                                 <li class="<?= $submenu_byTransaction ?? ''; ?>">
                                     <a href="<?= base_url() ?>rbyTransaction">
-                                        <span class="sub-item">Transaction</span>
+                                        <span class="sub-item">Transaction graph</span>
                                     </a>
                                 </li>
-                                <li>
+                                <li class="<?= $submenu_byTransactionDiagram ?? ''; ?>">
+                                    <a href="<?= base_url() ?>rbyTransactionDiagram">
+                                        <span class="sub-item">Transaction diagram</span>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </li>

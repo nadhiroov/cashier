@@ -89,7 +89,7 @@
     let myLineChartPriceMonthly
 
     $(document).ready(function() {
-        
+
         $('.date').datepicker({
             todayBtn: true,
             autoclose: true,
@@ -127,6 +127,7 @@
             method: "POST",
             dataType: "json",
             success: function(data) {
+                console.log(data)
                 // daily report
                 let lineChartDaily = document.getElementById('lineChartDaily').getContext('2d')
                 myLineChartDaily = new Chart(lineChartDaily, {
@@ -135,38 +136,57 @@
                         labels: data.dt,
                         datasets: [{
                             label: "Items",
-                            backgroundColor: '#fdaf4b',
-                            borderColor: '#fdaf4b',
-                            data: data.items,
+                            borderColor: "#36a2eb",
+                            pointBorderColor: "#FFF",
+                            pointBackgroundColor: "#36a2eb",
+                            pointBorderWidth: 2,
+                            pointHoverRadius: 4,
+                            pointHoverBorderWidth: 1,
+                            pointRadius: 4,
+                            backgroundColor: 'transparent',
+                            fill: true,
+                            borderWidth: 2,
+                            data: data.items
                         }, {
                             label: "Transaction",
-                            backgroundColor: '#177dff',
-                            borderColor: '#177dff',
-                            data: data.count,
-                        }],
+                            borderColor: "#4bc0c0",
+                            pointBorderColor: "#FFF",
+                            pointBackgroundColor: "#4bc0c0",
+                            pointBorderWidth: 2,
+                            pointHoverRadius: 4,
+                            pointHoverBorderWidth: 1,
+                            pointRadius: 4,
+                            backgroundColor: 'transparent',
+                            fill: true,
+                            borderWidth: 2,
+                            data: data.count
+                        }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
                         legend: {
-                            position: 'bottom'
-                        },
-                        title: {
-                            display: true,
-                            text: 'Daily Stats'
+                            position: 'bottom',
+                            labels: {
+                                padding: 10
+                            }
                         },
                         tooltips: {
-                            mode: 'index',
-                            intersect: false
+                            bodySpacing: 4,
+                            mode: "index",
+                            intersect: 0,
+                            position: "nearest",
+                            xPadding: 10,
+                            yPadding: 10,
+                            caretPadding: 10
                         },
-                        responsive: true,
-                        scales: {
-                            xAxes: [{
-                                stacked: true,
-                            }],
-                            yAxes: [{
-                                stacked: true
-                            }]
+                        layout: {
+                            padding: {
+                                left: 15,
+                                right: 15,
+                                top: 15,
+                                bottom: 15
+                            }
                         }
                     }
                 });
@@ -179,9 +199,9 @@
                         labels: data.dt,
                         datasets: [{
                             label: "Sold total",
-                            borderColor: "#1d7af3",
+                            borderColor: "#36a2eb",
                             pointBorderColor: "#FFF",
-                            pointBackgroundColor: "#1d7af3",
+                            pointBackgroundColor: "#36a2eb",
                             pointBorderWidth: 2,
                             pointHoverRadius: 4,
                             pointHoverBorderWidth: 1,
@@ -192,9 +212,9 @@
                             data: data.grand_total
                         }, {
                             label: "Discount total",
-                            borderColor: "#fdaf4b",
+                            borderColor: "#ffcd56",
                             pointBorderColor: "#FFF",
-                            pointBackgroundColor: "#fdaf4b",
+                            pointBackgroundColor: "#ffcd56",
                             pointBorderWidth: 2,
                             pointHoverRadius: 4,
                             pointHoverBorderWidth: 1,
@@ -211,13 +231,12 @@
                         legend: {
                             position: 'bottom',
                             labels: {
-                                padding: 10,
-                                fontColor: '#1d7af3',
+                                padding: 10
                             }
                         },
                         tooltips: {
                             bodySpacing: 4,
-                            mode: "nearest",
+                            mode: "index",
                             intersect: 0,
                             position: "nearest",
                             xPadding: 10,
@@ -257,38 +276,57 @@
                         labels: data.dt,
                         datasets: [{
                             label: "Items",
-                            backgroundColor: '#fdaf4b',
-                            borderColor: '#fdaf4b',
-                            data: data.items,
+                            borderColor: "#36a2eb",
+                            pointBorderColor: "#FFF",
+                            pointBackgroundColor: "#36a2eb",
+                            pointBorderWidth: 2,
+                            pointHoverRadius: 4,
+                            pointHoverBorderWidth: 1,
+                            pointRadius: 4,
+                            backgroundColor: 'transparent',
+                            fill: true,
+                            borderWidth: 2,
+                            data: data.items
                         }, {
                             label: "Transaction",
-                            backgroundColor: '#177dff',
-                            borderColor: '#177dff',
-                            data: data.count,
+                            borderColor: "#4bc0c0",
+                            pointBorderColor: "#FFF",
+                            pointBackgroundColor: "#4bc0c0",
+                            pointBorderWidth: 2,
+                            pointHoverRadius: 4,
+                            pointHoverBorderWidth: 1,
+                            pointRadius: 4,
+                            backgroundColor: 'transparent',
+                            fill: true,
+                            borderWidth: 2,
+                            data: data.count
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
                         legend: {
-                            position: 'bottom'
-                        },
-                        title: {
-                            display: true,
-                            text: 'Monthly Stats'
+                            position: 'bottom',
+                            labels: {
+                                padding: 10
+                            }
                         },
                         tooltips: {
-                            mode: 'index',
-                            intersect: false
+                            bodySpacing: 4,
+                            mode: "index",
+                            intersect: 0,
+                            position: "nearest",
+                            xPadding: 10,
+                            yPadding: 10,
+                            caretPadding: 10
                         },
-                        responsive: true,
-                        scales: {
-                            xAxes: [{
-                                stacked: true,
-                            }],
-                            yAxes: [{
-                                stacked: true
-                            }]
+                        layout: {
+                            padding: {
+                                left: 15,
+                                right: 15,
+                                top: 15,
+                                bottom: 15
+                            }
                         }
                     }
                 });
@@ -301,9 +339,9 @@
                         labels: data.dt,
                         datasets: [{
                             label: "Sold total",
-                            borderColor: "#1d7af3",
+                            borderColor: "#36a2eb",
                             pointBorderColor: "#FFF",
-                            pointBackgroundColor: "#1d7af3",
+                            pointBackgroundColor: "#36a2eb",
                             pointBorderWidth: 2,
                             pointHoverRadius: 4,
                             pointHoverBorderWidth: 1,
@@ -314,9 +352,9 @@
                             data: data.grand_total
                         }, {
                             label: "Discount total",
-                            borderColor: "#fdaf4b",
+                            borderColor: "#ffcd56",
                             pointBorderColor: "#FFF",
-                            pointBackgroundColor: "#fdaf4b",
+                            pointBackgroundColor: "#ffcd56",
                             pointBorderWidth: 2,
                             pointHoverRadius: 4,
                             pointHoverBorderWidth: 1,
@@ -333,13 +371,12 @@
                         legend: {
                             position: 'bottom',
                             labels: {
-                                padding: 10,
-                                fontColor: '#1d7af3',
+                                padding: 10
                             }
                         },
                         tooltips: {
                             bodySpacing: 4,
-                            mode: "nearest",
+                            mode: "index",
                             intersect: 0,
                             position: "nearest",
                             xPadding: 10,
