@@ -56,6 +56,29 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-head-row card-tools-still-right">
+                        <div class="card-title">SKU</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p>Download last stock</p>
+                </div>
+                <div class="card-footer">
+                    <div class="form-group from-show-notify row">
+                        <div class="col-lg-3 col-md-3 col-sm-12">
+                        </div>
+                        <div class="col-lg-4 col-md-9 col-sm-12">
+                            <form action="<?= base_url() ?>/downloadSKU">
+                                <button type="submit" class="btn btn-success down-report">Download</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -83,7 +106,9 @@
                             <input type="text" class="form-control input-full" placeholder="Enter Input" name="form[point]" value="<?= $point['point'] ?? ''; ?>">
                         </div>
                     </div>
-                    <?php if (isset($point['id'])){ echo "<input type='hidden' class='form-control input-full' placeholder='Enter Input' name='form[id]' value='$point[id]'>"; }?>
+                    <?php if (isset($point['id'])) {
+                        echo "<input type='hidden' class='form-control input-full' placeholder='Enter Input' name='form[id]' value='$point[id]'>";
+                    } ?>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -112,7 +137,6 @@
 
     $('#edit').on('show.bs.modal', function(e) {
         let rowid = $(e.relatedTarget).data('id');
-        console.log(rowid)
         if (typeof rowid != 'undefined') {
             $.ajax({
                 type: 'get',

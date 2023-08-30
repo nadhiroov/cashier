@@ -112,6 +112,7 @@ $routes->delete('discountDelete/(:num)', 'Discount::delete/$1');
 */
 $routes->get('setting', 'Setting::index');
 $routes->post('pointSave', 'Setting::processPoint');
+$routes->get('downloadSKU', 'Setting::download');
 
 
 /*
