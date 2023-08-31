@@ -20,7 +20,7 @@ class Report extends BaseController
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
     }
-    
+
     public function byProduct()
     {
         $this->view->setData(['submenu_byProduct' => 'active']);
@@ -78,7 +78,8 @@ class Report extends BaseController
         return json_encode($return);
     }
 
-    public function detailByProductDataMontly(){
+    public function detailByProductDataMontly()
+    {
         $id = $this->request->getPost('id');
         $monthYear = $this->request->getPost('monthYear');
         $monthYear = explode('-', $monthYear);
@@ -95,7 +96,8 @@ class Report extends BaseController
         return json_encode($return);
     }
 
-    public function detailByProductDataPrice(){
+    public function detailByProductDataPrice()
+    {
         $id = $this->request->getPost('id');
         $monthYear = $this->request->getPost('monthYear');
         $data = $this->model->select("dt, buy, tb.percent,sell")->join("json_table (price_history,'$[*]' COLUMNS ( dt VARCHAR ( 20 ) path '$.date', buy INT path '$.buy', percent INT path '$.percent', sell INT path '$.sell' )) AS tb", '1 = 1')->where('id', $id)->like('dt', $monthYear)->orderBy('dt', 'asc')->find();
@@ -103,13 +105,13 @@ class Report extends BaseController
             foreach ($data as $row) {
                 $return['dt'][]     = date('d M Y', strtotime($row['dt']));
                 $return['buy'][]    = intval($row['buy']);
-                $return['percent'][]= (float) $row['percent'];
+                $return['percent'][] = (float) $row['percent'];
                 $return['sell'][]   = intval($row['sell']);
             }
         } else {
             $return['dt'][]     = 0;
             $return['buy'][]    = 0;
-            $return['percent'][]= 0;
+            $return['percent'][] = 0;
             $return['sell'][]   = 0;
         }
         return json_encode($return);
@@ -140,7 +142,8 @@ class Report extends BaseController
         return view('report/byTransaction', $this->data);
     }
 
-    public function transactionDaily() {
+    public function transactionDaily()
+    {
         $monthYear = $this->request->getPost('monthYear');
         $monthYear = explode('-', $monthYear);
         $data = $this->trans->select('DATE(created_at) AS dt,sum(qty) as items ,COUNT(*) AS count, sum(grand_total) as grand_total, sum(discount) as discount_total')->join("json_table (items,'$[*]' COLUMNS ( qty INT path '$.qty')) AS tb", '1= 1')->where('YEAR(created_at)', $monthYear[1])->where('MONTH(created_at)', $monthYear[0])->groupBy('dt')->orderBy('dt', 'asc')->find();
@@ -162,7 +165,8 @@ class Report extends BaseController
         return json_encode($return);
     }
 
-    public function transactionMonthly() {
+    public function transactionMonthly()
+    {
         $monthYear = $this->request->getPost('monthYear');
         $monthYear = explode('-', $monthYear);
         $data = $this->trans->select('created_at AS dt, sum(qty) as items ,COUNT(*) AS count, sum(grand_total) as grand_total, sum(discount) as discount_total')->join("json_table (items,'$[*]' COLUMNS ( qty INT path '$.qty')) AS tb", '1= 1')->where('YEAR(created_at)', $monthYear[1])->groupBy('MONTH(created_at)', $monthYear[0])->orderBy('dt', 'asc')->find();
@@ -183,4 +187,49 @@ class Report extends BaseController
         }
         return json_encode($return);
     }
+
+    public function rbyTransactionDiagram() {
+        $this->view->setData(['submenu_byTransactionDiagram' => 'active']);
+        $this->data['menu'] = 'Transaction diagram report';
+        return view('report/byTransactionDiagram', $this->data);
+    }
+
+    public function transactionDiagramMonthly() {
+        $monthYear = $this->request->getPost('monthYear');
+        $monthYear = explode('-', $monthYear);
+        $data = $this->trans->select('sum(qty) as count, name, transaction.created_at as dt')->join("json_table (items,'$[*]' COLUMNS (idProd INT path '$.id', qty INT path '$.qty')) AS tb", '1= 1')->join('product as p','p.id = tb.idProd')->where('YEAR(transaction.created_at)', $monthYear[1])->where('MONTH(transaction.created_at)', $monthYear[0])->groupBy('idProd')->findAll(10);
+
+        if (count($data) > 0) {
+            foreach ($data as $row) {
+                $return['dt'][]             = date('d M', strtotime($row['dt']));
+                $return['count'][]          = intval($row['count']);
+                $return['name'][]           = $row['name'];
+            }
+        } else {
+            $return['dt'][]             = 0;
+            $return['count'][]          = 0;
+            $return['name'][]           = 0;
+        }
+        return json_encode($return);
+    }
+
+    public function transactionDiagramAnnual() {
+        $monthYear = $this->request->getPost('monthYear');
+        $monthYear = explode('-', $monthYear);
+        $data = $this->trans->select('sum(qty) as count, name, transaction.created_at as dt')->join("json_table (items,'$[*]' COLUMNS (idProd INT path '$.id', qty INT path '$.qty')) AS tb", '1= 1')->join('product as p','p.id = tb.idProd')->where('YEAR(transaction.created_at)', $monthYear[1])->groupBy('idProd')->findAll(10);
+
+        if (count($data) > 0) {
+            foreach ($data as $row) {
+                $return['dt'][]             = date('d M', strtotime($row['dt']));
+                $return['count'][]          = intval($row['count']);
+                $return['name'][]           = $row['name'];
+            }
+        } else {
+            $return['dt'][]             = 0;
+            $return['count'][]          = 0;
+            $return['name'][]           = 0;
+        }
+        return json_encode($return);
+    }
+
 }
