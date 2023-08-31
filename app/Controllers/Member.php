@@ -21,13 +21,13 @@ class Member extends BaseController
         return view('member/index', $this->data);
     }
 
-    function edit($id)
+    public function edit($id)
     {
         $data = $this->model->find($id);
         return view('member/edit', ['content' => $data]);
     }
 
-    function detail($id)
+    public function detail($id)
     {
         $data = $this->model->find($id);
 
@@ -53,7 +53,7 @@ class Member extends BaseController
         return view('member/detail', $this->data);
     }
 
-    function getData()
+    public function getData()
     {
         $dtTable = $this->request->getVar();
         $data = $this->model->limit($dtTable['length'], $dtTable['start'])->orderBy('name', 'asc');
@@ -74,7 +74,7 @@ class Member extends BaseController
         return json_encode($return);
     }
 
-    function process()
+    public function process()
     {
         $form = $this->request->getPost('form');
         try {
@@ -94,13 +94,13 @@ class Member extends BaseController
         echo json_encode($return);
     }
 
-    function getAll()
+    public function getAll()
     {
         $data = $this->model->select('id, name, phone, point')->findAll();
         echo json_encode($data);
     }
 
-    function pointSubtraction($id, $subtraction)
+    public function pointSubtraction($id, $subtraction)
     {
         $member = $this->model->find($id);
         if (intval($member['point']) >= $subtraction) {
@@ -125,7 +125,7 @@ class Member extends BaseController
         }
     }
 
-    function pointAddition($id, $addition)
+    public function pointAddition($id, $addition)
     {
         $member = $this->model->find($id);
         // current point

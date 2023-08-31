@@ -34,6 +34,12 @@ class Brand extends BaseController
         return view('brand/edit', ['content' => $data, 'category' => $category]);
     }
 
+    public function detail($id) {
+        $this->data['content'] = $this->model->find($id);
+        $this->data['submenu'] = 'Detail';
+        return view('brand/detail', $this->data);
+    }
+
     public function getData($id = null) {
         $dtTable = $this->request->getVar();
         $data = $this->model->select('brand.id, brand.brand, category')->join('category B', 'B.id = brand.category_id', 'left')

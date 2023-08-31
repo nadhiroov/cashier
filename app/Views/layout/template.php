@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title><?= $menu ?? 'Cashier App'; ?></title>
     <meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
-    <link rel="icon" href="<?= base_url() ?>assets/img/icon.ico" type="image/x-icon" />
+    <link rel="icon" href="<?= base_url() ?>assets/img/ais_logo.png" type="image/x-icon" />
 
     <!-- Fonts and icons -->
     <script src="<?= base_url() ?>assets/js/plugin/webfont/webfont.min.js"></script>
@@ -38,7 +38,7 @@
             <div class="logo-header" data-background-color="<?= session()->get('theme') == 'light' ? 'blue' : 'dark2' ?>">
 
                 <a href="index.html" class="logo">
-                    <img src="<?= base_url() ?>assets/img/cashier.png" alt="navbar brand" class="navbar-brand">
+                    <img src="<?= base_url() ?>assets/img/ais_text.png" style="max-width:45%" alt="ais logo" class="navbar-brand">
                 </a>
                 <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon">

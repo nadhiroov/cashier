@@ -54,6 +54,7 @@ $routes->get('categoryDetail/(:num)', 'Category::detail/$1');
 $routes->get('brand', 'Brand::index');
 $routes->get('brandData', 'Brand::getData');
 $routes->get('brandData/(:num)', 'Brand::getData/$1');
+$routes->get('brandDetail/(:num)', 'Brand::detail/$1');
 $routes->post('brandSave', 'Brand::process');
 $routes->get('brandEdit/(:num)', 'Brand::edit/$1');
 $routes->delete('brandDelete/(:num)', 'Brand::delete/$1');
@@ -64,6 +65,7 @@ $routes->delete('brandDelete/(:num)', 'Brand::delete/$1');
 */
 $routes->get('product', 'Products::index');
 $routes->get('productData', 'Products::getData');
+$routes->get('productData/(:num)', 'Products::getData/$1');
 $routes->post('productSave', 'Products::process');
 $routes->post('productSavePrice', 'Products::processEditPrice');
 $routes->get('productAdd', 'Products::add');
@@ -113,6 +115,7 @@ $routes->delete('discountDelete/(:num)', 'Discount::delete/$1');
 $routes->get('setting', 'Setting::index');
 $routes->post('pointSave', 'Setting::processPoint');
 $routes->get('downloadSKU', 'Setting::download');
+$routes->delete('resetPoint', 'Setting::resetPoint');
 
 
 /*

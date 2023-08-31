@@ -110,10 +110,14 @@ class Products extends BaseController
         return view('product/detail', $this->data);
     }
 
-    public function getData()
+    public function getData($id = null)
     {
         $dtTable = $this->request->getVar();
         $data = $this->model->select('product.*, category, brand')->join('brand B', 'B.id = product.brand_id')->join('category C', 'C.id = B.category_id')->limit($dtTable['length'], $dtTable['start'])->orderBy('name', 'asc');
+        if ($id != null) {
+            $data = $data->where('B.id', $id);
+        }
+        $data= $data->where('product.deleted_at is null');
         if (!empty($dtTable['search']['value'])) {
             $data = $this->model->like('product.name', $dtTable['search']['value']);
             $data = $this->model->orLike('product.stock', $dtTable['search']['value']);
@@ -123,7 +127,7 @@ class Products extends BaseController
             $data = $this->model->orderBy($dtTable['columns'][$dtTable['order'][0]['column']]['data'], $dtTable['order'][0]['dir']);
         }
         $filtered = $data->countAllResults(false);
-        $datas = $data->find();
+        $datas = $data->findAll();
         $return = array(
             "draw" => $dtTable['draw'],
             "recordsFiltered" => $filtered,

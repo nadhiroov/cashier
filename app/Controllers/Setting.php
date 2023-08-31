@@ -5,11 +5,10 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\M_point;
 use App\Models\M_product;
-use PhpOffice\PhpSpreadsheet\RichText\RichText;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
-use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
 class Setting extends BaseController
 {
@@ -50,6 +49,25 @@ class Setting extends BaseController
         echo json_encode($return);
     }
 
+    public function resetPoint() {
+        try {
+            $db = db_connect();
+            $db->simpleQuery('UPDATE member SET point = 0');
+            $return = [
+                'status'    => 'success',
+                'title'     => 'Success',
+                'message'   => 'Data saved successfully'
+            ];
+        } catch (\Throwable $er) {
+            $return = [
+                'status'    => 'error',
+                'title'     => 'Error',
+                'message'   => $er->getMessage()
+            ];
+        }
+        echo json_encode($return);
+    }
+
     public function download()
     {
         $mproduct = new M_product();
@@ -59,71 +77,50 @@ class Setting extends BaseController
 
         $spreadsheet->setActiveSheetIndex(0);
 
-        /*  $drawing = new Drawing();
-        $drawing->setName('Logo');
-        $drawing->setDescription('logo');
-        $drawing->setPath(base_url('assets/img/ais.png'));
-        $drawing->setCoordinates('B1');
-        $drawing->setOffsetX(110);
-        $drawing->setRotation(25);
-        $drawing->getShadow()->setVisible(true);
-        $drawing->getShadow()->setDirection(45);
-        $drawing->setWorksheet($spreadsheet->getActiveSheet()); */
-
-
+        $date = date('d-m-Y');
         $spreadsheet->getActiveSheet()->setCellValue('A2', 'Toko Susu&Perlengkapan Bayi')
-            ->setCellValue('A3', 'Jalan Erlangga 83D, Pasuruan');
+            ->setCellValue('A3', 'Jalan Erlangga 83D, Pasuruan')
+            ->setCellValue('A4', "SKU Tanggal $date");
 
         $spreadsheet->getActiveSheet()->mergeCells('A2:E2');
         $spreadsheet->getActiveSheet()->mergeCells('A3:E3');
+        $spreadsheet->getActiveSheet()->mergeCells('A4:E4');
 
-        $spreadsheet->getActiveSheet()->getStyle('A2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_JUSTIFY);
-        $spreadsheet->getActiveSheet()->getStyle('A3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_JUSTIFY);
+        $spreadsheet->getActiveSheet()->getStyle('A2:A4')->applyFromArray(
+            [
+                'font' => [
+                    'bold' => true,
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER
+                ]
+            ]
+        );
 
-        $spreadsheet->getActiveSheet()->getStyle('A2')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
-        $spreadsheet->getActiveSheet()->getStyle('A3')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+        $spreadsheet->getActiveSheet()
+            ->setCellValue('A7', 'No.')
+            ->setCellValue('B7', 'Barcode')
+            ->setCellValue('C7', 'Product')
+            ->setCellValue('D7', 'Stock')
+            ->setCellValue('E7', 'Price');
 
-        /* 
-        $richText = new RichText();
-        $richText->createText('This invoice is ');
-
-        $payable = $richText->createTextRun('payable within thirty days after the end of the month');
-        $payable->getFont()->setBold(true);
-        $payable->getFont()->setItalic(true);
-        $payable->getFont()->setColor(new Color(Color::COLOR_DARKGREEN));
-
-        $richText->createText(', unless specified otherwise on the invoice.');
-
-        $spreadsheet->getActiveSheet()->getCell('A18')->setValue($richText);
-        */
-
-
-        $richText = new RichText();
-        $head = $richText->createText('No.');
-        $head->getFont()->setBold(true);
-        $spreadsheet->getActiveSheet()->getCell('A5')->setValue($richText);
-
-        /* $richText->createText('Barcode')->getFont()->setBold(true);
-        $spreadsheet->getActiveSheet()->getCell('B5')->setValue($richText);
-
-        $richText->createText('Product')->getFont()->setBold(true);
-        $spreadsheet->getActiveSheet()->getCell('C5')->setValue($richText);
-
-        $richText->createText('Stock')->getFont()->setBold(true);
-        $spreadsheet->getActiveSheet()->getCell('D5')->setValue($richText);
-
-        $richText->createText('Price')->getFont()->setBold(true);
-        $spreadsheet->getActiveSheet()->getCell('E5')->setValue($richText); */
+        $spreadsheet->getActiveSheet()->getStyle('A7:E7')->applyFromArray(
+            [
+                'font' => [
+                    'bold' => true,
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER
+                ],
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_MEDIUM,
+                    ]
+                ]
+            ]
+        );
         
-
-        /* $spreadsheet->getActiveSheet()
-            ->setCellValue('A5', 'No.')
-            ->setCellValue('B5', 'Barcode')
-            ->setCellValue('C5', 'Product')
-            ->setCellValue('D5', 'Stock')
-            ->setCellValue('E5', 'Price'); */            
-
-        $column = 6;
+        $column = 8;
         $no = 0;
 
         foreach ($products as $product) {
@@ -135,6 +132,16 @@ class Setting extends BaseController
                 ->setCellValue('E' . $column, 'Rp. ' . number_format($product['price'], 0, ',', '.'));
             $column++;
         }
+        $column--;
+        $spreadsheet->getActiveSheet()->getStyle("A8:E$column")->applyFromArray(
+            [
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                    ]
+                ]
+            ]
+        );
 
         $writer = new Xls($spreadsheet);
         $filename = date('Y-m-d-His') . '-products-stock';

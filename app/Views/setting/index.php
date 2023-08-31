@@ -45,11 +45,9 @@
                 <div class="card-footer">
                     <div class="form">
                         <div class="form-group from-show-notify row">
-                            <div class="col-lg-3 col-md-3 col-sm-12">
-
-                            </div>
-                            <div class="col-lg-4 col-md-9 col-sm-12">
-                                <a href="#editPoint" data-toggle="modal" class="btn btn-success">Edit</a>
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <a href="#editPoint" data-toggle="modal" class="btn btn-warning"><span class="btn-label"><i class="fas fa-edit"></i></span>Edit</a>
+                                <a href="#" onclick="resetPoint()" class="btn btn-danger"><span class="btn-label"><i class="fas fa-sync-alt"></i></span>Reset Point</a>
                             </div>
                         </div>
                     </div>
@@ -68,11 +66,9 @@
                 </div>
                 <div class="card-footer">
                     <div class="form-group from-show-notify row">
-                        <div class="col-lg-3 col-md-3 col-sm-12">
-                        </div>
-                        <div class="col-lg-4 col-md-9 col-sm-12">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
                             <form action="<?= base_url() ?>/downloadSKU">
-                                <button type="submit" class="btn btn-success down-report">Download</button>
+                                <button type="submit" class="btn btn-success down-report"><span class="btn-label"><i class="fas fa-cloud-download-alt"></i></span>Download</button>
                             </form>
                         </div>
                     </div>
@@ -147,5 +143,45 @@
             });
         }
     });
+
+    function resetPoint() {
+        swal({
+            title: "Are you sure to reset all member's point?",
+            text: "You won't be able to revert this!",
+            type: "warning",
+            buttons: {
+                cancel: {
+                    visible: true,
+                    text: "Cancel",
+                    className: "btn btn-success",
+                },
+                confirm: {
+                    text: "Yes, reset it!",
+                    className: "btn btn-danger",
+                },
+            },
+        }).then((willDelete) => {
+            if (willDelete) {
+                $.ajax({
+                    url: '<?= base_url() ?>resetPoint',
+                    type: "DELETE",
+                    dataType: "json",
+                    success: function(data) {
+                        notif(data.status, data.title, data.message);
+                        if (data.status == 'success') {
+                            setTimeout(function() {
+                                location.reload()
+                            }, 2000);
+                        }
+                    },
+                    error: function(err) {
+                        notif(err.status, err.title, err.message);
+                    },
+                });
+            } else {
+                swal.close();
+            }
+        })
+    }
 </script>
 <?= $this->endSection(); ?>
