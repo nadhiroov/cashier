@@ -139,6 +139,11 @@ $routes->get('rbyTransaction', 'Report::byTransaction');
 $routes->post('byTransactionDataDaily', 'Report::transactionDaily');
 $routes->post('byTransactionMonthly', 'Report::transactionMonthly');
 
+$routes->get('rbyTransactionDiagram', 'Report::rbyTransactionDiagram');
+$routes->post('byTransactionDiagramDataMonthly', 'Report::transactionDiagramMonthly');
+$routes->post('byTransactionDiagramDataAnnual', 'Report::transactionDiagramAnnual');
+
+
 
 $routes->get('insertUser', 'Auth::testInsert');
 $routes->get('showAllUser', 'Auth::showAllUser');
