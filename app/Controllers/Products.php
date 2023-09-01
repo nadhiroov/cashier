@@ -109,7 +109,7 @@ class Products extends BaseController
     public function getData($id = null)
     {
         $dtTable = $this->request->getVar();
-        $data = $this->model->select('product.*, category, brand')->join('brand B', 'B.id = product.brand_id')->join('category C', 'C.id = B.category_id')->limit($dtTable['length'], $dtTable['start'])->orderBy('name', 'asc');
+        $data = $this->model->select('product.*, category, brand')->join('brand B', 'B.id = product.brand_id')->join('category C', 'C.id = B.category_id')->orderBy('name', 'asc');
         if ($id != null) {
             $data = $data->where('B.id', $id);
         }
@@ -123,7 +123,7 @@ class Products extends BaseController
             $data = $this->model->orderBy($dtTable['columns'][$dtTable['order'][0]['column']]['data'], $dtTable['order'][0]['dir']);
         }
         $filtered = $data->countAllResults(false);
-        $datas = $data->findAll();
+        $datas = $data->findAll($dtTable['length'], $dtTable['start']);
         $return = array(
             "draw" => $dtTable['draw'],
             "recordsFiltered" => $filtered,

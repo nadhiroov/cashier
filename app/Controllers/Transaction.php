@@ -121,10 +121,10 @@ class Transaction extends BaseController
         if ($member != '0' && intval($earnedPoint) > 0) { // point adding
             $this->member->pointAddition($member[0], intval($earnedPoint));
         }
-        
+
         if ($member != '0') {
             $modelMember = new M_member();
-            $lastPoint = $modelMember->select('point')->where('id', $member[0])->first();
+            $lastPoint = $modelMember->select('point, name')->where('id', $member[0])->first();
         }
 
 
@@ -150,7 +150,10 @@ class Transaction extends BaseController
             $printer->text($this->buatBaris1Kolom('         Toko Susu&Perlengkapan Bayi'));
             $printer->text($this->buatBaris1Kolom('         Erlangga 83D, Pasuruan'));
             $printer->text($this->buatBaris1Kolom('         Telp     : 087840519421'));
-            $printer->text($this->buatBaris1Kolom("Faktur: $form[notaNumber]"));
+            $printer->text($this->buatBaris1Kolom("         Faktur: $form[notaNumber]"));
+            if (isset($lastPoint)) {
+                $printer->text($this->buatBaris1Kolom("         Member   : $lastPoint[name]"));
+            }
             $printer->text($this->buatBaris1Kolom("         Tanggal  : " . date('d-m-Y H:i:s')));
 
             $printer->text($this->buatBaris1Kolom('---------------------------------'));
@@ -164,10 +167,7 @@ class Transaction extends BaseController
             $printer->text($this->buatBaris3Kolom('', 'Total: ', $form['grandTotal']));
             $printer->text($this->buatBaris3Kolom('', 'Bayar: ', $form['money']));
             $printer->text($this->buatBaris3Kolom('', 'Kembali: ', intval($form['grandTotal']) - intval($form['money'])));
-            $printer->text($this->buatBaris3KolomPoint('Point: Rp. ' .  !isset($lastPoint) ? '-' : number_format($lastPoint['point'], 0, ',', '.'), '', ''));
-            $printer->text($this->buatBaris1Kolom('Terimaksih atas kunjungan anda'));
-
-            $printer->feed(4);
+            $printer->text($this->buatBaris3KolomPoint(!isset($lastPoint) ? '' : 'Point: ' . number_format($lastPoint['point'], 0, ',', '.'), '', ''));
             $printer->cut();
             $printer->close();
         }
@@ -366,14 +366,16 @@ class Transaction extends BaseController
         return json_encode($return);
     }
 
-    public function detailTrans($id) {
+    public function detailTrans($id)
+    {
         $this->view->setData(['submenu_history' => 'active']);
         $this->data['content'] = $this->model->select('transaction.*, b.name as memberName, u.fullname')->join('users u', 'u.id = transaction.user_id', 'left')->join('member b', 'transaction.member = b.id', 'left')->find($id);
         // dd($this->data['content']);
         return view('transHistory/detail', $this->data);
     }
 
-    public function detailTransData($id) {
+    public function detailTransData($id)
+    {
         $dtTable = $this->request->getVar();
         $data = $this->model->select('transaction.*, b.name as memberName, p.name as produckName, tb.price, tb.qty')->join("json_table (items,'$[*]' COLUMNS ( idProd INT path '$.id', price INT path '$.price', qty INT path '$.qty')) AS tb", '1= 1')->join('member b', 'transaction.member = b.id', 'left')->join('product p', 'tb.idProd = p.id')->orderBy('created_at', 'desc')->where('transaction.id', $id);
         if (!empty($dtTable['search']['value'])) {
