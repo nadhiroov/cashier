@@ -24,7 +24,7 @@ class Transaction extends BaseController
         $this->member = new Member();
         $this->view = \Config\Services::renderer();
         $this->view->setData(['menu_selling' => 'active']);
-        $this->data['menu'] = 'Products';
+        $this->data['menu'] = 'Transaction';
     }
 
     public function index()
@@ -340,6 +340,34 @@ class Transaction extends BaseController
         if (!empty($dtTable['search']['value'])) {
             $data = $this->model->like('nota_number', $dtTable['search']['value']);
             $data = $this->model->orLike('name', $dtTable['search']['value']);
+        }
+        if (!empty($dtTable['order'][0]['column'])) {
+            $data = $this->model->orderBy($dtTable['columns'][$dtTable['order'][0]['column']]['data'], $dtTable['order'][0]['dir']);
+        }
+        $filtered = $data->countAllResults(false);
+        $datas = $data->find();
+        $return = array(
+            "draw" => $dtTable['draw'],
+            "recordsFiltered" => $filtered,
+            "recordsTotal" => $this->model->countAllResults(),
+            "data" => $datas
+        );
+        return json_encode($return);
+    }
+
+    public function detailTrans($id) {
+        $this->view->setData(['submenu_history' => 'active']);
+        $this->data['content'] = $this->model->select('transaction.*, b.name as memberName, u.fullname')->join('users u', 'u.id = transaction.user_id', 'left')->join('member b', 'transaction.member = b.id', 'left')->find($id);
+        // dd($this->data['content']);
+        return view('transHistory/detail', $this->data);
+    }
+
+    public function detailTransData($id) {
+        $dtTable = $this->request->getVar();
+        $data = $this->model->select('transaction.*, b.name as memberName, p.name as produckName, tb.price, tb.qty')->join("json_table (items,'$[*]' COLUMNS ( idProd INT path '$.id', price INT path '$.price', qty INT path '$.qty')) AS tb", '1= 1')->join('member b', 'transaction.member = b.id', 'left')->join('product p', 'tb.idProd = p.id')->orderBy('created_at', 'desc')->where('transaction.id', $id);
+        if (!empty($dtTable['search']['value'])) {
+            $data = $this->model->like('nota_number', $dtTable['search']['value']);
+            // $data = $this->model->orLike('name', $dtTable['search']['value']);
         }
         if (!empty($dtTable['order'][0]['column'])) {
             $data = $this->model->orderBy($dtTable['columns'][$dtTable['order'][0]['column']]['data'], $dtTable['order'][0]['dir']);

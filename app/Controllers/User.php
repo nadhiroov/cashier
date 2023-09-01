@@ -14,6 +14,9 @@ class User extends BaseController
         $this->view = \Config\Services::renderer();
         $this->view->setData(['menu_user' => 'active']);
         $this->data['menu'] = 'User management';
+        if (session()->get('is_admin') != 1) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
     }
 
     public function index()

@@ -40,10 +40,6 @@ class Products extends BaseController
     public function editPrice($id)
     {
         $data = $this->model->find($id);
-        if ($data['price_history'] == null) {
-            $price = $data['price'];
-        } else {
-        }
         return view('product/editPrice', ['content' => $data]);
     }
 

@@ -28,7 +28,7 @@ class Report extends BaseController
         return view('report/byProduct', $this->data);
     }
 
-    public function getDataByProduct(): string
+    public function getDataByProduct()
     {
         $dtTable = $this->request->getVar();
         $startDate = $this->request->getVar('startDate');

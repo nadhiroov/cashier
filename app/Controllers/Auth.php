@@ -14,12 +14,8 @@ class Auth extends BaseController
         $this->model = new M_user();
         helper(['form', 'url']);
     }
-    public function index()
-    {
-        //
-    }
 
-    function login()
+    public function login()
     {
         return view('auth/login');
     }
@@ -71,7 +67,7 @@ class Auth extends BaseController
         }
     }
 
-    function testInsert()
+    public function testInsert()
     {
         $data = [
             'username'  => 'admin',
@@ -115,11 +111,11 @@ class Auth extends BaseController
         return redirect()->to('/login');
     }
 
-    function testDelete($id) {
+    public function testDelete($id) {
         $this->model->delete($id);
     }
 
-    function showAllUser()
+    public function showAllUser()
     {
         $data = $this->model->withDeleted()->findAll();
         dd($data);

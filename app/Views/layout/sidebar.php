@@ -94,28 +94,11 @@
 
                 <?php if (session()->get('is_admin') == 1) : ?>
                     <li class="nav-item <?= $menu_member ?? ''; ?>">
-                        <a data-toggle="collapse" href="#member">
+                        <a href="<?= base_url() ?>member">
                             <i class="fas fa-users"></i>
-                            <p>Member</p>
-                            <span class="caret"></span>
+                            <p>Members</p>
                         </a>
-                        <div class="collapse <?= isset($menu_member) ? 'show' : '' ?>" id="member">
-                            <ul class="nav nav-collapse">
-                                <li class="<?= $submenu_members ?? ''; ?>">
-                                    <a href="<?= base_url() ?>member">
-                                        <span class="sub-item">Members</span>
-                                    </a>
-                                </li>
-                                <li class="<?= $submenu_point ?? ''; ?>">
-                                    <a href="<?= base_url() ?>point">
-                                        <span class="sub-item">Point</span>
-                                    </a>
-                                </li>
-                                <li>
-                            </ul>
-                        </div>
                     </li>
-
                     <li class="nav-item <?= $menu_discount ?? ''; ?>">
                         <a href="<?= base_url() ?>discount">
                             <i class="fas fa-percentage"></i>

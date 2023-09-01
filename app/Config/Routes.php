@@ -87,6 +87,8 @@ $routes->post('transactionSave', 'Transaction::process');
 */
 $routes->get('transHistory', 'Transaction::historyIndex');
 $routes->get('transHistoryData', 'Transaction::getDataHistory');
+$routes->get('transDetail/(:num)', 'Transaction::detailTrans/$1');
+$routes->get('transDetailData/(:num)', 'Transaction::detailTransData/$1');
 
 
 /*

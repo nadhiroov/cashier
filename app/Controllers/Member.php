@@ -18,6 +18,9 @@ class Member extends BaseController
 
     public function index()
     {
+        if (session()->get('is_admin') != 1) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
         return view('member/index', $this->data);
     }
 
@@ -29,25 +32,10 @@ class Member extends BaseController
 
     public function detail($id)
     {
+        if (session()->get('is_admin') != 1) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
         $data = $this->model->find($id);
-
-        $add = [];
-        $min = [];
-        // foreach (json_decode($data['point_history']) as $key) {
-        //     if ($key->type = 'add') {
-        //         $add += [
-        //             'date' => date('D, M Y', strtotime($key->date)),
-        //             'point'=> $key->point
-        //         ];
-        //     }elseif ($key->type = 'min') {
-        //         $min += [
-        //             'date' => date('D, M Y', strtotime($key->date)),
-        //             'point' => $key->point
-        //         ];
-        //     }
-        // }
-        // $this->data['add'] = $add;
-        // $this->data['min'] = $min;
         $this->data['point_history'] = json_decode($data['point_history']);
         $this->data['content'] = $data;
         return view('member/detail', $this->data);

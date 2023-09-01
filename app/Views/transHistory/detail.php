@@ -21,6 +21,12 @@
             <li class="nav-item">
                 <a href="#"><?= esc($menu); ?></a>
             </li>
+            <li class="separator">
+                <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Detail</a>
+            </li>
         </ul>
     </div>
     <div class="row">
@@ -32,15 +38,88 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    <div class="form">
+                        <div class="row">
+                            <div class="col-md-6 col-lg-4">
+                                <div class="form-group form-inline">
+                                    <label class="col-md-3 col-form-label">Nota number :</label>
+                                    <div class="col-md-9 p-0">
+                                        <label><?= $content['nota_number']; ?></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="form-group form-inline">
+                                    <label class="col-md-3 col-form-label">Total discount :</label>
+                                    <div class="col-md-9 p-0">
+                                        <label><?= 'Rp. ' . number_format($content['discount'], 0, ',', '.'); ?></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-lg-4">
+                                <div class="form-group form-inline">
+                                    <label class="col-md-3 col-form-label">Member :</label>
+                                    <div class="col-md-9 p-0">
+                                        <label><?= $content['member'] != 0 ? $content['memberName'] : 'General'; ?></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="form-group form-inline">
+                                    <label class="col-md-3 col-form-label">Point pay :</label>
+                                    <div class="col-md-9 p-0">
+                                        <label><?= $content['point_pay'] == null ? '-' : 'Rp. ' . number_format($content['point_pay'], 0, ',', '.'); ?></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-lg-4">
+                                <div class="form-group form-inline">
+                                    <label class="col-md-3 col-form-label">Cashier :</label>
+                                    <div class="col-md-9 p-0">
+                                        <label><?= $content['fullname']; ?></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="form-group form-inline">
+                                    <label class="col-md-3 col-form-label">Total pay :</label>
+                                    <div class="col-md-9 p-0">
+                                        <label><?= 'Rp. ' . number_format($content['total_pay'], 0, ',', '.'); ?></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-lg-4">
+                                <div class="form-group form-inline">
+                                    <label class="col-md-3 col-form-label"></label>
+                                    <div class="col-md-9 p-0">
+                                        <label></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="form-group form-inline">
+                                    <label class="col-md-3 col-form-label">Grand total :</label>
+                                    <div class="col-md-9 p-0">
+                                        <label><?= 'Rp. ' . number_format($content['grand_total'], 0, ',', '.'); ?></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="table-responsive">
                         <table id="datatable" class="display table table-striped table-hover">
                             <thead>
                                 <tr>
-                                    <th>Number</th>
-                                    <th>Member</th>
-                                    <th>Grand Total</th>
-                                    <th>Item</th>
-                                    <th class="col-xs-1">Action</th>
+                                    <th>Product</th>
+                                    <th>Qty</th>
+                                    <th>Price per item</th>
+                                    <th>Total</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -108,12 +187,13 @@
 <script>
     $(document).ready(function() {
         $('#datatable').DataTable({
-            ajax: '<?= base_url('transHistoryData') ?>',
+            ajax: '<?= base_url('transDetailData/') . $content['id'] ?>',
             method: 'POST',
-            pageLength: 10,
+            searching: false,
             serverSide: true,
             processing: true,
-            "columnDefs": [{
+            paging: false,
+            /* columnDefs: [{
                 "width": "15%",
                 "targets": 4
             }, {
@@ -122,37 +202,23 @@
             }, {
                 "targets": 4,
                 "orderable": false
-            }],
-            columns: [
-                // {
-                //     data: 'id',
-                //     render: function(data, type, row, meta) {
-                //         return meta.row + meta.settings._iDisplayStart + 1;
-                //     }
-                // },
-                {
-                    data: 'nota_number'
+            }], */
+            columns: [{
+                    data: 'produckName'
                 },
                 {
-                    data: 'name',
+                    data: 'qty',
+                },
+                {
+                    data: 'price',
                     render: function(data) {
-                        return data == null ? 'General' : data;
+                        return rupiah(data)
                     }
                 },
                 {
-                    data: 'grand_total',
-                    render: function(data) {
-                        return rupiah(data);
-                    }
-                },
-                {
-                    data: 'item'
-                },
-                {
-                    data: 'id',
+                    data: null,
                     render: function(data, type, row) {
-                        return `<a href="transDetail/${data}" class="btn btn-sm btn-round btn-primary"><i class="fas fa-external-link-alt"></i></a>
-                        <a href="#edit" data-toggle="modal" data-id="${data}" class="btn btn-sm btn-round btn-warning"><i class="fas fa-edit"></i></a>`;
+                        return rupiah(row.qty * row.price); // Calculate and render the multiplication result
                     }
                 }
             ]

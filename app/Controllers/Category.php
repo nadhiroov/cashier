@@ -17,18 +17,21 @@ class Category extends BaseController
         $this->view = \Config\Services::renderer();
         $this->view->setData(['menu_warehouse' => 'active', 'submenu_category' => 'active']);
         $this->data['menu'] = 'Category';
+    }
+    
+    public function index()
+    {
         if (session()->get('is_admin') != 1) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
-    }
-
-    public function index()
-    {
         return view('category/index', $this->data);
     }
 
     public function detail($id)
     {
+        if (session()->get('is_admin') != 1) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
         $this->data['submenu'] = 'Detail';
         $this->data['content'] = $this->model->find($id);
         return view('category/detail', $this->data);

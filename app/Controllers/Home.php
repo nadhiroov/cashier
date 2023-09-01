@@ -36,7 +36,7 @@ class Home extends BaseController
         $this->data['product']  = $this->product->countAllResults();
         $this->data['transaction'] = $this->trans->where('DATE(created_at) ', date('Y-m-d'))->countAllResults();
         $this->data['income']   = $this->trans->select('sum(grand_total) as total')->where('DATE(created_at)', date('Y-m-d'))->first();
-        $this->data['items']   = $this->trans->select('sum(JSON_LENGTH(items)) as items')->where('DATE(created_at)', date('Y-m-d'))->first();
+        $this->data['items']   = $this->trans->select('sum(qty) as items')->join("json_table (items,'$[*]' COLUMNS ( qty INT path '$.qty')) AS tb", '1 = 1')->where('DATE(created_at)', date('Y-m-d'))->first();
         
         return view('dashboard', $this->data);
     }

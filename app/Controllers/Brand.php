@@ -17,13 +17,13 @@ class Brand extends BaseController
         $this->view = \Config\Services::renderer();
         $this->view->setData(['menu_warehouse' => 'active', 'submenu_brand' => 'active']);
         $this->data['menu'] = 'Brands';
-        if (session()->get('is_admin') != 1) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
-        }
     }
 
     public function index()
     {
+        if (session()->get('is_admin') != 1) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
         $this->data['category'] = $this->category->findAll();
         return view('brand/index', $this->data);
     }
@@ -35,6 +35,9 @@ class Brand extends BaseController
     }
 
     public function detail($id) {
+        if (session()->get('is_admin') != 1) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
         $this->data['content'] = $this->model->find($id);
         $this->data['submenu'] = 'Detail';
         return view('brand/detail', $this->data);
