@@ -58,7 +58,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right">
-                        <div class="card-title">SKU</div>
+                        <div class="card-title">Stock report</div>
                     </div>
                 </div>
                 <div class="card-body">

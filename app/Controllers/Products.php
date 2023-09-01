@@ -113,7 +113,7 @@ class Products extends BaseController
         if ($id != null) {
             $data = $data->where('B.id', $id);
         }
-        $data= $data->where('product.deleted_at is null');
+        $data = $data->where('product.deleted_at is null');
         if (!empty($dtTable['search']['value'])) {
             $data = $this->model->like('product.name', $dtTable['search']['value']);
             $data = $this->model->orLike('product.stock', $dtTable['search']['value']);
