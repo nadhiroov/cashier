@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Controllers\Products;
 use App\Controllers\Member;
+use App\Models\M_member;
 use App\Models\M_point;
 use App\Models\M_transaction;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
@@ -119,8 +120,13 @@ class Transaction extends BaseController
 
         if ($member != '0' && intval($earnedPoint) > 0) { // point adding
             $this->member->pointAddition($member[0], intval($earnedPoint));
-            $lastPoint = $this->member->select('point')->where('id', $member[0])->first();
         }
+        
+        if ($member != '0') {
+            $modelMember = new M_member();
+            $lastPoint = $modelMember->select('point')->where('id', $member[0])->first();
+        }
+
 
         $transactionData = [
             'nota_number'   => $form['notaNumber'],
@@ -158,7 +164,7 @@ class Transaction extends BaseController
             $printer->text($this->buatBaris3Kolom('', 'Total: ', $form['grandTotal']));
             $printer->text($this->buatBaris3Kolom('', 'Bayar: ', $form['money']));
             $printer->text($this->buatBaris3Kolom('', 'Kembali: ', intval($form['grandTotal']) - intval($form['money'])));
-            $printer->text($this->buatBaris3KolomPoint('Point: Rp. ' . $lastPoint == null ? '-' : number_format($lastPoint['point'], 0, ',', '.'), '', ''));
+            $printer->text($this->buatBaris3KolomPoint('Point: Rp. ' .  !isset($lastPoint) ? '-' : number_format($lastPoint['point'], 0, ',', '.'), '', ''));
             $printer->text($this->buatBaris1Kolom('Terimaksih atas kunjungan anda'));
 
             $printer->feed(4);
