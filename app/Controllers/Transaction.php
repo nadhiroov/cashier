@@ -119,6 +119,7 @@ class Transaction extends BaseController
 
         if ($member != '0' && intval($earnedPoint) > 0) { // point adding
             $this->member->pointAddition($member[0], intval($earnedPoint));
+            $lastPoint = $this->member->select('point')->where('id', $member[0])->first();
         }
 
         $transactionData = [
@@ -139,10 +140,12 @@ class Transaction extends BaseController
             $printer = new Printer($connector, $profile);
             $printer->initialize();
             $printer->selectPrintMode(Printer::MODE_FONT_A);
-            $printer->text($this->buatBaris1Kolom('Toko Susu dan Perlengkapan Bayi AIS'));
-            $printer->text($this->buatBaris1Kolom('Pasuruan, telp : 081xxxxxxx'));
+            $printer->text($this->buatBaris1Kolom('                     AIS'));
+            $printer->text($this->buatBaris1Kolom('         Toko Susu&Perlengkapan Bayi'));
+            $printer->text($this->buatBaris1Kolom('         Erlangga 83D, Pasuruan'));
+            $printer->text($this->buatBaris1Kolom('         Telp     : 087840519421'));
             $printer->text($this->buatBaris1Kolom("Faktur: $form[notaNumber]"));
-            $printer->text($this->buatBaris1Kolom("Tanggal: " . date('d-m-Y H:i:s')));
+            $printer->text($this->buatBaris1Kolom("         Tanggal  : " . date('d-m-Y H:i:s')));
 
             $printer->text($this->buatBaris1Kolom('---------------------------------'));
             foreach ($productPrint as $key) {
@@ -150,10 +153,12 @@ class Transaction extends BaseController
                 $printer->text($this->buatBaris3Kolom($key['qty'], $key['price'], intval($key['qty']) * intval($key['price'])));
             }
             $printer->text($this->buatBaris1Kolom('---------------------------------'));
+
             $printer->text($this->buatBaris3Kolom('', 'Discount: ', $form['totalDiscount']));
             $printer->text($this->buatBaris3Kolom('', 'Total: ', $form['grandTotal']));
             $printer->text($this->buatBaris3Kolom('', 'Bayar: ', $form['money']));
             $printer->text($this->buatBaris3Kolom('', 'Kembali: ', intval($form['grandTotal']) - intval($form['money'])));
+            $printer->text($this->buatBaris3KolomPoint('Point: Rp. ' . $lastPoint == null ? '-' : number_format($lastPoint['point'], 0, ',', '.'), '', ''));
             $printer->text($this->buatBaris1Kolom('Terimaksih atas kunjungan anda'));
 
             $printer->feed(4);
@@ -307,7 +312,7 @@ class Transaction extends BaseController
         $printer->text($this->buatBaris1Kolom('                     AIS'));
         $printer->text($this->buatBaris1Kolom('         Toko Susu&Perlengkapan Bayi'));
         $printer->text($this->buatBaris1Kolom('         Erlangga 83D, Pasuruan'));
-        $printer->text($this->buatBaris1Kolom('         Telp     : 081xxxxxxx'));
+        $printer->text($this->buatBaris1Kolom('         Telp     : 087840519421'));
         $printer->text($this->buatBaris1Kolom("         Faktur   : 110823-001"));
         $printer->text($this->buatBaris1Kolom("         Tanggal  : " . date('d-m-Y H:i:s')));
 
