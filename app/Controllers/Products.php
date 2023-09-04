@@ -73,6 +73,7 @@ class Products extends BaseController
                 'date'  => date('d-m-Y'),
                 'count'   => intval($form['stock']),
             ];
+            $save['stock'] = intval($data['stock']) + intval($form['stock']);
             if ($data['incoming_history'] == null) {
                 $save['incoming_history'] = json_encode([$price]);
             } else {
