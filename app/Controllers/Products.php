@@ -43,7 +43,8 @@ class Products extends BaseController
         return view('product/editPrice', ['content' => $data]);
     }
 
-    public function processEditPrice() {
+    public function processEditPrice()
+    {
         $form = $this->request->getPost('form');
         $data = $this->model->find($form['id']);
 
@@ -53,12 +54,12 @@ class Products extends BaseController
             $price = [
                 'date'  => date('d-m-Y'),
                 'buy'   => intval($form['purchase_price']),
-                'percent'=> (float) $form['percent'],
+                'percent' => (float) $form['percent'],
                 'sell'  => $form['price']
             ];
             if ($data['price_history'] == null) {
                 $save['price_history'] = json_encode([$price]);
-            }else{
+            } else {
                 $oldPrice = json_decode($data['price_history'], true);
                 array_push($oldPrice, $price);
                 $save['price_history'] = json_encode($oldPrice);
@@ -144,7 +145,7 @@ class Products extends BaseController
             $price = [
                 'date'  => date('d-m-Y'),
                 'buy'   => intval($form['purchase_price']),
-                'percent'=> (float) $form['percent'],
+                'percent' => (float) $form['percent'],
                 'sell'  => $form['price']
             ];
             $form['price_history'] = json_encode([$price]);
@@ -189,10 +190,11 @@ class Products extends BaseController
     {
         $keyword = $this->request->getPost('keyword');
         $registered = $this->request->getPost('registered');
-        // var_dump($registered);die;
         $item = $this->model->find_item($keyword, $registered);
         $json['data']     = "<ul id='daftar-autocomplete'>";
+        $i = 0;
         foreach ($item->getResultObject() as $key) {
+            $i++;
             $json['data'] .= "
 						<li>
 							<b>Barcode</b> :
@@ -202,7 +204,12 @@ class Products extends BaseController
 							<span id='discountnya' style='display:none;'>" . $key->discount . "</span>
 						</li>
 					";
+            $json['barcode']    = $key->barcode;
+            $json['name']       = $key->name;
+            $json['price']      = $key->price;
+            $json['discount']   = $key->discount;
         }
+        $json['count'] = $i;
         $json['data'] .= "</ul>";
         $json['status'] = 1;
         echo json_encode($json);
@@ -233,11 +240,11 @@ class Products extends BaseController
             if ($soldHistory == null) { // if the history is null
                 $soldHistory[] = [
                     'date' => $date,
-                    'count'=> intval($itemCount)
+                    'count' => intval($itemCount)
                 ];
             } else {
                 $currentDate = false;
-                for ($i=0; $i < count($soldHistory) ; $i++) {
+                for ($i = 0; $i < count($soldHistory); $i++) {
                     if ($soldHistory[$i]['date'] == $date) { // add in current date
                         $soldHistory[$i]['count'] = intval($soldHistory[$i]['count']) + intval($itemCount);
                         $currentDate = true;

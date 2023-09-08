@@ -222,7 +222,7 @@
             success: function(data) {
                 $('.member option:not(:first)').remove();
                 data.forEach(function(option) {
-                    $('.member').append(`<option value="${option.id}|${option.phone}|${option.point}">${option.name}</option>`);
+                    $('.member').append(`<option value="${option.id}|${option.phone}|${option.point}">${option.phone}|${option.name}</option>`);
                 });
             }
         });
@@ -408,12 +408,31 @@
             data: 'keyword=' + KataKunci + '&registered=' + Registered,
             dataType: 'json',
             success: function(json) {
+                console.log(json)
                 if (json.status == 1) {
-                    $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(2)').find('div#hasil_pencarian').css({
-                        'width': Lebar + 'px'
-                    });
-                    $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(2)').find('div#hasil_pencarian').show('fast');
-                    $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(2)').find('div#hasil_pencarian').html(json.data);
+                    if (json.count == 1 && json.barcode == KataKunci) {
+                        var Field = $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(2)');
+
+                        Field.find('div#hasil_pencarian').hide();
+                        Field.find('input').val(json.barcode);
+
+                        $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(3)').html(json.name);
+                        $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(4) input').val(json.price);
+                        $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(4) span').html(to_rupiah(json.price));
+                        $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(5) input').removeAttr('disabled').val(1);
+                        $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(6) input').val(json.price);
+                        $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(6) span').html(to_rupiah(json.price));
+                        $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(7) input#discount_item').val(json.discount);
+                        $('#transactionTable tbody tr:eq(' + $(this).parent().parent().index() + ') td:nth-child(7) input#discount_total').val(json.discount);
+                        newLine();
+                        HitungTotalBayar();
+                    } else {
+                        $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(2)').find('div#hasil_pencarian').css({
+                            'width': Lebar + 'px'
+                        });
+                        $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(2)').find('div#hasil_pencarian').show('fast');
+                        $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(2)').find('div#hasil_pencarian').html(json.data);
+                    }
                 }
                 if (json.status == 0) {
                     $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(3)').html('');
@@ -424,10 +443,9 @@
                     $('#transactionTable tbody tr:eq(' + Indexnya + ') td:nth-child(6) span').html('');
                 }
             }
-        });
-
+        })
         HitungTotalBayar();
-    }, 500);
+    }, 100)
 
     $(document).on('click', '#daftar-autocomplete li', function() {
         $(this).parent().parent().parent().find('input').val($(this).find('span#kodenya').html());
