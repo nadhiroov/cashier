@@ -30,10 +30,6 @@
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right">
                         <div class="card-title">Brand : <?= $content['brand']; ?></div>
-                        <!-- <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addnew">
-                            <i class="fa fa-plus"></i>
-                            Add new
-                        </button> -->
                     </div>
                 </div>
                 <div class="card-body">

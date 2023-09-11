@@ -6,7 +6,6 @@ use CodeIgniter\Model;
 
 class M_discount extends Model
 {
-    protected $DBGroup          = 'default';
     protected $table            = 'discount';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;

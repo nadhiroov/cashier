@@ -72,30 +72,6 @@
                 </div>
             </div>
         </div>
-        <!-- <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">Line Chart</div>
-                </div>
-                <div class="card-body">
-                    <div class="chart-container">
-                        <canvas id="lineChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">Bar Chart</div>
-                </div>
-                <div class="card-body">
-                    <div class="chart-container">
-                        <canvas id="barChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div> -->
     </div>
 </div>
 <?= $this->endSection(); ?>

@@ -37,7 +37,7 @@ class M_product extends Model
         $registered = explode(',', $registered);
 
         $query = $db->table('product')
-            ->select('barcode, name, price, if(discount is not null, (price*(discount/100)), 0) as discount')
+            ->select('barcode, name, price, if(discount is not null, discount, 0) as discount')
             ->join('discount as B', "product.id = B.product_id AND CURRENT_TIMESTAMP() BETWEEN B.date_start AND B.date_end", 'left')
             ->where('deleted_at', null)
             ->where('stock >', 0)

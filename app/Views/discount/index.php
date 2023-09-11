@@ -43,8 +43,8 @@
                                     <th>Number</th>
                                     <th>Product</th>
                                     <th>Discount</th>
-                                    <th>Start</th>
-                                    <th>Expired</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
                                     <th class="col-xs-1">Action</th>
                                 </tr>
                             </thead>
@@ -89,7 +89,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form class="formEdit" action="<?= base_url() ?>/memberSave" method="POST">
+            <form class="formEdit" action="<?= base_url() ?>/discountSave" method="POST">
                 <div class="modal-body edited-body"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -142,19 +142,28 @@
                 {
                     data: 'discount',
                     render: function(data, type, row) {
-                        return `${data} %`
+                        return rupiah(data)
                     }
                 },
                 {
                     data: 'date_start',
-                    render: function(data) {
-                        return moment(data).format('D MMMM YYYY, h:mm:ss');
+                    render: function(data, type, row) {
+                        return moment(data).format('D MMMM YYYY, h:mm:ss') + ' - ' + moment(row.date_end).format('D MMMM YYYY, h:mm:ss');
                     }
                 },
                 {
-                    data: 'date_end',
-                    render: function(data) {
-                        return moment(data).format('D MMMM YYYY, h:mm:ss');
+                    data: null,
+                    render: function(data, type, row) {
+                        var currentDate = new Date(); // Get the current date and time
+                        var startDate = new Date(row.date_start); // Convert date_start to a Date object
+                        var endDate = new Date(row.date_end); // Convert date_end to a Date object
+
+                        // Check if currentDate is between startDate and endDate
+                        if (currentDate >= startDate && currentDate <= endDate) {
+                            return '<span class="badge badge-primary">Active</span>';
+                        } else {
+                            return '<span class="badge badge-danger">Not Active</span>';
+                        }
                     }
                 },
                 {
@@ -200,11 +209,13 @@
         if (typeof rowid != 'undefined') {
             $.ajax({
                 type: 'get',
+                // dataType: 'json',
                 url: `<?= base_url() ?>/discountEdit/${rowid}`,
                 success: function(data) {
+                    // console.log(data)
                     $('.edited-body').html(data);
                     $('.js-example-basic-single').select2({
-                        dropdownParent: $('#addnew'),
+                        dropdownParent: $('#edit'),
                         placeholder: 'Select an option'
                     });
                     $('.daterange').daterangepicker({
@@ -213,6 +224,8 @@
                         locale: {
                             format: 'D MMMM YYYY, HH:mm'
                         },
+                        startDate: moment($('#start').val()),
+                        endDate: moment($('#end').val())
                     });
                 }
             });

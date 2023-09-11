@@ -194,7 +194,10 @@
             url: '<?= base_url() ?>/productAdd',
             success: function(data) {
                 $('.add-body').html(data)
-                $('.brand').select2()
+                $('.brand').select2({
+                    placeholder: "Please select a brand",
+                    dropdownParent: $('#addnew'),
+                })
                 $('.purchase').keyup(function() {
                     let inputValue = $(this).val().replace(/\./g, '').replace(/,/g, '')
                     let formattedValue = Number(inputValue).toLocaleString("id-ID")
@@ -226,7 +229,10 @@
                 url: `<?= base_url() ?>/productEdit/${rowid}`,
                 success: function(data) {
                     $('.edited-body').html(data)
-                    $('.brand').select2()
+                    $('.brand').select2({
+                        placeholder: "Please select a category",
+                        dropdownParent: $('#edit'),
+                    })
                     $('.purchase').keyup(function() {
                         let inputValue = $(this).val().replace(/\./g, '').replace(/,/g, '')
                         let formattedValue = Number(inputValue).toLocaleString("id-ID")

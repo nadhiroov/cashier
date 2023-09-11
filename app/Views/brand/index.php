@@ -68,9 +68,9 @@
             <form class="formEdit" action="<?= base_url() ?>/brandSave" method="POST">
                 <div class="modal-body">
                     <div class="form-group form-inline">
-                        <label for="inlineinput" class="col-md-3 col-form-label">Category</label>
+                        <label for="category" class="col-md-3 col-form-label">Category</label>
                         <div class="col-md-9 p-0">
-                            <select class="form-control category" name="form[category_id]" data-width="100%">
+                            <select class="form-control category" id="category" name="form[category_id]" data-width="100%">
                                 <option></option>
                                 <?php foreach ($category as $row) : ?>
                                     <option value="<?= $row['id'] ?>"><?= $row['category'] ?></option>
@@ -79,9 +79,9 @@
                         </div>
                     </div>
                     <div class="form-group form-inline">
-                        <label for="inlineinput" class="col-md-3 col-form-label">Brand</label>
+                        <label for="inputBrand" class="col-md-3 col-form-label">Brand</label>
                         <div class="col-md-9 p-0">
-                            <input type="text" class="form-control input-full" placeholder="Enter brand" name="form[brand]">
+                            <input type="text" id="inputBrand" class="form-control input-full" placeholder="Enter brand" name="form[brand]">
                         </div>
                     </div>
                 </div>
@@ -122,7 +122,7 @@
 <script src="<?= base_url() ?>/assets/js/plugin/datatables/datatables.min.js"></script>
 <script src="<?= base_url() ?>/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
 <script src="<?= base_url() ?>/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
-<script src="<?= base_url() ?>/assets/js/select2.min.js"></script>
+<script src="<?= base_url() ?>assets/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
         $('#datatable').DataTable({
@@ -162,31 +162,36 @@
                 }
             ]
         });
+    })
+
+    $("#addnew").on('show.bs.modal', function(e) {
+        $('.category').select2({
+            placeholder: "Please select a category",
+            dropdownParent: $('#addnew'),
+        });
     });
 
-    $('.category').select2({
-        placeholder: "Please select a category"
-    });
 
     $('.formAdd, .formEdit').submit(function(e) {
-        e.preventDefault();
-        saveData(this);
-    });
+        e.preventDefault()
+        saveData(this)
+    })
 
     $('#edit').on('show.bs.modal', function(e) {
-        var rowid = $(e.relatedTarget).data('id');
+        var rowid = $(e.relatedTarget).data('id')
         if (typeof rowid != 'undefined') {
             $.ajax({
                 type: 'get',
                 url: `<?= base_url() ?>/brandEdit/${rowid}`,
                 success: function(data) {
-                    $('.edited-body').html(data);
+                    $('.edited-body').html(data)
                     $('.category').select2({
-                        placeholder: "Please select a category"
-                    });
+                        placeholder: "Please select a category",
+                        dropdownParent: $('#edit'),
+                    })
                 }
-            });
+            })
         }
-    });
+    })
 </script>
 <?= $this->endSection(); ?>

@@ -90,6 +90,9 @@ class Discount extends BaseController
             'date_start' => date('Y-m-d H:i:s' ,strtotime($date[0])),
             'date_end'   => date('Y-m-d H:i:s', strtotime($date[1]))
         ];
+        if (isset($form['id'])) {
+            $saveData['id'] = $form['id'];
+        }
 
         try {
             $this->model->save($saveData);
@@ -98,7 +101,7 @@ class Discount extends BaseController
                 'title'     => 'Success',
                 'message'   => 'Data saved successfully'
             ];
-        } catch (\Exception $th) {
+        } catch (\Throwable $th) {
             $return = [
                 'status'    => 'error',
                 'title'     => 'Error',

@@ -27,3 +27,5 @@
     </div>
 </div>
 <input type="hidden" name="form[id]" value="<?= $content['id']; ?>">
+<input type="hidden" id="start" value="<?= $content['date_start']; ?>">
+<input type="hidden" id="end" value="<?= $content['date_end']; ?>">

@@ -12,7 +12,7 @@
 <div class="form-group form-inline">
     <label for="inlineinput" class="col-md-3 col-form-label">Discount</label>
     <div class="col-md-9 p-0">
-        <input type="text" class="form-control input-full" placeholder="Enter discount by percentage" name="form[discount]">
+        <input type="text" class="form-control input-full" placeholder="Enter discount by nominal" name="form[discount]">
     </div>
 </div>
 <div class="form-group form-inline">
