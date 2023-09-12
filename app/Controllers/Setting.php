@@ -21,19 +21,20 @@ class Setting extends BaseController
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
     }
-
     public function index()
     {
         $point = new M_point();
         $this->data['point'] = $point->first();
         return view('setting/index', $this->data);
     }
-
+    
     public function processPoint()
     {
+        $point = new M_point();
         $form = $this->request->getPost('form');
+        
         try {
-            $this->point->save($form);
+            $point->save($form);
             $return = [
                 'status'    => 'success',
                 'title'     => 'Success',
