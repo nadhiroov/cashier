@@ -114,7 +114,7 @@
             serverSide: true,
             processing: true,
             "columnDefs": [{
-                "width": "15%",
+                "width": "20%",
                 "targets": 4
             }, {
                 "targets": 0,
@@ -151,7 +151,8 @@
                 {
                     data: 'id',
                     render: function(data, type, row) {
-                        return `<a href="transDetail/${data}" class="btn btn-sm btn-round btn-primary"><i class="fas fa-external-link-alt"></i></a>
+                        return `<a onClick="print(${data})" href="#" class="btn btn-sm btn-round btn-success btn-print"><i class="fas fa-print"></i></a>
+                        <a href="transDetail/${data}" class="btn btn-sm btn-round btn-primary"><i class="fas fa-external-link-alt"></i></a>
                         <a href="#edit" data-toggle="modal" data-id="${data}" class="btn btn-sm btn-round btn-warning"><i class="fas fa-edit"></i></a>`;
                     }
                 }
@@ -208,5 +209,42 @@
             });
         }
     });
+
+    function print(rowid) {
+        swal({
+            title: "Are you sure want to print transaction?",
+            text: "You won't be able to revert this!",
+            type: "warning",
+            buttons: {
+                cancel: {
+                    visible: true,
+                    text: "Cancel",
+                    className: "btn btn-danger",
+                },
+                confirm: {
+                    text: "Yes, print it!",
+                    className: "btn btn-success",
+                },
+            },
+        }).then((willDelete) => {
+            if (willDelete) {
+                $.ajax({
+                    type: 'get',
+                    url: `<?= base_url() ?>/transPrint/${rowid}`,
+                    success: function(data) {
+                        notif(data.status, data.title, data.message);
+                        setTimeout(function() {
+                            swal.close();
+                        }, 2000);
+                    },
+                    error: function(err) {
+                        notif(err.status, err.title, err.message);
+                    },
+                })
+            } else {
+                swal.close()
+            }
+        })
+    }
 </script>
 <?= $this->endSection(); ?>

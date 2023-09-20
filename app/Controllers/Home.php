@@ -25,19 +25,20 @@ class Home extends BaseController
         $this->data['menu'] = 'Dashboard';
     }
 
-    public function index()
+    public function index() : string
     {
         return view('welcome_message');
     }
-    
-    public function dashboard() {
+
+    public function dashboard()
+    {
         $this->data['category'] = $this->category->countAllResults();
         $this->data['brand']    = $this->brand->countAllResults();
         $this->data['product']  = $this->product->countAllResults();
         $this->data['transaction'] = $this->trans->where('DATE(created_at) ', date('Y-m-d'))->countAllResults();
         $this->data['income']   = $this->trans->select('sum(grand_total) as total')->where('DATE(created_at)', date('Y-m-d'))->first();
         $this->data['items']   = $this->trans->select('sum(qty) as items')->join("json_table (items,'$[*]' COLUMNS ( qty INT path '$.qty')) AS tb", '1 = 1')->where('DATE(created_at)', date('Y-m-d'))->first();
-        
+
         return view('dashboard', $this->data);
     }
 }

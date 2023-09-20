@@ -33,7 +33,6 @@ function notif(status = "", title = "", message = "") {
 
 function saveData(formSelection, successFunc = "") {
   let form = $(formSelection);
-  // let data = $(form).serialize();
   let data = new FormData(formSelection);
   let url = $(form).attr("action");
   $.ajax({
@@ -69,8 +68,8 @@ function saveData(formSelection, successFunc = "") {
 }
 
 function detailRecord(selection) {
-  var url = $(selection).attr("target");
-  var id = $(selection).attr("data-id");
+  let url = $(selection).attr("target");
+  let id = $(selection).attr("data-id");
   $.ajax({
     url: url,
     type: "POST",
@@ -81,7 +80,7 @@ function detailRecord(selection) {
 }
 
 function confirmDelete(selection, func = "") {
-  var action = $(selection).attr("target");
+  let action = $(selection).attr("target");
   swal({
     title: "Are you sure?",
     text: "You won't be able to revert this!",
@@ -124,9 +123,9 @@ function confirmDelete(selection, func = "") {
 }
 
 function rupiah(nominal) {
-  var rev = parseInt(nominal, 10).toString().split("").reverse().join("");
-  var rev2 = "";
-  for (var i = 0; i < rev.length; i++) {
+  let rev = parseInt(nominal, 10).toString().split("").reverse().join("");
+  let rev2 = "";
+  for (let i = 0; i < rev.length; i++) {
     rev2 += rev[i];
     if ((i + 1) % 3 === 0 && i !== rev.length - 1) {
       rev2 += ".";

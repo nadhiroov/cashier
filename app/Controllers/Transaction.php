@@ -192,6 +192,10 @@ class Transaction extends BaseController
         }
     }
 
+    public function print($id) {
+        echo $id;
+    }
+
     public function buatBaris1Kolom($kolom1)
     {
         // Mengatur lebar setiap kolom (dalam satuan karakter)
