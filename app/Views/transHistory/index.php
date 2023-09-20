@@ -212,7 +212,7 @@
 
     function print(rowid) {
         swal({
-            title: "Are you sure want to print transaction?",
+            title: "Are you sure want to print this transaction?",
             text: "You won't be able to revert this!",
             type: "warning",
             buttons: {

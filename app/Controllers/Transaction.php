@@ -192,8 +192,51 @@ class Transaction extends BaseController
         }
     }
 
-    public function print($id) {
-        echo $id;
+    public function print($id)
+    {
+        $data = $this->model->select('transaction.*, b.name as memberName, p.name as produckName, tb.price, tb.qty')->join("json_table (items,'$[*]' COLUMNS ( idProd INT path '$.id', price INT path '$.price', qty INT path '$.qty')) AS tb", '1= 1')->join('member b', 'transaction.member = b.id', 'left')->join('product p', 'tb.idProd = p.id')->orderBy('created_at', 'desc')->where('transaction.id', $id)->find();
+        if ($data[0]['member'] != 0) {
+            $modelMember = new M_member();
+            $lastPoint = $modelMember->select('point, name')->where('id', $data[0]['member'])->first();
+        }
+        
+        $profile = CapabilityProfile::load("simple");
+        $connector = new WindowsPrintConnector("POS58 Printer");
+        $printer = new Printer($connector, $profile);
+        $printer->initialize();
+        $printer->selectPrintMode(Printer::MODE_FONT_A);
+        $printer->text($this->buatBaris1Kolom('                     AIS'));
+        $printer->text($this->buatBaris1Kolom('         Toko Susu&Perlengkapan Bayi'));
+        $printer->text($this->buatBaris1Kolom('         Erlangga 83D, Pasuruan'));
+        $printer->text($this->buatBaris1Kolom('         Telp     : 087840519421'));
+        $printer->text($this->buatBaris1Kolom("         Faktur: $data[0][nota_number]"));
+        if (isset($lastPoint)) {
+            $printer->text($this->buatBaris1Kolom("         Member   : $lastPoint[name]"));
+        }
+        $printer->text($this->buatBaris1Kolom("         Tanggal  : " . date('d-m-Y H:i:s', strtotime($data['0']['created_at']))));
+
+        $printer->text($this->buatBaris1Kolom('---------------------------------'));
+        foreach ($data as $key) {
+            $printer->text($this->buatBaris1Kolom($key['produckName']));
+            $printer->text($this->buatBaris3Kolom($key['qty'], $key['price'], intval($key['qty']) * intval($key['price'])));
+        }
+        $printer->text($this->buatBaris1Kolom('---------------------------------'));
+
+        $printer->text($this->buatBaris3Kolom('', 'Discount: ', $data[0]['totalDiscount']));
+        $printer->text($this->buatBaris3Kolom('', 'Total: ', $data[0]['grand_total']));
+        if ($data[0]['point_pay'] != null) {
+            $data[0]['money'] += $data[0]['point_pay'];
+        }
+        $printer->text($this->buatBaris3Kolom('', 'Bayar: ', $data[0]['total_pay']));
+        $printer->text($this->buatBaris3Kolom('', 'Kembali: ', intval($data[0]['grand_total']) - intval($data[0]['money'])));
+        $printer->text($this->buatBaris3KolomPoint(!isset($lastPoint) ? '' : 'Point: ' . number_format($lastPoint['point'], 0, ',', '.'), '', ''));
+        $printer->cut();
+        $printer->close();
+        echo json_encode([
+            'status'  => 'success',
+            'title'   => 'Success',
+            'message' => 'Print success!'
+        ]);
     }
 
     public function buatBaris1Kolom($kolom1)

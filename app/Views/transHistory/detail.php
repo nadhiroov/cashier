@@ -35,6 +35,7 @@
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right">
                         <div class="card-title">All <?= esc($menu); ?></div>
+                        <a class="btn btn-success btn-round ml-auto" onclick="print(<?= $content['id']; ?>)" href="#"><i class="fas fa-print"></i> Print</a>
                     </div>
                 </div>
                 <div class="card-body">
@@ -193,16 +194,6 @@
             serverSide: true,
             processing: true,
             paging: false,
-            /* columnDefs: [{
-                "width": "15%",
-                "targets": 4
-            }, {
-                "targets": 0,
-                "orderable": false
-            }, {
-                "targets": 4,
-                "orderable": false
-            }], */
             columns: [{
                     data: 'produckName'
                 },
@@ -222,57 +213,94 @@
                     }
                 }
             ]
-        });
-    });
+        })        
+    })
 
     $('.formAdd, .formEdit, .formChangePrice').submit(function(e) {
-        e.preventDefault();
-        saveData(this);
-    });
+        e.preventDefault()
+        saveData(this)
+    })
 
     $('#addnew').on('shown.bs.modal', function(e) {
         $.ajax({
             type: 'get',
             url: `<?= base_url() ?>/discountAdd/`,
             success: function(data) {
-                $('.add-body').html(data);
+                $('.add-body').html(data)
                 $('.js-example-basic-single').select2({
                     dropdownParent: $('#addnew'),
                     placeholder: 'Select an option'
-                });
+                })
                 $('.daterange').daterangepicker({
                     timePicker: true,
                     timePicker24Hour: true,
                     locale: {
                         format: 'D MMMM YYYY, HH:mm'
                     },
-                });
+                })
             }
-        });
-    });
+        })
+    })
 
     $('#edit').on('show.bs.modal', function(e) {
-        let rowid = $(e.relatedTarget).data('id');
+        let rowid = $(e.relatedTarget).data('id')
         if (typeof rowid != 'undefined') {
             $.ajax({
                 type: 'get',
                 url: `<?= base_url() ?>/discountEdit/${rowid}`,
                 success: function(data) {
-                    $('.edited-body').html(data);
+                    $('.edited-body').html(data)
                     $('.js-example-basic-single').select2({
                         dropdownParent: $('#addnew'),
                         placeholder: 'Select an option'
-                    });
+                    })
                     $('.daterange').daterangepicker({
                         timePicker: true,
                         timePicker24Hour: true,
                         locale: {
                             format: 'D MMMM YYYY, HH:mm'
                         },
-                    });
+                    })
                 }
-            });
+            })
         }
-    });
+    })
+
+    function print(rowid) {
+        swal({
+            title: "Are you sure want to print this transaction?",
+            text: "You won't be able to revert this!",
+            type: "warning",
+            buttons: {
+                cancel: {
+                    visible: true,
+                    text: "Cancel",
+                    className: "btn btn-danger",
+                },
+                confirm: {
+                    text: "Yes, print it!",
+                    className: "btn btn-success",
+                },
+            },
+        }).then((willDelete) => {
+            if (willDelete) {
+                $.ajax({
+                    type: 'get',
+                    url: `<?= base_url() ?>/transPrint/${rowid}`,
+                    success: function(data) {
+                        notif(data.status, data.title, data.message);
+                        setTimeout(function() {
+                            swal.close();
+                        }, 2000);
+                    },
+                    error: function(err) {
+                        notif(err.status, err.title, err.message);
+                    },
+                })
+            } else {
+                swal.close()
+            }
+        })
+    }
 </script>
 <?= $this->endSection(); ?>
