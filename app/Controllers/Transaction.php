@@ -199,7 +199,6 @@ class Transaction extends BaseController
             $modelMember = new M_member();
             $lastPoint = $modelMember->select('point, name')->where('id', $data[0]['member'])->first();
         }
-        
         $profile = CapabilityProfile::load("simple");
         $connector = new WindowsPrintConnector("POS58 Printer");
         $printer = new Printer($connector, $profile);
@@ -209,7 +208,7 @@ class Transaction extends BaseController
         $printer->text($this->buatBaris1Kolom('         Toko Susu&Perlengkapan Bayi'));
         $printer->text($this->buatBaris1Kolom('         Erlangga 83D, Pasuruan'));
         $printer->text($this->buatBaris1Kolom('         Telp     : 087840519421'));
-        $printer->text($this->buatBaris1Kolom("         Faktur: $data[0][nota_number]"));
+        $printer->text($this->buatBaris1Kolom("         Faktur: ".$data[0]['nota_number']));
         if (isset($lastPoint)) {
             $printer->text($this->buatBaris1Kolom("         Member   : $lastPoint[name]"));
         }
@@ -222,13 +221,13 @@ class Transaction extends BaseController
         }
         $printer->text($this->buatBaris1Kolom('---------------------------------'));
 
-        $printer->text($this->buatBaris3Kolom('', 'Discount: ', $data[0]['totalDiscount']));
+        $printer->text($this->buatBaris3Kolom('', 'Discount: ', $data[0]['discount']));
         $printer->text($this->buatBaris3Kolom('', 'Total: ', $data[0]['grand_total']));
         if ($data[0]['point_pay'] != null) {
-            $data[0]['money'] += $data[0]['point_pay'];
+            $data[0]['total_pay'] += $data[0]['point_pay'];
         }
         $printer->text($this->buatBaris3Kolom('', 'Bayar: ', $data[0]['total_pay']));
-        $printer->text($this->buatBaris3Kolom('', 'Kembali: ', intval($data[0]['grand_total']) - intval($data[0]['money'])));
+        $printer->text($this->buatBaris3Kolom('', 'Kembali: ', intval($data[0]['grand_total']) - intval($data[0]['total_pay'])));
         $printer->text($this->buatBaris3KolomPoint(!isset($lastPoint) ? '' : 'Point: ' . number_format($lastPoint['point'], 0, ',', '.'), '', ''));
         $printer->cut();
         $printer->close();

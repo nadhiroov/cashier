@@ -194,6 +194,7 @@
             serverSide: true,
             processing: true,
             paging: false,
+            info: false,
             columns: [{
                     data: 'produckName'
                 },
@@ -213,7 +214,7 @@
                     }
                 }
             ]
-        })        
+        })
     })
 
     $('.formAdd, .formEdit, .formChangePrice').submit(function(e) {
