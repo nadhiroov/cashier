@@ -127,7 +127,6 @@ class Transaction extends BaseController
             $lastPoint = $modelMember->select('point, name')->where('id', $member[0])->first();
         }
 
-
         $transactionData = [
             'nota_number'   => $form['notaNumber'],
             'member'        => $form['member'],
